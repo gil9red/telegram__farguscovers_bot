@@ -2374,9 +2374,9 @@
         "photo_file_name": "images\\16771_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333692929%2Fwall-41666750_16771",
         "authors": [],
-        "cover_text": "",
-        "game_name": "",
-        "game_series": ""
+        "cover_text": "17 мгновений весны: Новое дело",
+        "game_name": "Wolfenstein: The New Order",
+        "game_series": "Wolfenstein"
     },
     {
         "post_id": 16759,
@@ -2385,8 +2385,8 @@
         "photo_file_name": "images\\16759_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333733395%2Fwall-41666750_16759",
         "authors": [],
-        "cover_text": "",
-        "game_name": "",
+        "cover_text": "Ебал я в рот такой ПОХОД. Симулятор выживания в ебенях",
+        "game_name": "The Forest",
         "game_series": ""
     },
     {
@@ -2396,9 +2396,9 @@
         "photo_file_name": "images\\16654_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333561333%2Fwall-41666750_16654",
         "authors": [],
-        "cover_text": "",
-        "game_name": "Killing Floor 2.",
-        "game_series": ""
+        "cover_text": "Седьмой Этаж 2. Как шестой, но на один этаж выше",
+        "game_name": "Killing Floor 2",
+        "game_series": "Killing Floor"
     },
     {
         "post_id": 16479,
@@ -2407,9 +2407,9 @@
         "photo_file_name": "images\\16479_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333515400%2Fwall-41666750_16479",
         "authors": [],
-        "cover_text": "",
-        "game_name": "",
-        "game_series": ""
+        "cover_text": "Дрифтуй-убивай 8",
+        "game_name": "Mario Kart 8",
+        "game_series": "Mario"
     },
     {
         "post_id": 16465,
@@ -2418,9 +2418,9 @@
         "photo_file_name": "images\\16465_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333514133%2Fwall-41666750_16465",
         "authors": [],
-        "cover_text": "",
-        "game_name": "Original: http://cs617123.vk.me/v617123748/14685/yE26bkrx0jU.jpg",
-        "game_series": ""
+        "cover_text": "Больной Максим",
+        "game_name": "Max Payne",
+        "game_series": "Max Payne"
     },
     {
         "post_id": 16437,
@@ -2429,20 +2429,9 @@
         "photo_file_name": "images\\16437_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333501409%2Fwall-41666750_16437",
         "authors": [],
-        "cover_text": "",
-        "game_name": "",
-        "game_series": ""
-    },
-    {
-        "post_id": 16394,
-        "post_url": "https://vk.com/farguscovers?w=wall-41666750_16394",
-        "post_text": "",
-        "photo_file_name": "images\\16394_1.jpg",
-        "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333495750%2Fwall-41666750_16394",
-        "authors": [],
-        "cover_text": "",
-        "game_name": "",
-        "game_series": ""
+        "cover_text": "Нарисуй Членика: EPIC",
+        "game_name": "Draw a Stickman: EPIC",
+        "game_series": "Draw a Stickman: EPIC"
     },
     {
         "post_id": 16233,
@@ -2456,7 +2445,7 @@
                 "name": "Николай Чернов"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Шесть рублей: Великая распродажа",
         "game_name": "Valiant Hearts: The Great War",
         "game_series": ""
     },
@@ -2472,9 +2461,9 @@
                 "name": "Pavel Tkachyov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Sid Meier's Civilization: Beyond Earth.",
-        "game_series": ""
+        "cover_text": "И он сказал: поехали!",
+        "game_name": "Sid Meier's Civilization: Beyond Earth",
+        "game_series": "Civilization"
     },
     {
         "post_id": 16228,
@@ -2483,9 +2472,9 @@
         "photo_file_name": "images\\16228_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_331600555%2Fwall-41666750_16228",
         "authors": [],
-        "cover_text": "",
-        "game_name": "Battlefield: Hardline",
-        "game_series": ""
+        "cover_text": "Payday на Frostbite",
+        "game_name": "Battlefield Hardline",
+        "game_series": "Battlefield"
     },
     {
         "post_id": 16225,
@@ -2499,9 +2488,9 @@
                 "name": "Nikolay Chernov"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Сука Блять II",
         "game_name": "Dark Souls II",
-        "game_series": ""
+        "game_series": "Souls"
     },
     {
         "post_id": 16221,
@@ -2515,9 +2504,9 @@
                 "name": "Максим Чересельский"
             }
         ],
-        "cover_text": "",
-        "game_name": "",
-        "game_series": ""
+        "cover_text": "ДурноИзвестный: Иванушка дурачок",
+        "game_name": "Infamous: Second Son",
+        "game_series": "Infamous"
     },
     {
         "post_id": 16218,
@@ -2531,7 +2520,7 @@
                 "name": "Иван Дубинкин"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Поехавшая Алиса",
         "game_name": "Alice: Madness Returns",
         "game_series": ""
     },
@@ -2547,9 +2536,9 @@
                 "name": "Daniil Ishutin"
             }
         ],
-        "cover_text": "",
-        "game_name": "Far Cry 4 (простите за качество, как таковой, обложки высокого качества нет.)",
-        "game_series": ""
+        "cover_text": "Гульмен. Графон едишн",
+        "game_name": "Far Cry 4",
+        "game_series": "Far Cry"
     },
     {
         "post_id": 16211,
@@ -2563,9 +2552,9 @@
                 "name": "Kirill Gilyazov"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Dragon Age: Зеленая концовка",
         "game_name": "Dragon Age: Inquisition",
-        "game_series": ""
+        "game_series": "Dragon Age"
     },
     {
         "post_id": 16204,
@@ -2579,8 +2568,8 @@
                 "name": "Alexander Kovalyov"
             }
         ],
-        "cover_text": "",
-        "game_name": "",
+        "cover_text": "Ржавый",
+        "game_name": "Rust",
         "game_series": ""
     },
     {
@@ -2595,9 +2584,9 @@
                 "name": "Alexey Baklunin"
             }
         ],
-        "cover_text": "",
-        "game_name": "Rambo: The Video Game.\nИдея: vk.com/famalamski",
-        "game_series": ""
+        "cover_text": "Рэмбо комнатный",
+        "game_name": "Rambo: The Video Game",
+        "game_series": "Rambo"
     },
     {
         "post_id": 16193,
@@ -2611,9 +2600,9 @@
                 "name": "Pavel Tkachyov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Wolfenstein: The New Order.",
-        "game_series": ""
+        "cover_text": "Штирлиц возвращается",
+        "game_name": "Wolfenstein: The New Order",
+        "game_series": "Wolfenstein"
     },
     {
         "post_id": 16190,
@@ -2627,7 +2616,7 @@
                 "name": "Nikita Lunev"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Осьмитец: Скрывает существование щупалец",
         "game_name": "Octodad: Dadliest Catch",
         "game_series": ""
     },
@@ -2638,9 +2627,9 @@
         "photo_file_name": "images\\16187_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_320095136%2Fwall-41666750_16187",
         "authors": [],
-        "cover_text": "",
-        "game_name": "Мы не можем не обойти стороной такую тему, как ситуация в\\на Украине, поэтому вот вам админский фан-арт.",
-        "game_series": ""
+        "cover_text": "Total War: Майдан",
+        "game_name": "Total War",
+        "game_series": "Total War"
     },
     {
         "post_id": 16184,
@@ -2654,9 +2643,9 @@
                 "name": "Gagazool Gagazool"
             }
         ],
-        "cover_text": "",
-        "game_name": "Assassin's creed 4 black flag",
-        "game_series": ""
+        "cover_text": "Остров сокровищ IV: Чёрная метка",
+        "game_name": "Assassin's Creed IV: Black Flag",
+        "game_series": "Assassin's Creed"
     },
     {
         "post_id": 16182,
@@ -2674,9 +2663,9 @@
                 "name": "Dmitry Bubnov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Phoenix Wright: Ace Attorney - Dual Destinies\nИдея: https://vk.com/id134207777",
-        "game_series": ""
+        "cover_text": "Лучше звоните Солу",
+        "game_name": "Phoenix Wright: Ace Attorney - Dual Destinies",
+        "game_series": "Ace Attorney"
     },
     {
         "post_id": 16180,
@@ -2690,8 +2679,8 @@
                 "name": "Gagazool Gagazool"
             }
         ],
-        "cover_text": "",
-        "game_name": "Оригинальная игра: Shelter",
+        "cover_text": "Сожрут",
+        "game_name": "Shelter",
         "game_series": ""
     },
     {
@@ -2706,9 +2695,9 @@
                 "name": "Gagazool Gagazool"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Кухонный Комбайн: Кубиками и соломкой",
         "game_name": "Metal Gear Rising: Revengeance",
-        "game_series": ""
+        "game_series": "Metal Gear"
     },
     {
         "post_id": 16172,
@@ -2722,9 +2711,9 @@
                 "name": "Kirill Boldyrev"
             }
         ],
-        "cover_text": "",
-        "game_name": "Door Kickers\n1 вариант.",
-        "game_series": ""
+        "cover_text": "Дети капитана Прайса",
+        "game_name": "Door Kickers",
+        "game_series": "Door Kickers"
     },
     {
         "post_id": 16119,
@@ -2738,9 +2727,9 @@
                 "name": "Alexey Baklunin"
             }
         ],
-        "cover_text": "",
-        "game_name": "Mass Effect.\nИ даже Миранда - гей-ниггер, потому что она - Майкл Джексон, который поменял пол.",
-        "game_series": ""
+        "cover_text": "Геи-ниггеры из далекого космоса",
+        "game_name": "Mass Effect",
+        "game_series": "Mass Effect"
     },
     {
         "post_id": 15963,
@@ -2754,9 +2743,9 @@
                 "name": "Alexey Baklunin"
             }
         ],
-        "cover_text": "",
-        "game_name": "Ну вы поняли, да? Промтовые переводы. Ха-ха.\nInfamous, The Last Of Us, Beyond Two Souls",
-        "game_series": ""
+        "cover_text": "Сборник лучших хитов игровой станции 3",
+        "game_name": "Infamous, The Last Of Us, Beyond Two Souls",
+        "game_series": "Сборники"
     },
     {
         "post_id": 15940,
@@ -2770,9 +2759,9 @@
                 "name": "Spay Spyrothefox"
             }
         ],
-        "cover_text": "",
-        "game_name": "Phoenix Wright: Ace Attorney: Dual Destinies",
-        "game_series": ""
+        "cover_text": "Жарптиц Правдов: Вот это поворот - Двойной Мозговынос",
+        "game_name": "Phoenix Wright: Ace Attorney - Dual Destinies",
+        "game_series": "Ace Attorney"
     },
     {
         "post_id": 15933,
@@ -2786,9 +2775,9 @@
                 "name": "Nikolay Chernov"
             }
         ],
-        "cover_text": "",
-        "game_name": "GTA:London.",
-        "game_series": ""
+        "cover_text": "Чисто английское убийство",
+        "game_name": "Grand Theft Auto: London 1969",
+        "game_series": "Grand Theft Auto"
     },
     {
         "post_id": 15913,
@@ -2797,7 +2786,7 @@
         "photo_file_name": "images\\15913_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_313476620%2Fwall-41666750_15913",
         "authors": [],
-        "cover_text": "",
+        "cover_text": "Монстры и хорошие спрайты",
         "game_name": "Beyond: Two Souls",
         "game_series": ""
     },
@@ -2813,9 +2802,9 @@
                 "name": "Kirill Gilyazov"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Большой Куш: Пёсики. Ты любишь пёсиков?",
         "game_name": "Call of Duty: Ghosts",
-        "game_series": ""
+        "game_series": "Call of Duty"
     },
     {
         "post_id": 15884,
@@ -2829,9 +2818,9 @@
                 "name": "Artur Martsinkevich"
             }
         ],
-        "cover_text": "",
-        "game_name": "Star Wars: Battlefront 2015",
-        "game_series": ""
+        "cover_text": "Звездный Переполох на маленьком Корусанте",
+        "game_name": "Star Wars Battlefront (2015)",
+        "game_series": "Star Wars: Battlefront"
     },
     {
         "post_id": 15868,
@@ -2845,9 +2834,9 @@
                 "name": "Nikolay Chernov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Wolf Among Us\nНа новый лейбл \"Фаргус\" можете не обращать внимания, просто представьте что он вернулся под новой печатью.",
-        "game_series": ""
+        "cover_text": "Оборотень в погонах",
+        "game_name": "The Wolf Among Us",
+        "game_series": "Fables"
     },
     {
         "post_id": 15846,
@@ -2861,9 +2850,9 @@
                 "name": "Pavel Loginov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Mass Effect 3\nИдея и исполнение: [id45318240|Павел Логинов]",
-        "game_series": ""
+        "cover_text": "Тайна третьей планеты",
+        "game_name": "Mass Effect 3",
+        "game_series": "Mass Effect"
     },
     {
         "post_id": 15653,
@@ -2877,9 +2866,9 @@
                 "name": "Kostya Linevich"
             }
         ],
-        "cover_text": "",
-        "game_name": "DotA 2. Вся суть.",
-        "game_series": ""
+        "cover_text": "Мам! На завтра легкие уроки задали 2",
+        "game_name": "Dota 2",
+        "game_series": "Dota"
     },
     {
         "post_id": 15526,
@@ -2893,9 +2882,9 @@
                 "name": "Nikita Nikolaev"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Абсолютный бой Ромы 2",
         "game_name": "Total War: Rome II",
-        "game_series": ""
+        "game_series": "Total War"
     },
     {
         "post_id": 15511,
@@ -2909,7 +2898,7 @@
                 "name": "Nikita Nikolaev"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Бой Тундры",
         "game_name": "War Thunder",
         "game_series": ""
     },
@@ -2925,9 +2914,9 @@
                 "name": "Alexey Baklunin"
             }
         ],
-        "cover_text": "",
-        "game_name": "Rainbow Six: Vegas 2",
-        "game_series": ""
+        "cover_text": "Мальчишник в Вегасе 2",
+        "game_name": "Tom Clancy's Rainbow Six: Vegas 2",
+        "game_series": "Tom Clancy's Rainbow Six"
     },
     {
         "post_id": 15436,
@@ -2941,9 +2930,9 @@
                 "name": "Nikolay Chernov"
             }
         ],
-        "cover_text": "",
-        "game_name": "gtav",
-        "game_series": ""
+        "cover_text": "Воруй убивай V",
+        "game_name": "Grand Theft Auto V",
+        "game_series": "Grand Theft Auto"
     },
     {
         "post_id": 15387,
@@ -2957,9 +2946,9 @@
                 "name": "Vitaly Balezin"
             }
         ],
-        "cover_text": "",
-        "game_name": "DiRT 3\nСначала очень хотелось сделать \"ВАЗЮКА\"",
-        "game_series": ""
+        "cover_text": "Грязюка 3",
+        "game_name": "DiRT 3",
+        "game_series": "Colin McRae Rally and Dirt"
     },
     {
         "post_id": 15344,
@@ -2973,9 +2962,9 @@
                 "name": "Pavel Tkachyov"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Мертвый Стояк 3",
         "game_name": "Dead Rising 3",
-        "game_series": ""
+        "game_series": "Dead Rising"
     },
     {
         "post_id": 15330,
@@ -2989,7 +2978,7 @@
                 "name": "Kirill Gilyazov"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Ретроспектива",
         "game_name": "Flashback",
         "game_series": ""
     },
@@ -3005,9 +2994,9 @@
                 "name": "Pavel Tkachyov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Portal 2. Ну вы поняли.",
-        "game_series": ""
+        "cover_text": "Тортик 2 - это ложь!",
+        "game_name": "Portal 2",
+        "game_series": "Portal"
     },
     {
         "post_id": 15286,
@@ -3021,9 +3010,9 @@
                 "name": "Pavel Loginov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Naruto Shippuden: Ultimate Ninja Storm 3 Full Burst\nИдея и исполнение: [id45318240|Павел Логинов]",
-        "game_series": ""
+        "cover_text": "Карате Пацан: Пиздец Бомбануло",
+        "game_name": "Naruto Shippuden: Ultimate Ninja Storm 3 Full Burst",
+        "game_series": "Naruto: Ultimate Ninja"
     },
     {
         "post_id": 15189,
@@ -3037,9 +3026,9 @@
                 "name": "Vitaly Balezin"
             }
         ],
-        "cover_text": "",
-        "game_name": "Tom Clancy's The Division\nПервая попытка. Вроде ничего так получилось.",
-        "game_series": ""
+        "cover_text": "Tom Clancy's Твою Дивизию!",
+        "game_name": "Tom Clancy's The Division",
+        "game_series": "Tom Clancy's"
     },
     {
         "post_id": 15162,
@@ -3053,7 +3042,7 @@
                 "name": "Alexander Strokov"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Подай Бумагу",
         "game_name": "Papers, Please",
         "game_series": ""
     },
@@ -3069,9 +3058,9 @@
                 "name": "Nikolay Chernov"
             }
         ],
-        "cover_text": "",
-        "game_name": "",
-        "game_series": ""
+        "cover_text": "Сука Блять",
+        "game_name": "Dark Souls",
+        "game_series": "Souls"
     },
     {
         "post_id": 15039,
@@ -3085,9 +3074,9 @@
                 "name": "Alexander Strokov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Duck Tales Remastered\nДля тех, кто в танке: Скряга Уткин - это обрусевший Скрудж МакДак",
-        "game_series": ""
+        "cover_text": "Скряга Уткин: Ремейк",
+        "game_name": "DuckTales: Remastered",
+        "game_series": "DuckTales"
     },
     {
         "post_id": 15028,
@@ -3098,12 +3087,12 @@
         "authors": [
             {
                 "id": 45318240,
-                "name": "Pavel Loginov"
+                "name": "Павел Логинов"
             }
         ],
-        "cover_text": "",
-        "game_name": "Sonic Lost World\nИдея и исполнение: [id45318240|Павел Логинов]",
-        "game_series": ""
+        "cover_text": "Ёжик в тумане",
+        "game_name": "Sonic Lost World",
+        "game_series": "Sonic the Hedgehog"
     },
     {
         "post_id": 15006,
@@ -3117,9 +3106,9 @@
                 "name": "Gagazool Gagazool"
             }
         ],
-        "cover_text": "",
-        "game_name": "Just Cause 2\nНи какой нетерпимости, национализма или расизма, братаны. Просто герой явно выраженный латинос с сильным акцентом - прямая аналогия при трансляции на русскую реальность.",
-        "game_series": ""
+        "cover_text": "Хачи трюкачи 2",
+        "game_name": "Just Cause 2",
+        "game_series": "Just Cause"
     },
     {
         "post_id": 14845,
@@ -3133,9 +3122,9 @@
                 "name": "Mikhail Vizard"
             }
         ],
-        "cover_text": "",
-        "game_name": "GTA V",
-        "game_series": ""
+        "cover_text": "Трус, Балбес, Бывалый V",
+        "game_name": "Grand Theft Auto V",
+        "game_series": "Grand Theft Auto"
     },
     {
         "post_id": 14781,
@@ -3149,8 +3138,8 @@
                 "name": "Павел Логинов"
             }
         ],
-        "cover_text": "",
-        "game_name": "Donald Duck - Quack Attack\nИдея и исполнение: [id45318240|Павел Логинов]",
+        "cover_text": "Всё очень плохо",
+        "game_name": "Donald Duck: Goin' Quackers",
         "game_series": ""
     },
     {
@@ -3165,9 +3154,9 @@
                 "name": "Alexey Baklunin"
             }
         ],
-        "cover_text": "",
-        "game_name": "Duck Tales Remastered",
-        "game_series": ""
+        "cover_text": "Утиные Истории: Пересказ",
+        "game_name": "DuckTales: Remastered",
+        "game_series": "DuckTales"
     },
     {
         "post_id": 14493,
@@ -3181,8 +3170,8 @@
                 "name": "Oleg Rak"
             }
         ],
-        "cover_text": "",
-        "game_name": "NeverDead.\nФаргускаверс, заебал, возрождайся.",
+        "cover_text": "Не верь Деду",
+        "game_name": "NeverDead",
         "game_series": ""
     },
     {
@@ -3197,9 +3186,9 @@
                 "name": "Nikolay Chernov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Hotline Miami 2:Wrong Number",
-        "game_series": ""
+        "cover_text": "Майами на связи 2: Ты опять выходишь на связь, мудило?",
+        "game_name": "Hotline Miami 2: Wrong Number",
+        "game_series": "Hotline Miami"
     },
     {
         "post_id": 14396,
@@ -3213,8 +3202,8 @@
                 "name": "Khoze Silva"
             }
         ],
-        "cover_text": "",
-        "game_name": "Monaco\nАвтор: [id36126956|Khoze Silva]",
+        "cover_text": "Южное Бутово: А если найду?",
+        "game_name": "Monaco: What's Yours Is Mine",
         "game_series": ""
     },
     {
@@ -3229,8 +3218,8 @@
                 "name": "Никита Лунев"
             }
         ],
-        "cover_text": "",
-        "game_name": "Stubbs the Zombie\n\n(Название - аллюзия на официальную русскую локализацию фильма Shawn of the Dead)",
+        "cover_text": "Зомби по имени Стаббс",
+        "game_name": "Stubbs the Zombie in Rebel Without a Pulse",
         "game_series": ""
     },
     {
@@ -3245,9 +3234,9 @@
                 "name": "Евгений Несудимов"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Эдвард Сноуден",
         "game_name": "Watch Dogs",
-        "game_series": ""
+        "game_series": "Watch Dogs"
     },
     {
         "post_id": 14324,
@@ -3261,8 +3250,8 @@
                 "name": "Рома Гостищев"
             }
         ],
-        "cover_text": "",
-        "game_name": "Deadpool The Game",
+        "cover_text": "Рассеянный с улицы Бассейной",
+        "game_name": "Deadpool",
         "game_series": ""
     },
     {
@@ -3277,9 +3266,9 @@
                 "name": "Кирилл Родевич"
             }
         ],
-        "cover_text": "",
-        "game_name": "Mortal Kombat Komplete Edition",
-        "game_series": ""
+        "cover_text": "Смертельная Битва: РеКа Edition",
+        "game_name": "Mortal Kombat (2011)",
+        "game_series": "Mortal Kombat"
     },
     {
         "post_id": 14264,
@@ -3293,9 +3282,9 @@
                 "name": "Nikita Lunyov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Plants vs. Zombie",
-        "game_series": ""
+        "cover_text": "Бабайки на Лужайке",
+        "game_name": "Plants vs. Zombies",
+        "game_series": "Plants vs. Zombies"
     },
     {
         "post_id": 14263,
@@ -3309,9 +3298,9 @@
                 "name": "Andrey Komin"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Маски шоу",
         "game_name": "Army of Two: The Devil's Cartel",
-        "game_series": ""
+        "game_series": "Army of Two"
     },
     {
         "post_id": 14261,
@@ -3325,9 +3314,9 @@
                 "name": "Nikolay Chernov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Deus Ex:Human Revolution\nКто не понял, почему название такое - марш в интернеты.\nI never asked for this.",
-        "game_series": ""
+        "cover_text": "Я этого никогда не просил",
+        "game_name": "Deus Ex: Human Revolution",
+        "game_series": "Deus Ex"
     },
     {
         "post_id": 14256,
@@ -3341,9 +3330,9 @@
                 "name": "Nikolay Chernov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Total War: Rome II\nCкажут, у Фаргуса не было такой обожки, без полей по бокам, а зря, я видел одну такую, с QuakeIII.",
-        "game_series": ""
+        "cover_text": "Всеобщая Война: Рим II",
+        "game_name": "Total War: Rome II",
+        "game_series": "Total War"
     },
     {
         "post_id": 14255,
@@ -3357,9 +3346,9 @@
                 "name": "Ilya Fisher"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Зарплата 2",
         "game_name": "Payday 2",
-        "game_series": ""
+        "game_series": "Payday"
     },
     {
         "post_id": 14253,
@@ -3373,9 +3362,9 @@
                 "name": "Dmitry Maydebura"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Щипа4",
         "game_name": "Thief",
-        "game_series": ""
+        "game_series": "Thief"
     },
     {
         "post_id": 14252,
@@ -3389,9 +3378,9 @@
                 "name": "Nikita Lunyov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Payday\n\nПолный треш",
-        "game_series": ""
+        "cover_text": "Ich Will",
+        "game_name": "Payday",
+        "game_series": "Payday"
     },
     {
         "post_id": 14251,
@@ -3409,9 +3398,9 @@
                 "name": "Oleg Lavrinenko"
             }
         ],
-        "cover_text": "",
-        "game_name": "Rome: Total War\n\nИдея: Олег Лавриненко (http://vk.com/topic-41666750_26760515?post=927)",
-        "game_series": ""
+        "cover_text": "Рома: Тотальный Вор",
+        "game_name": "Rome: Total War",
+        "game_series": "Total War"
     },
     {
         "post_id": 14205,
@@ -3425,7 +3414,7 @@
                 "name": "Anton Avdonin"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Ствол",
         "game_name": "GUN",
         "game_series": ""
     },
@@ -3441,8 +3430,8 @@
                 "name": "Alexey Baklunin"
             }
         ],
-        "cover_text": "",
-        "game_name": "Armikrog.",
+        "cover_text": "Небывальщина. 2",
+        "game_name": "Armikrog",
         "game_series": ""
     },
     {
@@ -3457,9 +3446,9 @@
                 "name": "Evgeny Nesudimov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Spin Tires",
-        "game_series": ""
+        "cover_text": "Симулятор российских дорог",
+        "game_name": "Spintires",
+        "game_series": "Spintires"
     },
     {
         "post_id": 14127,
@@ -3473,9 +3462,9 @@
                 "name": "Artyom Pronin"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Футбик 14",
         "game_name": "FIFA 14",
-        "game_series": ""
+        "game_series": "FIFA"
     },
     {
         "post_id": 14044,
@@ -3489,8 +3478,8 @@
                 "name": "Alexey Baklunin"
             }
         ],
-        "cover_text": "",
-        "game_name": "Cry of Fear.",
+        "cover_text": "У страха глаза велики",
+        "game_name": "Cry of Fear",
         "game_series": ""
     },
     {
@@ -3505,9 +3494,9 @@
                 "name": "Ilya Fisher"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Деды воевали 2",
         "game_name": "Company of Heroes 2",
-        "game_series": ""
+        "game_series": "Company of Heroes"
     },
     {
         "post_id": 13944,
@@ -3521,9 +3510,9 @@
                 "name": "Nikita Lunyov"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Брат за брата: такое за основу взято",
         "game_name": "Call of Juarez: Bound in Blood",
-        "game_series": ""
+        "game_series": "Call of Juarez"
     },
     {
         "post_id": 13907,
@@ -3537,9 +3526,9 @@
                 "name": "Kirill Gilyazov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Метро 2033: Луч надежды",
-        "game_series": ""
+        "cover_text": "STALKER в Москве",
+        "game_name": "Metro: Last Light",
+        "game_series": "Metro"
     },
     {
         "post_id": 13882,
@@ -3553,9 +3542,9 @@
                 "name": "Alexey Baklunin"
             }
         ],
-        "cover_text": "",
-        "game_name": "Call of Duty: Ghosts.",
-        "game_series": ""
+        "cover_text": "Комиссар Рекс: Собачья работа",
+        "game_name": "Call of Duty: Ghosts",
+        "game_series": "Call of Duty"
     },
     {
         "post_id": 13843,
@@ -3569,7 +3558,7 @@
                 "name": "Nikita Lunyov"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Ну очень крутой парень",
         "game_name": "Deadpool",
         "game_series": ""
     },
@@ -3585,9 +3574,9 @@
                 "name": "Syoma Lunyov"
             }
         ],
-        "cover_text": "",
-        "game_name": "SWAT",
-        "game_series": ""
+        "cover_text": "Сваты",
+        "game_name": "SWAT 4",
+        "game_series": "SWAT"
     },
     {
         "post_id": 13704,
@@ -3601,7 +3590,7 @@
                 "name": "Gagazool Gagazool"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Боевые Пепелацы",
         "game_name": "Hammerfight",
         "game_series": ""
     },
@@ -3617,9 +3606,9 @@
                 "name": "Alexey Baklunin"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Терминатор Юрского Периода",
         "game_name": "Far Cry 3: Blood Dragon",
-        "game_series": ""
+        "game_series": "Far Cry"
     },
     {
         "post_id": 13674,
@@ -3633,8 +3622,8 @@
                 "name": "Gagazool Gagazool"
             }
         ],
-        "cover_text": "",
-        "game_name": "Mars: war logs",
+        "cover_text": "Mars: War Logs",
+        "game_name": "Mars: War Logs",
         "game_series": ""
     },
     {
@@ -3649,9 +3638,9 @@
                 "name": "Nikita Lunyov"
             }
         ],
-        "cover_text": "",
-        "game_name": "F. E. A. R.",
-        "game_series": ""
+        "cover_text": "С.Т.Р.А.Х: Скорая Тотальная оРганизация Активного Хуйнеистребления",
+        "game_name": "F.E.A.R.: First Encounter Assault Recon",
+        "game_series": "F.E.A.R."
     },
     {
         "post_id": 13606,
@@ -3665,9 +3654,9 @@
                 "name": "Pavel Loginov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Thief\nИдея и исполнение: [id45318240|Павел Логинов]",
-        "game_series": ""
+        "cover_text": "Путин",
+        "game_name": "Thief",
+        "game_series": "Thief"
     },
     {
         "post_id": 13583,
@@ -3681,9 +3670,9 @@
                 "name": "Gagazool Gagazool"
             }
         ],
-        "cover_text": "",
-        "game_name": "scribblenauts",
-        "game_series": ""
+        "cover_text": "Занимательный Английский",
+        "game_name": "Scribblenauts",
+        "game_series": "Scribblenauts"
     },
     {
         "post_id": 13566,
@@ -3697,9 +3686,9 @@
                 "name": "Anton Avdonin"
             }
         ],
-        "cover_text": "",
-        "game_name": "Не спрашивайте оригинальное название, никто его не знает.",
-        "game_series": ""
+        "cover_text": "Ассассин Взял Кредит на 4 Черных Флага",
+        "game_name": "Assassin's Creed IV: Black Flag",
+        "game_series": "Assassin's Creed"
     },
     {
         "post_id": 13442,
@@ -3713,9 +3702,9 @@
                 "name": "Kirill Gilyazov"
             }
         ],
-        "cover_text": "",
-        "game_name": "SimCity 2013",
-        "game_series": ""
+        "cover_text": "Город Сима",
+        "game_name": "SimCity (2013)",
+        "game_series": "SimCity"
     },
     {
         "post_id": 13415,
@@ -3729,7 +3718,7 @@
                 "name": "Nikita Lunyov"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Мыло",
         "game_name": "Blur",
         "game_series": ""
     },
@@ -3745,7 +3734,7 @@
                 "name": "Mayya Kozheva"
             }
         ],
-        "cover_text": "",
+        "cover_text": "Русалочка",
         "game_name": "Aquaria",
         "game_series": ""
     },
@@ -3761,9 +3750,9 @@
                 "name": "Ruslan Nigmatullin"
             }
         ],
-        "cover_text": "",
-        "game_name": "Mortal Kombat 2\n(Обнаружил орфографическую ошибку, пришлось перезалить)",
-        "game_series": ""
+        "cover_text": "Смертельный Комбат II",
+        "game_name": "Mortal Kombat II",
+        "game_series": "Mortal Kombat"
     },
     {
         "post_id": 13300,
@@ -3777,9 +3766,9 @@
                 "name": "Kirill Gilyazov"
             }
         ],
-        "cover_text": "",
-        "game_name": "Thief 4",
-        "game_series": ""
+        "cover_text": "Вор с Владимиром Машковым",
+        "game_name": "Thief",
+        "game_series": "Thief"
     },
     {
         "post_id": 13279,
@@ -3793,9 +3782,9 @@
                 "name": "Vlad Mikheenkov"
             }
         ],
-        "cover_text": "",
-        "game_name": "no comments)",
-        "game_series": ""
+        "cover_text": "Чернопыль 2: Аномальная зона",
+        "game_name": "Chernobyl 2: The Battle",
+        "game_series": "Chernobyl"
     },
     {
         "post_id": 13258,
@@ -5467,7 +5456,7 @@
         ],
         "cover_text": "Майами у аппарата",
         "game_name": "Hotline Miami",
-        "game_series": ""
+        "game_series": "Hotline Miami"
     },
     {
         "post_id": 8812,
@@ -6269,7 +6258,7 @@
         ],
         "cover_text": "Ашотовы Гонки",
         "game_name": "Mario Kart",
-        "game_series": "Mario"
+        "game_series": "Mario Kart"
     },
     {
         "post_id": 6693,
