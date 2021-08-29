@@ -2264,9 +2264,9 @@
                 "name": "Nikolay Chernov"
             }
         ],
-        "cover_text": "",
-        "game_name": "DEFCOИ:Everybody Dies",
-        "game_series": ""
+        "cover_text": "Пиздец: Сдохнет блять каждый",
+        "game_name": "DEFCON: Everybody Dies",
+        "game_series": "DEFCON"
     },
     {
         "post_id": 16951,
@@ -2274,10 +2274,15 @@
         "post_text": "",
         "photo_file_name": "images\\16951_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333836815%2Fwall-41666750_16951",
-        "authors": [],
-        "cover_text": "",
-        "game_name": "",
-        "game_series": ""
+        "authors": [
+            {
+                "id": 94711836,
+                "name": "Ilya Fisher"
+            }
+        ],
+        "cover_text": "Вокруг Света 4",
+        "game_name": "Far Cry 4",
+        "game_series": "Far Cry"
     },
     {
         "post_id": 16945,
@@ -2285,10 +2290,15 @@
         "post_text": "",
         "photo_file_name": "images\\16945_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333950477%2Fwall-41666750_16945",
-        "authors": [],
-        "cover_text": "",
+        "authors": [
+            {
+                "id": 60147467,
+                "name": "Евгений Несудимов"
+            }
+        ],
+        "cover_text": "Интерактивный самоучитель по истории",
         "game_name": "",
-        "game_series": ""
+        "game_series": "Total War"
     },
     {
         "post_id": 16916,
@@ -2296,10 +2306,15 @@
         "post_text": "",
         "photo_file_name": "images\\16916_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333896167%2Fwall-41666750_16916",
-        "authors": [],
-        "cover_text": "",
-        "game_name": "The Binding of Isaac.",
-        "game_series": ""
+        "authors": [
+            {
+                "id": 36281502,
+                "name": "Павел Ткачёв"
+            }
+        ],
+        "cover_text": "Страдания юного Айзека",
+        "game_name": "The Binding of Isaac",
+        "game_series": "The Binding of Isaac"
     },
     {
         "post_id": 16909,
@@ -2307,9 +2322,14 @@
         "post_text": "Loadout",
         "photo_file_name": "images\\16909_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333687029%2Fwall-41666750_16909",
-        "authors": [],
-        "cover_text": "",
-        "game_name": "Найди мешок картошки!",
+        "authors": [
+            {
+                "id": 86580477,
+                "name": "6opodujio __"
+            }
+        ],
+        "cover_text": "Асталависта, шифт",
+        "game_name": "Loadout",
         "game_series": ""
     },
     {
@@ -2318,10 +2338,15 @@
         "post_text": "",
         "photo_file_name": "images\\16904_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333829073%2Fwall-41666750_16904",
-        "authors": [],
-        "cover_text": "",
-        "game_name": "",
-        "game_series": ""
+        "authors": [
+            {
+                "id": 41856246,
+                "name": "Алексей Колпаков"
+            }
+        ],
+        "cover_text": "Пьяный дебош на 2 этаже",
+        "game_name": "Killing Floor 2",
+        "game_series": "Killing Floor"
     },
     {
         "post_id": 16888,
@@ -2329,9 +2354,14 @@
         "post_text": "Murdered: Soul Suspect",
         "photo_file_name": "images\\16888_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333770788%2Fwall-41666750_16888",
-        "authors": [],
-        "cover_text": "",
-        "game_name": "",
+        "authors": [
+            {
+                "id": 60147467,
+                "name": "Евгений Несудимов"
+            }
+        ],
+        "cover_text": "Убит: Подозреваемый - Душа",
+        "game_name": "Murdered: Soul Suspect",
         "game_series": ""
     },
     {
@@ -2340,9 +2370,14 @@
         "post_text": "Knock-knock",
         "photo_file_name": "images\\16883_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333895994%2Fwall-41666750_16883",
-        "authors": [],
-        "cover_text": "",
-        "game_name": "",
+        "authors": [
+            {
+                "id": 210518304,
+                "name": "Роман Белинский"
+            }
+        ],
+        "cover_text": "Электрик",
+        "game_name": "Knock-Knock",
         "game_series": ""
     },
     {
@@ -2351,10 +2386,15 @@
         "post_text": "Tom Clancy's The Division",
         "photo_file_name": "images\\16878_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333775982%2Fwall-41666750_16878",
-        "authors": [],
-        "cover_text": "",
-        "game_name": "",
-        "game_series": ""
+        "authors": [
+            {
+                "id": 11758390,
+                "name": "Владислав Власов"
+            }
+        ],
+        "cover_text": "Том Клэнси. Этот новый год удался",
+        "game_name": "Tom Clancy's The Division",
+        "game_series": "Tom Clancy's"
     },
     {
         "post_id": 16777,
@@ -2362,10 +2402,15 @@
         "post_text": "",
         "photo_file_name": "images\\16777_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333573666%2Fwall-41666750_16777",
-        "authors": [],
-        "cover_text": "",
-        "game_name": "",
-        "game_series": ""
+        "authors": [
+            {
+                "id": 24017731,
+                "name": "Кирилл Клишин"
+            }
+        ],
+        "cover_text": "Тактическое Шпионское Действо. Псевдоним \"Змея\". Боец невидимого фронта",
+        "game_name": "Metal Gear Solid",
+        "game_series": "Metal Gear"
     },
     {
         "post_id": 16771,
@@ -2373,7 +2418,12 @@
         "post_text": "Wolfenstein: The New Order",
         "photo_file_name": "images\\16771_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333692929%2Fwall-41666750_16771",
-        "authors": [],
+        "authors": [
+            {
+                "id": 216316363,
+                "name": "Никита Зиновьев"
+            }
+        ],
         "cover_text": "17 мгновений весны: Новое дело",
         "game_name": "Wolfenstein: The New Order",
         "game_series": "Wolfenstein"
@@ -2384,7 +2434,12 @@
         "post_text": "",
         "photo_file_name": "images\\16759_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333733395%2Fwall-41666750_16759",
-        "authors": [],
+        "authors": [
+            {
+                "id": 41856246,
+                "name": "Алексей Колпаков"
+            }
+        ],
         "cover_text": "Ебал я в рот такой ПОХОД. Симулятор выживания в ебенях",
         "game_name": "The Forest",
         "game_series": ""
@@ -2395,7 +2450,12 @@
         "post_text": "",
         "photo_file_name": "images\\16654_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333561333%2Fwall-41666750_16654",
-        "authors": [],
+        "authors": [
+            {
+                "id": 36281502,
+                "name": "Павел Ткачёв"
+            }
+        ],
         "cover_text": "Седьмой Этаж 2. Как шестой, но на один этаж выше",
         "game_name": "Killing Floor 2",
         "game_series": "Killing Floor"
@@ -2406,7 +2466,12 @@
         "post_text": "",
         "photo_file_name": "images\\16479_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333515400%2Fwall-41666750_16479",
-        "authors": [],
+        "authors": [
+            {
+                "id": 31893810,
+                "name": "Влад Бакеев"
+            }
+        ],
         "cover_text": "Дрифтуй-убивай 8",
         "game_name": "Mario Kart 8",
         "game_series": "Mario"
@@ -2417,7 +2482,12 @@
         "post_text": "",
         "photo_file_name": "images\\16465_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333514133%2Fwall-41666750_16465",
-        "authors": [],
+        "authors": [
+            {
+                "id": 239606748,
+                "name": "Валерия Петрова"
+            }
+        ],
         "cover_text": "Больной Максим",
         "game_name": "Max Payne",
         "game_series": "Max Payne"
@@ -2428,7 +2498,12 @@
         "post_text": "Draw a Stickman Epic",
         "photo_file_name": "images\\16437_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_333501409%2Fwall-41666750_16437",
-        "authors": [],
+        "authors": [
+            {
+                "id": 230625225,
+                "name": "DELETED"
+            }
+        ],
         "cover_text": "Нарисуй Членика: EPIC",
         "game_name": "Draw a Stickman: EPIC",
         "game_series": "Draw a Stickman: EPIC"
@@ -5927,7 +6002,7 @@
         "authors": [
             {
                 "id": 36131074,
-                "name": "Ilya Zaytsev"
+                "name": "Илья Зайцев"
             }
         ],
         "cover_text": "Блядство Разврат Наркотики V",
@@ -5986,7 +6061,7 @@
         "authors": [
             {
                 "id": 36131074,
-                "name": "Ilya Zaytsev"
+                "name": "Илья Зайцев"
             }
         ],
         "cover_text": "Вова Путин Навсегда",
@@ -6141,7 +6216,7 @@
         "authors": [
             {
                 "id": 36131074,
-                "name": "Ilya Zaytsev"
+                "name": "Илья Зайцев"
             }
         ],
         "cover_text": "LAYS 13",
@@ -6314,7 +6389,12 @@
         "post_text": "Ага.",
         "photo_file_name": "images\\6693_4.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_288999132%2Fwall-41666750_6693",
-        "authors": [],
+        "authors": [
+            {
+                "id": 43709013,
+                "name": "Андрей Нехов"
+            }
+        ],
         "cover_text": "БрызгиДома",
         "game_name": "Splatterhouse",
         "game_series": "Splatterhouse"
@@ -6341,7 +6421,12 @@
         "post_text": "Ага.",
         "photo_file_name": "images\\6693_6.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_289063522%2Fwall-41666750_6693",
-        "authors": [],
+        "authors": [
+            {
+                "id": 74388128,
+                "name": "DELETED"
+            }
+        ],
         "cover_text": "Обломок Клетки: Завтра Бандура",
         "game_name": "Tom Clancy's Splinter Cell: Pandora Tomorrow",
         "game_series": "Splinter Cell"
@@ -6595,7 +6680,12 @@
         "post_text": "Для потерявшихся во времени, сегодня на календаре суббота, и на волнах /farguscovers с вами я, администратор этой страницы. Как обычно, каждый администратор плюс один гость совершенно несправедливейшим методом выбрали лучший (по их мнению) промт недели. Голосуем.\nДа, в этот раз оригинального варианта \"семки в руках\" не будет.",
         "photo_file_name": "images\\4760_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_288460541%2Fwall-41666750_4760",
-        "authors": [],
+        "authors": [
+            {
+                "id": 36131074,
+                "name": "Илья Зайцев"
+            }
+        ],
         "cover_text": "Противо-Забастовка: Источник",
         "game_name": "Counter-Strike: Source",
         "game_series": "Counter-Strike"
@@ -6654,8 +6744,13 @@
         "post_text": "Для потерявшихся во времени, сегодня на календаре суббота, и на волнах /farguscovers с вами я, администратор этой страницы. Как обычно, каждый администратор плюс один гость совершенно несправедливейшим методом выбрали лучший (по их мнению) промт недели. Голосуем.\nДа, в этот раз оригинального варианта \"семки в руках\" не будет.",
         "photo_file_name": "images\\4760_5.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_288602735%2Fwall-41666750_4760",
-        "authors": [],
-        "cover_text": "Происхождение X-мужчин: Мех Росомахи",
+        "authors": [
+            {
+                "id": 36131074,
+                "name": "Илья Зайцев"
+            }
+        ],
+        "cover_text": "Происхождение X-Мужчин: Мех Росомахи",
         "game_name": "X-Men Origins: Wolverine",
         "game_series": "X-Men"
     },
@@ -6895,7 +6990,7 @@
         "authors": [
             {
                 "id": 36131074,
-                "name": "Ilya Zaytsev"
+                "name": "Илья Зайцев"
             }
         ],
         "cover_text": "Лихой Семёнъ: Веди нашествие супостатовъ",
@@ -7723,7 +7818,12 @@
         "post_text": "",
         "photo_file_name": "images\\1278_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_287604776%2Fwall-41666750_1278",
-        "authors": [],
+        "authors": [
+            {
+                "id": 52469106,
+                "name": "Chrono Saber"
+            }
+        ],
         "cover_text": "Вторые Всадники",
         "game_name": "Darksiders II: Death Lives",
         "game_series": "Darksiders"
@@ -8392,7 +8492,12 @@
         "post_text": "Уже суббота, значит, выбираем промт недели. Так как паблику всего 3 дня, неделя не получается, но отныне промт недели будем выбирать по субботам.",
         "photo_file_name": "images\\549_6.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_287289496%2Fwall-41666750_549",
-        "authors": [],
+        "authors": [
+            {
+                "id": 23958613,
+                "name": "Влад Шеремет"
+            }
+        ],
         "cover_text": "Сдвиг 2: Развязанный",
         "game_name": "Shift 2: Unleashed",
         "game_series": "Need for Speed"
@@ -8403,7 +8508,12 @@
         "post_text": "Уже суббота, значит, выбираем промт недели. Так как паблику всего 3 дня, неделя не получается, но отныне промт недели будем выбирать по субботам.",
         "photo_file_name": "images\\549_7.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_287278349%2Fwall-41666750_549",
-        "authors": [],
+        "authors": [
+            {
+                "id": 135225390,
+                "name": "DELETED"
+            }
+        ],
         "cover_text": "Боль и Унижение 2: Очень травмоопасное падение",
         "game_name": "Max Payne 2: The Fall of Max Payne",
         "game_series": "Max Payne"
@@ -8875,7 +8985,12 @@
         "post_text": "",
         "photo_file_name": "images\\3_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_287115540%2Fwall-41666750_3",
-        "authors": [],
+        "authors": [
+            {
+                "id": 12359488,
+                "name": "Артём Пронин"
+            }
+        ],
         "cover_text": "Алан Просыпаться",
         "game_name": "Alan Wake",
         "game_series": "Alan Wake"
@@ -8886,7 +9001,12 @@
         "post_text": "",
         "photo_file_name": "images\\2_1.jpg",
         "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_286968930%2Fwall-41666750_2",
-        "authors": [],
+        "authors": [
+            {
+                "id": 15039441,
+                "name": "Тимофей Соколов"
+            }
+        ],
         "cover_text": "Поле Битвы 3",
         "game_name": "Battlefield 3",
         "game_series": "Battlefield"
