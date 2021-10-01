@@ -5,16 +5,17 @@ __author__ = 'ipetrash'
 
 
 import time
+import datetime as DT
+from pathlib import Path
 from typing import Type
 
 # pip install peewee
 from peewee import (
-    # TODO: здесь импортируешь поля из peewee для таблиц
-    Model, TextField, ForeignKeyField, CharField
+    Model, TextField, ForeignKeyField, CharField, DateTimeField, IntegerField
 )
 from playhouse.sqliteq import SqliteQueueDatabase
 
-from config import DB_FILE_NAME
+from config import DB_FILE_NAME, DIR
 from common import shorten
 
 
@@ -64,17 +65,150 @@ class BaseModel(Model):
         return self.__class__.__name__ + '(' + ', '.join(fields) + ')'
 
 
-# TODO: тут создаешь классы-таблицы
+class GameSeries(BaseModel):
+    name = TextField(unique=True)
+
+
+class Game(BaseModel):
+    name = TextField(unique=True)
+    series = ForeignKeyField(GameSeries, backref='games', null=True)
+
+    @property
+    def series_name(self) -> str:
+        return self.series.name if self.series else ""
+
+
+class Cover(BaseModel):
+    text = TextField()
+    file_name = TextField(unique=True)
+    url_post = TextField()
+    url_post_image = TextField()
+    game = ForeignKeyField(Game, backref='covers')
+
+    @property
+    def abs_file_name(self) -> Path:
+        return DIR / self.file_name
+
+
+class Author(BaseModel):
+    name = TextField()
+
+    @property
+    def url(self) -> str:
+        return f'https://vk.com/id{self.id}'
+
+
+class Author2Cover(BaseModel):
+    author = ForeignKeyField(Author, backref='links_to_covers')
+    cover = ForeignKeyField(Cover, backref='links_to_authors')
+
+    class Meta:
+        indexes = (
+            (('author', 'cover'), True),
+        )
+
+
+class User(BaseModel):
+    first_name = TextField()
+    last_name = TextField(null=True)
+    username = TextField(null=True)
+    language_code = TextField(null=True)
+    last_activity = DateTimeField(default=DT.datetime.now)
+    number_requests = IntegerField(default=0)
 
 
 db.connect()
-# TODO: добавление классов базы данных
-# db.create_tables([Agent, AgentProperty])
+db.create_tables([GameSeries, Game, Cover, Author, Author2Cover, User])
 
 # Задержка в 50мс, чтобы дать время на запуск SqliteQueueDatabase и создание таблиц
 # Т.к. в SqliteQueueDatabase запросы на чтение выполняются сразу, а на запись попадают в очередь
 time.sleep(0.050)
 
 if __name__ == '__main__':
-    # TODO: сюда можно накидать пример работы с базой данных, например для тестирования
-    pass
+    dumps = [
+        {
+            "post_id": 657,
+            "post_url": "https://vk.com/farguscovers?w=wall-41666750_657",
+            "post_text": "Автор идеи: [id57847587|Василий Промтов]",
+            "photo_file_name": "images\\657_1.jpg",
+            "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_287333392%2Fwall-41666750_657",
+            "authors": [
+                {
+                    "id": 57847587,
+                    "name": "Василий Промтов"
+                }
+            ],
+            "cover_text": "Лето в гетто: Город Св. Андрея",
+            "game_name": "Grand Theft Auto: San Andreas",
+            "game_series": "Grand Theft Auto"
+        }
+    ]
+    for dump in dumps:
+        series = dump["game_series"]
+        if series:
+            game_series = GameSeries.get_or_none(name=series)
+            if not game_series:
+                game_series = GameSeries.create(name=series)
+        else:
+            game_series = None
+
+        name = dump["game_name"]
+        game = Game.get_or_none(name=name)
+        if not game:
+            game = Game.create(name=name, series=game_series)
+
+        authors = []
+        for author_dump in dump['authors']:
+            author_id = author_dump['id']
+
+            author = Author.get_or_none(id=author_id)
+            if not author:
+                author_name = author_dump['name']
+                author = Author.create(id=author_id, name=author_name)
+
+            authors.append(author)
+
+        cover_file_name = dump['photo_file_name']
+        cover = Cover.get_or_none(file_name=cover_file_name)
+        if not cover:
+            cover_post_url = dump['post_url']
+            cover_photo_post_url = dump['photo_post_url']
+            cover_text = dump['cover_text']
+
+            cover = Cover.create(
+                text=cover_text,
+                file_name=cover_file_name,
+                url_post=cover_post_url,
+                url_post_image=cover_photo_post_url,
+                game=game
+            )
+
+        print(game)
+        print(series)
+        print(authors)
+        print(cover)
+
+        for author in authors:
+            link = Author2Cover.get_or_none(author=author, cover=cover)
+            if not link:
+                link = Author2Cover.create(author=author, cover=cover)
+
+            print(link)
+
+    # series_sims = GameSeries.get(name="The Sims")
+    # print(series_sims.id)
+    # print(list(series_sims.games))
+    # print(series_sims.games)
+    # print()
+    # for dump in series_sims.games:
+    #     print(dump.name, dump.series.name)
+    #
+    # print("-"*10)
+    #
+    # for dump in Game.select():
+    #     series = ""
+    #     if dump.series is not None:
+    #         series = dump.series.name
+    #     print(dump.name, series, dump.series_name, sep=" | ")
+
+
