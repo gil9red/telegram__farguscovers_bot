@@ -49,8 +49,7 @@ def main():
 
     updater = Updater(
         TOKEN,
-        workers=workers,
-        use_context=True
+        workers=workers
     )
 
     dp = updater.dispatcher
