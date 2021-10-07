@@ -10,6 +10,7 @@ import time
 # pip install python-telegram-bot
 from telegram import Update
 from telegram.ext import Updater, MessageHandler, CommandHandler, Filters, CallbackContext
+from telegram.ext.defaults import Defaults
 
 from config import TOKEN
 from common import get_logger, log_func, reply_error
@@ -49,13 +50,14 @@ def main():
 
     updater = Updater(
         TOKEN,
-        workers=workers
+        workers=workers,
+        defaults=Defaults(run_async=True),
     )
 
     dp = updater.dispatcher
 
-    dp.add_handler(CommandHandler('start', on_start, run_async=True))
-    dp.add_handler(MessageHandler(Filters.text, on_request, run_async=True))
+    dp.add_handler(CommandHandler('start', on_start))
+    dp.add_handler(MessageHandler(Filters.text, on_request))
 
     dp.add_error_handler(on_error)
 
