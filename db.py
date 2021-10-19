@@ -72,11 +72,15 @@ class GameSeries(BaseModel):
 
     @classmethod
     def get_by_slug(cls, slug: str) -> Optional['GameSeries']:
+        if not slug or not slug.strip():
+            raise ValueError('Parameter "slug" must be defined!')
+
         return cls.get_or_none(slug=slug)
 
     @classmethod
     def get_by(cls, name: str) -> Optional['GameSeries']:
-        assert name, 'Parameter "name" must be defined!'
+        if not name or not name.strip():
+            raise ValueError('Parameter "name" must be defined!')
 
         return cls.get_by_slug(slug=get_slug(name))
 
@@ -99,11 +103,15 @@ class Game(BaseModel):
 
     @classmethod
     def get_by_slug(cls, slug: str) -> Optional['Game']:
+        if not slug or not slug.strip():
+            raise ValueError('Parameter "slug" must be defined!')
+
         return cls.get_or_none(slug=slug)
 
     @classmethod
     def get_by(cls, name: str) -> Optional['Game']:
-        assert name, 'Parameter "name" must be defined!'
+        if not name or not name.strip():
+            raise ValueError('Parameter "name" must be defined!')
 
         return cls.get_by_slug(slug=get_slug(name))
 
@@ -171,6 +179,17 @@ db.create_tables([GameSeries, Game, Cover, Author, Author2Cover, User])
 time.sleep(0.050)
 
 if __name__ == '__main__':
+    # Проверка, что указанные методы при заданных значениях выбросят ValueError
+    from common import assert_exception
+    for func in [GameSeries.get_by, Game.get_by]:
+        for value in ['', '    ', ' ! ! ', None]:
+            try:
+                with assert_exception(ValueError):
+                    func(value)
+            except AssertionError:
+                print(f'Invalid test for {func} for {value!r}')
+                raise
+
     dumps = [
         {
             "post_id": 657,

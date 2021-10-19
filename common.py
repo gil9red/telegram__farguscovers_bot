@@ -4,11 +4,14 @@
 __author__ = 'ipetrash'
 
 
+import contextlib
 import functools
 import logging
 import sys
 import re
+
 from pathlib import Path
+from typing import Optional
 
 from telegram import Update
 from telegram.ext import CallbackContext
@@ -98,13 +101,29 @@ def shorten(text: str, length=30) -> str:
     return text
 
 
-def get_slug(text: str) -> str:
+def get_slug(text: Optional[str]) -> str:
+    if not text:
+        return ''
+
     return re.sub(r'\W', '', text).lower()
 
 
+# SOURCE: https://stackoverflow.com/a/23780046/5909792
+@contextlib.contextmanager
+def assert_exception(exception):
+    try:
+        yield
+    except exception:
+        assert True
+    else:
+        assert False
+
+
 if __name__ == '__main__':
+    assert get_slug("") == ""
     assert get_slug('Half-Life 2: Episode Two') == 'halflife2episodetwo'
     assert get_slug("! ! !") == ""
     assert get_slug("123") == "123"
     assert get_slug("1 2-3") == "123"
     assert get_slug("  Привет World!") == "приветworld"
+    assert get_slug(None) == ''
