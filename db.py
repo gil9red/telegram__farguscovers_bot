@@ -6,8 +6,9 @@ __author__ = 'ipetrash'
 
 import time
 import datetime as DT
+
 from pathlib import Path
-from typing import Type
+from typing import Type, Optional
 
 # pip install peewee
 from peewee import (
@@ -16,7 +17,7 @@ from peewee import (
 from playhouse.sqliteq import SqliteQueueDatabase
 
 from config import DB_FILE_NAME, DIR
-from common import shorten
+from common import shorten, get_slug
 
 
 # This working with multithreading
@@ -66,12 +67,57 @@ class BaseModel(Model):
 
 
 class GameSeries(BaseModel):
-    name = TextField(unique=True)
+    name = TextField()
+    slug = TextField(unique=True)
+
+    @classmethod
+    def get_by_slug(cls, slug: str) -> Optional['GameSeries']:
+        return cls.get_or_none(slug=slug)
+
+    @classmethod
+    def get_by(cls, name: str) -> Optional['GameSeries']:
+        assert name, 'Parameter "name" must be defined!'
+
+        return cls.get_by_slug(slug=get_slug(name))
+
+    @classmethod
+    def add(cls, name: str) -> 'GameSeries':
+        obj = cls.get_by(name)
+        if not obj:
+            obj = cls.create(
+                name=series,
+                slug=get_slug(name),
+            )
+
+        return obj
 
 
 class Game(BaseModel):
-    name = TextField(unique=True)
+    name = TextField()
+    slug = TextField(unique=True)
     series = ForeignKeyField(GameSeries, backref='games', null=True)
+
+    @classmethod
+    def get_by_slug(cls, slug: str) -> Optional['Game']:
+        return cls.get_or_none(slug=slug)
+
+    @classmethod
+    def get_by(cls, name: str) -> Optional['Game']:
+        assert name, 'Parameter "name" must be defined!'
+
+        return cls.get_by_slug(slug=get_slug(name))
+
+    @classmethod
+    def add(cls, name: str, series: GameSeries = None) -> 'Game':
+        obj = cls.get_by(name)
+        if not obj:
+            obj = cls.create(
+                name=name,
+                slug=get_slug(name),
+                series=series,
+            )
+
+        return obj
 
     @property
     def series_name(self) -> str:
@@ -141,21 +187,34 @@ if __name__ == '__main__':
             "cover_text": "Лето в гетто: Город Св. Андрея",
             "game_name": "Grand Theft Auto: San Andreas",
             "game_series": "Grand Theft Auto"
-        }
+        },
+        {
+            "post_id": 890,
+            "post_url": "https://vk.com/farguscovers?w=wall-41666750_890",
+            "post_text": "Автор идеи: [id57847587|Vasily Promtov]\nАвторы: [id23958613|Vlad Sheremet] и [id15039441|Timofey Sokolov]",
+            "photo_file_name": "images\\890_1.jpg",
+            "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_287446173%2Fwall-41666750_890",
+            "authors": [
+                {
+                    "id": 57847587,
+                    "name": "Vasily Promtov"
+                },
+                {
+                    "id": 23958613,
+                    "name": "Влад Шеремет"
+                }
+            ],
+            "cover_text": "Каникулы в Мексике",
+            "game_name": "Total Overdose",
+            "game_series": ""
+        },
     ]
     for dump in dumps:
         series = dump["game_series"]
-        if series:
-            game_series = GameSeries.get_or_none(name=series)
-            if not game_series:
-                game_series = GameSeries.create(name=series)
-        else:
-            game_series = None
+        game_series = GameSeries.add(name=series) if series else None
 
         name = dump["game_name"]
-        game = Game.get_or_none(name=name)
-        if not game:
-            game = Game.create(name=name, series=game_series)
+        game = Game.add(name=name, series=game_series)
 
         authors = []
         for author_dump in dump['authors']:
@@ -195,20 +254,15 @@ if __name__ == '__main__':
 
             print(link)
 
-    # series_sims = GameSeries.get(name="The Sims")
-    # print(series_sims.id)
-    # print(list(series_sims.games))
-    # print(series_sims.games)
-    # print()
-    # for dump in series_sims.games:
-    #     print(dump.name, dump.series.name)
-    #
-    # print("-"*10)
-    #
-    # for dump in Game.select():
-    #     series = ""
-    #     if dump.series is not None:
-    #         series = dump.series.name
-    #     print(dump.name, series, dump.series_name, sep=" | ")
+    print()
 
-
+    author = Author.get_by_id(57847587)
+    print(author)
+    # TODO: добавить в Author метод для получения обложек
+    # TODO: добавить в Cover метод для получения авторов
+    # TODO: добавить пример вывода авторов из конкретной обложки
+    for link in author.links_to_covers:
+        print(f'    Cover: {link.cover}')
+        print(f'    Game: {link.cover.game}')
+        print(f'    Series: {link.cover.game.series}')
+        print()

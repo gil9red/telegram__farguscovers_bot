@@ -7,6 +7,7 @@ __author__ = 'ipetrash'
 import functools
 import logging
 import sys
+import re
 from pathlib import Path
 
 from telegram import Update
@@ -95,3 +96,15 @@ def shorten(text: str, length=30) -> str:
     if len(text) > length:
         text = text[:length] + '...'
     return text
+
+
+def get_slug(text: str) -> str:
+    return re.sub(r'\W', '', text).lower()
+
+
+if __name__ == '__main__':
+    assert get_slug('Half-Life 2: Episode Two') == 'halflife2episodetwo'
+    assert get_slug("! ! !") == ""
+    assert get_slug("123") == "123"
+    assert get_slug("1 2-3") == "123"
+    assert get_slug("  Привет World!") == "приветworld"
