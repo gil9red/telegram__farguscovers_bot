@@ -22,8 +22,8 @@ log = get_logger(__file__)
 def on_start(update: Update, context: CallbackContext):
     # TODO: добавить описание бота и как с ним работать
     # TODO: отобразить клавиатуру
-    update.message.reply_text(
-        'Введите что-нибудь'
+    update.effective_message.reply_text(
+        'Бот для отображения обложек группы ВК https://vk.com/farguscovers'
     )
 
 
