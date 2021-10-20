@@ -138,6 +138,7 @@ class Cover(BaseModel):
     url_post = TextField()
     url_post_image = TextField()
     game = ForeignKeyField(Game, backref='covers')
+    server_file_id = TextField(null=True)
 
     @property
     def abs_file_name(self) -> Path:
