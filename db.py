@@ -139,6 +139,7 @@ class Cover(BaseModel):
     url_post_image = TextField()
     game = ForeignKeyField(Game, backref='covers')
     server_file_id = TextField(null=True)
+    date_time = DateTimeField()
 
     @property
     def abs_file_name(self) -> Path:
@@ -206,7 +207,8 @@ if __name__ == '__main__':
             ],
             "cover_text": "Лето в гетто: Город Св. Андрея",
             "game_name": "Grand Theft Auto: San Andreas",
-            "game_series": "Grand Theft Auto"
+            "game_series": "Grand Theft Auto",
+            "date_time": "2012-08-11 16:43:49"
         },
         {
             "post_id": 890,
@@ -226,9 +228,12 @@ if __name__ == '__main__':
             ],
             "cover_text": "Каникулы в Мексике",
             "game_name": "Total Overdose",
-            "game_series": ""
+            "game_series": "",
+            "date_time": "2012-08-13 23:09:24"
         },
     ]
+    # TODO: Сделать функцию для создания объектов базы из dump.json
+    # TODO: Отдельный скрипт заполнения базы данных из dump.json
     for dump in dumps:
         series = dump["game_series"]
         game_series = GameSeries.add(name=series) if series else None
@@ -253,13 +258,15 @@ if __name__ == '__main__':
             cover_post_url = dump['post_url']
             cover_photo_post_url = dump['photo_post_url']
             cover_text = dump['cover_text']
+            date_time = dump['date_time']
 
             cover = Cover.create(
                 text=cover_text,
                 file_name=cover_file_name,
                 url_post=cover_post_url,
                 url_post_image=cover_photo_post_url,
-                game=game
+                game=game,
+                date_time=DT.datetime.fromisoformat(date_time),
             )
 
         print(game)
@@ -286,3 +293,9 @@ if __name__ == '__main__':
         print(f'    Game: {link.cover.game}')
         print(f'    Series: {link.cover.game.series}')
         print()
+
+    print()
+
+    cover = Cover.get_by_id(1)
+    print(cover)
+    print(type(cover.date_time), cover.date_time, cover.date_time.date())
