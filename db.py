@@ -48,6 +48,14 @@ class BaseModel(Model):
     def get_new(self) -> Type['BaseModel']:
         return type(self).get(self._pk_expr())
 
+    @classmethod
+    def get_first(cls) -> Type['BaseModel']:
+        return cls.select().first()
+
+    @classmethod
+    def get_last(cls) -> Type['BaseModel']:
+        return cls.select().order_by(cls.id.desc()).first()
+
     def __str__(self):
         fields = []
         for k, field in self._meta.fields.items():
@@ -196,9 +204,11 @@ if __name__ == '__main__':
     # TODO: вывести статистику по кол-ву: авторов, игр, серий, обложек
     #       взять из fill_db.py
 
-    # TODO: вывести первую и последнюю обложку с указанием даты
-    print(Cover.select().first().date_time)
-    print(Cover.select().order_by(Cover.id.desc()).first().date_time)
+    print(f'First cover date: {Cover.get_first().date_time}')
+    print(f'Last cover date: {Cover.get_last().date_time}')
+    # First cover date: 2012-08-08 00:43:29
+    # Last cover date: 2020-03-17 20:00:05
+
     print()
 
     author = Author.get_by_id(57847587)
