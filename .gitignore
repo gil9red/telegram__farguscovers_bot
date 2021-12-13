@@ -130,4 +130,5 @@ dmypy.json
 
 # For current project
 TOKEN.txt
-.idea
+make_requirements.bat
+logs/
