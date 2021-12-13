@@ -8,36 +8,11 @@ import os
 import time
 
 # pip install python-telegram-bot
-from telegram import Update
-from telegram.ext import Updater, MessageHandler, CommandHandler, Filters, CallbackContext, Defaults
+from telegram.ext import Updater, Defaults
 
+from bot import commands
+from bot.common import log
 from config import TOKEN
-from common import get_logger, log_func, reply_error
-
-
-log = get_logger(__file__)
-
-
-@log_func(log)
-def on_start(update: Update, context: CallbackContext):
-    # TODO: добавить описание бота и как с ним работать
-    # TODO: отобразить клавиатуру
-    update.effective_message.reply_text(
-        'Бот для отображения обложек группы ВК https://vk.com/farguscovers'
-    )
-
-
-@log_func(log)
-def on_request(update: Update, context: CallbackContext):
-    message = update.effective_message
-
-    text = message.text
-
-    message.reply_text(text)
-
-
-def on_error(update: Update, context: CallbackContext):
-    reply_error(log, update, context)
 
 
 def main():
@@ -45,7 +20,7 @@ def main():
 
     cpu_count = os.cpu_count()
     workers = cpu_count
-    log.debug('System: CPU_COUNT=%s, WORKERS=%s', cpu_count, workers)
+    log.debug(f'System: CPU_COUNT={cpu_count}, WORKERS={workers}')
 
     updater = Updater(
         TOKEN,
@@ -56,11 +31,7 @@ def main():
     log.debug(f'Bot name {bot.first_name!r} ({bot.name})')
 
     dp = updater.dispatcher
-
-    dp.add_handler(CommandHandler('start', on_start))
-    dp.add_handler(MessageHandler(Filters.text, on_request))
-
-    dp.add_error_handler(on_error)
+    commands.setup(dp)
 
     updater.start_polling()
     updater.idle()
