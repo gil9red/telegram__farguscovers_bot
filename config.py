@@ -12,6 +12,20 @@ from pathlib import Path
 
 # Текущая папка, где находится скрипт
 DIR = Path(__file__).resolve().parent
+
+DIR_LOGS = DIR / 'logs'
+DIR_LOGS.mkdir(parents=True, exist_ok=True)
+
+DIR_DATA_VK = DIR / 'data_vk'
+
+FILE_NAME_DUMP = DIR_DATA_VK / 'dump.json'
+if not FILE_NAME_DUMP.exists():
+    raise Exception(f'Отсутствует экспортированный файл обложек: {FILE_NAME_DUMP}')
+
+DIR_IMAGES = DIR_DATA_VK / 'images'
+if not DIR_IMAGES.exists() or not any(DIR_IMAGES.glob('*.jpg')):
+    raise Exception(f'Отсутствует или пустая папка с картинками: {DIR_IMAGES}')
+
 TOKEN_FILE_NAME = DIR / 'TOKEN.txt'
 
 try:
@@ -32,3 +46,5 @@ DB_DIR_NAME.mkdir(parents=True, exist_ok=True)
 
 # Путь к файлу базы данных
 DB_FILE_NAME = str(DB_DIR_NAME / 'database.sqlite')
+
+MAX_MESSAGE_LENGTH = 4096

@@ -16,8 +16,9 @@ from peewee import (
 )
 from playhouse.sqliteq import SqliteQueueDatabase
 
-from config import DB_FILE_NAME, DIR
-from common import shorten, get_slug
+from config import DB_FILE_NAME, DIR_DATA_VK
+from bot.common import get_slug
+from third_party.shorten import shorten
 
 
 # This working with multithreading
@@ -89,7 +90,7 @@ class GameSeries(BaseModel):
         obj = cls.get_by(name)
         if not obj:
             obj = cls.create(
-                name=series,
+                name=name,
                 slug=get_slug(name),
             )
 
@@ -143,7 +144,7 @@ class Cover(BaseModel):
 
     @property
     def abs_file_name(self) -> Path:
-        return DIR / self.file_name
+        return DIR_DATA_VK / self.file_name
 
 
 class Author(BaseModel):
@@ -182,9 +183,9 @@ time.sleep(0.050)
 
 if __name__ == '__main__':
     # Проверка, что указанные методы при заданных значениях выбросят ValueError
-    from common import assert_exception
+    from bot.common import assert_exception
     for func in [GameSeries.get_by, Game.get_by]:
-        for value in ['', '    ', ' ! ! ', None]:
+        for value in ['', '    ', ' ! ', None]:
             try:
                 with assert_exception(ValueError):
                     func(value)
@@ -192,95 +193,12 @@ if __name__ == '__main__':
                 print(f'Invalid test for {func} for {value!r}')
                 raise
 
-    dumps = [
-        {
-            "post_id": 657,
-            "post_url": "https://vk.com/farguscovers?w=wall-41666750_657",
-            "post_text": "Автор идеи: [id57847587|Василий Промтов]",
-            "photo_file_name": "images\\657_1.jpg",
-            "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_287333392%2Fwall-41666750_657",
-            "authors": [
-                {
-                    "id": 57847587,
-                    "name": "Василий Промтов"
-                }
-            ],
-            "cover_text": "Лето в гетто: Город Св. Андрея",
-            "game_name": "Grand Theft Auto: San Andreas",
-            "game_series": "Grand Theft Auto",
-            "date_time": "2012-08-11 16:43:49"
-        },
-        {
-            "post_id": 890,
-            "post_url": "https://vk.com/farguscovers?w=wall-41666750_890",
-            "post_text": "Автор идеи: [id57847587|Vasily Promtov]\nАвторы: [id23958613|Vlad Sheremet] и [id15039441|Timofey Sokolov]",
-            "photo_file_name": "images\\890_1.jpg",
-            "photo_post_url": "https://vk.com/farguscovers?z=photo-41666750_287446173%2Fwall-41666750_890",
-            "authors": [
-                {
-                    "id": 57847587,
-                    "name": "Vasily Promtov"
-                },
-                {
-                    "id": 23958613,
-                    "name": "Влад Шеремет"
-                }
-            ],
-            "cover_text": "Каникулы в Мексике",
-            "game_name": "Total Overdose",
-            "game_series": "",
-            "date_time": "2012-08-13 23:09:24"
-        },
-    ]
-    # TODO: Сделать функцию для создания объектов базы из dump.json
-    # TODO: Отдельный скрипт заполнения базы данных из dump.json
-    for dump in dumps:
-        series = dump["game_series"]
-        game_series = GameSeries.add(name=series) if series else None
+    # TODO: вывести статистику по кол-ву: авторов, игр, серий, обложек
+    #       взять из fill_db.py
 
-        name = dump["game_name"]
-        game = Game.add(name=name, series=game_series)
-
-        authors = []
-        for author_dump in dump['authors']:
-            author_id = author_dump['id']
-
-            author = Author.get_or_none(id=author_id)
-            if not author:
-                author_name = author_dump['name']
-                author = Author.create(id=author_id, name=author_name)
-
-            authors.append(author)
-
-        cover_file_name = dump['photo_file_name']
-        cover = Cover.get_or_none(file_name=cover_file_name)
-        if not cover:
-            cover_post_url = dump['post_url']
-            cover_photo_post_url = dump['photo_post_url']
-            cover_text = dump['cover_text']
-            date_time = dump['date_time']
-
-            cover = Cover.create(
-                text=cover_text,
-                file_name=cover_file_name,
-                url_post=cover_post_url,
-                url_post_image=cover_photo_post_url,
-                game=game,
-                date_time=DT.datetime.fromisoformat(date_time),
-            )
-
-        print(game)
-        print(series)
-        print(authors)
-        print(cover)
-
-        for author in authors:
-            link = Author2Cover.get_or_none(author=author, cover=cover)
-            if not link:
-                link = Author2Cover.create(author=author, cover=cover)
-
-            print(link)
-
+    # TODO: вывести первую и последнюю обложку с указанием даты
+    print(Cover.select().first().date_time)
+    print(Cover.select().order_by(Cover.id.desc()).first().date_time)
     print()
 
     author = Author.get_by_id(57847587)
@@ -299,3 +217,4 @@ if __name__ == '__main__':
     cover = Cover.get_by_id(1)
     print(cover)
     print(type(cover.date_time), cover.date_time, cover.date_time.date())
+    print(cover.abs_file_name.exists(), cover.abs_file_name)

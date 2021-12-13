@@ -17,6 +17,8 @@ from telegram import Update
 from telegram.ext import CallbackContext
 
 import config
+from config import DIR_LOGS
+from third_party.reply_message import reply_message, SeverityEnum
 
 
 def get_logger(file_name: str, dir_name='logs'):
@@ -86,25 +88,17 @@ def log_func(log: logging.Logger):
     return actual_decorator
 
 
-def reply_error(log: logging.Logger, update: Update, context: CallbackContext):
+def process_error(log: logging.Logger, update: Update, context: CallbackContext):
     log.error('Error: %s\nUpdate: %s', context.error, update, exc_info=context.error)
     if update:
-        update.effective_message.reply_text(config.ERROR_TEXT)
-
-
-def shorten(text: str, length=30) -> str:
-    if not text:
-        return text
-
-    if len(text) > length:
-        text = text[:length] + '...'
-    return text
+        reply_message(config.ERROR_TEXT, update, context, severity=SeverityEnum.ERROR)
 
 
 def get_slug(text: Optional[str]) -> str:
     if not text:
         return ''
 
+    text = text.strip().replace(' ', '_')
     return re.sub(r'\W', '', text).lower()
 
 
@@ -119,11 +113,14 @@ def assert_exception(exception):
         assert False
 
 
+log = get_logger(__file__, DIR_LOGS / 'log.txt')
+
+
 if __name__ == '__main__':
     assert get_slug("") == ""
-    assert get_slug('Half-Life 2: Episode Two') == 'halflife2episodetwo'
-    assert get_slug("! ! !") == ""
+    assert get_slug('Half-Life 2: Episode Two') == 'halflife_2_episode_two'
+    assert get_slug("! ! !") == "__"
     assert get_slug("123") == "123"
-    assert get_slug("1 2-3") == "123"
-    assert get_slug("  Привет World!") == "приветworld"
+    assert get_slug("1 2-3") == "1_23"
+    assert get_slug("  Привет World!") == "привет_world"
     assert get_slug(None) == ''
