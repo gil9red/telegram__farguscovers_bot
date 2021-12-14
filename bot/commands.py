@@ -18,7 +18,7 @@ def on_start(update: Update, context: CallbackContext):
     text = (
         'Бот для отображения обложек группы ВК https://vk.com/farguscovers\n\n'
         f'Всего {Cover.select().count()} обложек за период '
-        f'{Cover.get_first().date_time:%Y}-{Cover.get_last().date_time:%Y}'
+        f'{Cover.get_first().date_time.year}-{Cover.get_last().date_time.year}'
     )
 
     reply_message(text, update, context)
