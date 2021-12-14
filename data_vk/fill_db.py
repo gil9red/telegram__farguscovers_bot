@@ -9,7 +9,7 @@ import json
 from collections import defaultdict
 
 from config import FILE_NAME_DUMP
-from db import Game, GameSeries, Author, Cover, Author2Cover
+from db import Game, GameSeries, Author, Cover, Author2Cover, BaseModel
 
 
 def append_to_db(dump: dict):
@@ -85,14 +85,8 @@ if __name__ == '__main__':
     for dump in dumps:
         append_to_db(dump)
 
-    # TODO: сделать в db.py функцию для вывода
-    # TODO: использовать ее в __main__ в db.py
-    print(
-        f'Game: {Game.select().count()}, GameSeries: {GameSeries.select().count()}, '
-        f'Author: {Author.select().count()}, Cover: {Cover.select().count()}, '
-        f'Author2Cover: {Author2Cover.select().count()}'
-    )
-    # Game: 451, GameSeries: 200, Author: 164, Cover: 567, Author2Cover: 581
+    BaseModel.print_count_of_tables()
+    # Author: 164, Author2Cover: 581, Cover: 567, Game: 451, GameSeries: 200, User: 0
 
     make_identical_authors_unique()
     # Renamed: 'DELETED' -> 'DELETED (id74388128)'

@@ -56,6 +56,16 @@ class BaseModel(Model):
     def get_last(cls) -> Type['BaseModel']:
         return cls.select().order_by(cls.id.desc()).first()
 
+    @classmethod
+    def print_count_of_tables(cls):
+        items = []
+        for sub_cls in sorted(cls.__subclasses__(), key=lambda x: x.__name__):
+            name = sub_cls.__name__
+            count = sub_cls.select().count()
+            items.append(f'{name}: {count}')
+
+        print(', '.join(items))
+
     def __str__(self):
         fields = []
         for k, field in self._meta.fields.items():
@@ -201,8 +211,9 @@ if __name__ == '__main__':
                 print(f'Invalid test for {func} for {value!r}')
                 raise
 
-    # TODO: вывести статистику по кол-ву: авторов, игр, серий, обложек
-    #       взять из fill_db.py
+    BaseModel.print_count_of_tables()
+    # Author: 164, Author2Cover: 581, Cover: 567, Game: 451, GameSeries: 200, User: 0
+    print()
 
     print(f'First cover date: {Cover.get_first().date_time}')
     print(f'Last cover date: {Cover.get_last().date_time}')
