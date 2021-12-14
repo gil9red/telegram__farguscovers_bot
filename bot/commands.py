@@ -10,16 +10,18 @@ from telegram.ext import (
 )
 
 from bot.common import log_func, process_error, log, reply_message
+from db import Cover
 
 
 @log_func(log)
 def on_start(update: Update, context: CallbackContext):
-    # TODO: добавить описание бота и как с ним работать
-    # TODO: отобразить клавиатуру
-    reply_message(
-        'Бот для отображения обложек группы ВК https://vk.com/farguscovers',
-        update, context
+    text = (
+        'Бот для отображения обложек группы ВК https://vk.com/farguscovers\n\n'
+        f'Всего {Cover.select().count()} обложек за период '
+        f'{Cover.get_first().date_time:%Y}-{Cover.get_last().date_time:%Y}'
     )
+
+    reply_message(text, update, context)
 
 
 @log_func(log)
