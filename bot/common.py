@@ -4,7 +4,6 @@
 __author__ = 'ipetrash'
 
 
-import contextlib
 import functools
 import logging
 import sys
@@ -100,17 +99,6 @@ def get_slug(text: Optional[str]) -> str:
 
     text = text.strip().replace(' ', '_')
     return re.sub(r'\W', '', text).lower()
-
-
-# SOURCE: https://stackoverflow.com/a/23780046/5909792
-@contextlib.contextmanager
-def assert_exception(exception):
-    try:
-        yield
-    except exception:
-        assert True
-    else:
-        assert False
 
 
 log = get_logger(__file__, DIR_LOGS / 'log.txt')

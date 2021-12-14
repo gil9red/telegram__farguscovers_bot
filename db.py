@@ -231,17 +231,6 @@ db.create_tables([GameSeries, Game, Cover, Author, Author2Cover, User])
 time.sleep(0.050)
 
 if __name__ == '__main__':
-    # Проверка, что указанные методы при заданных значениях выбросят ValueError
-    from bot.common import assert_exception
-    for func in [GameSeries.get_by, Game.get_by]:
-        for value in ['', '    ', ' ! ', None]:
-            try:
-                with assert_exception(ValueError):
-                    func(value)
-            except AssertionError:
-                print(f'Invalid test for {func} for {value!r}')
-                raise
-
     BaseModel.print_count_of_tables()
     # Author: 164, Author2Cover: 581, Cover: 567, Game: 451, GameSeries: 200, User: 0
     print()
