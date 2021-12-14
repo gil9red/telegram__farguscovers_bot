@@ -4,21 +4,29 @@
 __author__ = 'ipetrash'
 
 
-import time
 import datetime as DT
+import time
 
 from pathlib import Path
-from typing import Type, Optional
+from typing import Type, Optional, List, Iterable
 
 # pip install peewee
 from peewee import (
-    Model, TextField, ForeignKeyField, CharField, DateTimeField, IntegerField
+    Model, TextField, ForeignKeyField, CharField, DateTimeField, IntegerField, Field
 )
 from playhouse.sqliteq import SqliteQueueDatabase
 
-from config import DB_FILE_NAME, DIR_DATA_VK
+from config import DB_FILE_NAME, DIR_DATA_VK, ITEMS_PER_PAGE
 from bot.common import get_slug
 from third_party.shorten import shorten
+
+
+class NotDefinedParameterException(Exception):
+    def __init__(self, parameter_name: str):
+        self.parameter_name = parameter_name
+        text = f'Parameter "{self.parameter_name}" must be defined!'
+
+        super().__init__(text)
 
 
 # This working with multithreading
@@ -57,6 +65,25 @@ class BaseModel(Model):
         return cls.select().order_by(cls.id.desc()).first()
 
     @classmethod
+    def paginating(
+            cls,
+            page: int = 1,
+            paginate_by: int = ITEMS_PER_PAGE,
+            order_by: Field = None,
+            filters: Iterable = None,
+    ) -> List[Type['BaseModel']]:
+        query = cls.select()
+
+        if filters:
+            query = query.filter(*filters)
+
+        if order_by:
+            query = query.order_by(order_by)
+
+        query = query.paginate(page, paginate_by)
+        return list(query)
+
+    @classmethod
     def print_count_of_tables(cls):
         items = []
         for sub_cls in sorted(cls.__subclasses__(), key=lambda x: x.__name__):
@@ -91,15 +118,17 @@ class GameSeries(BaseModel):
 
     @classmethod
     def get_by_slug(cls, slug: str) -> Optional['GameSeries']:
+        slug = get_slug(slug)  # Защита от произвольных строк
+
         if not slug or not slug.strip():
-            raise ValueError('Parameter "slug" must be defined!')
+            raise NotDefinedParameterException(parameter_name='slug')
 
         return cls.get_or_none(slug=slug)
 
     @classmethod
     def get_by(cls, name: str) -> Optional['GameSeries']:
         if not name or not name.strip():
-            raise ValueError('Parameter "name" must be defined!')
+            raise NotDefinedParameterException(parameter_name='name')
 
         return cls.get_by_slug(slug=get_slug(name))
 
@@ -122,15 +151,17 @@ class Game(BaseModel):
 
     @classmethod
     def get_by_slug(cls, slug: str) -> Optional['Game']:
+        slug = get_slug(slug)  # Защита от произвольных строк
+
         if not slug or not slug.strip():
-            raise ValueError('Parameter "slug" must be defined!')
+            raise NotDefinedParameterException(parameter_name='slug')
 
         return cls.get_or_none(slug=slug)
 
     @classmethod
     def get_by(cls, name: str) -> Optional['Game']:
         if not name or not name.strip():
-            raise ValueError('Parameter "name" must be defined!')
+            raise NotDefinedParameterException(parameter_name='name')
 
         return cls.get_by_slug(slug=get_slug(name))
 
