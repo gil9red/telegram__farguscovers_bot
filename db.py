@@ -243,19 +243,20 @@ if __name__ == '__main__':
     print()
 
     author = Author.get_by_id(57847587)
-    print(author)
+    print(f'{author}, covers:')
     # TODO: добавить в Author метод для получения обложек
     # TODO: добавить в Cover метод для получения авторов
     # TODO: добавить пример вывода авторов из конкретной обложки
     for link in author.links_to_covers:
-        print(f'    Cover: {link.cover}')
-        print(f'    Game: {link.cover.game}')
-        print(f'    Series: {link.cover.game.series}')
-        print()
+        game = link.cover.game
+        game_series = game.series
+        game_series_title = game_series.name if game_series else "-"
+        print(
+            f'    Cover #{link.cover.id}, text: {link.cover.text!r}, '
+            f'game: {game.name!r}, game series: {game_series_title!r}'
+        )
 
     print()
 
     cover = Cover.get_by_id(1)
     print(cover)
-    print(type(cover.date_time), cover.date_time, cover.date_time.date())
-    print(cover.abs_file_name.exists(), cover.abs_file_name)
