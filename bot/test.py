@@ -29,18 +29,18 @@ def test_paginating(model: Type[BaseModel], order_by: Field = None, filters: Ite
     if not order_by:
         order_by = model.id
     
-    objs_full = model.paginating(page=1, paginate_by=paginate_by_full, order_by=order_by, filters=filters)
+    objs_full = model.paginating(page=1, items_per_page=paginate_by_full, order_by=order_by, filters=filters)
     assert len(objs_full) == paginate_by_full
 
-    objs_page1 = model.paginating(page=1, paginate_by=paginate_by_part, order_by=order_by, filters=filters)
+    objs_page1 = model.paginating(page=1, items_per_page=paginate_by_part, order_by=order_by, filters=filters)
     assert len(objs_page1) == paginate_by_part
     assert objs_full[:3] == objs_page1
 
-    objs_page2 = model.paginating(page=2, paginate_by=paginate_by_part, order_by=order_by, filters=filters)
+    objs_page2 = model.paginating(page=2, items_per_page=paginate_by_part, order_by=order_by, filters=filters)
     assert len(objs_page2) == paginate_by_part
     assert objs_full[3:6] == objs_page2
 
-    objs_page3 = model.paginating(page=3, paginate_by=paginate_by_part, order_by=order_by, filters=filters)
+    objs_page3 = model.paginating(page=3, items_per_page=paginate_by_part, order_by=order_by, filters=filters)
     assert len(objs_page3) == paginate_by_part
     assert objs_full[6:] == objs_page3
 

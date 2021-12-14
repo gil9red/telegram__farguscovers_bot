@@ -68,7 +68,7 @@ class BaseModel(Model):
     def paginating(
             cls,
             page: int = 1,
-            paginate_by: int = ITEMS_PER_PAGE,
+            items_per_page: int = ITEMS_PER_PAGE,
             order_by: Field = None,
             filters: Iterable = None,
     ) -> List[Type['BaseModel']]:
@@ -80,7 +80,7 @@ class BaseModel(Model):
         if order_by:
             query = query.order_by(order_by)
 
-        query = query.paginate(page, paginate_by)
+        query = query.paginate(page, items_per_page)
         return list(query)
 
     @classmethod
