@@ -87,3 +87,7 @@ if __name__ == '__main__':
     ]
     test_paginating(Cover, filters=filters)
     test_paginating(Cover, order_by=Cover.id.desc(), filters=filters)
+
+    cover = Cover.get_by_id(1)
+    assert cover.date_time
+    assert cover.abs_file_name.exists()
