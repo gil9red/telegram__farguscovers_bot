@@ -195,8 +195,10 @@ class Cover(BaseModel):
     def abs_file_name(self) -> Path:
         return DIR_DATA_VK / self.file_name
 
-    def get_authors(self) -> List['Author']:
-        return [link.author for link in self.links_to_authors]
+    def get_authors(self, reverse=False) -> List['Author']:
+        items = [link.author for link in self.links_to_authors]
+        items.sort(reverse=reverse, key=lambda x: x.id)
+        return items
 
 
 class Author(BaseModel):
@@ -206,8 +208,10 @@ class Author(BaseModel):
     def url(self) -> str:
         return f'https://vk.com/id{self.id}'
 
-    def get_covers(self) -> List[Cover]:
-        return [link.cover for link in self.links_to_covers]
+    def get_covers(self, reverse=False) -> List[Cover]:
+        items = [link.cover for link in self.links_to_covers]
+        items.sort(reverse=reverse, key=lambda x: x.id)
+        return items
 
 
 class Author2Cover(BaseModel):

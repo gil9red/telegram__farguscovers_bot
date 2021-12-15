@@ -91,3 +91,8 @@ if __name__ == '__main__':
     cover = Cover.get_by_id(1)
     assert cover.date_time
     assert cover.abs_file_name.exists()
+    assert cover.get_authors()
+    assert cover.get_authors()[0]
+    assert cover.get_authors()[0].get_covers()
+    assert cover.get_authors()[0].get_covers() == cover.get_authors()[0].get_covers(reverse=True)[::-1]
+    assert cover.get_authors()[0].get_covers()[::-1] == cover.get_authors()[0].get_covers(reverse=True)
