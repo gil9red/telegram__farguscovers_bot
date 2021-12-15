@@ -195,6 +195,9 @@ class Cover(BaseModel):
     def abs_file_name(self) -> Path:
         return DIR_DATA_VK / self.file_name
 
+    def get_authors(self) -> List['Author']:
+        return [link.author for link in self.links_to_authors]
+
 
 class Author(BaseModel):
     name = TextField()
@@ -202,6 +205,9 @@ class Author(BaseModel):
     @property
     def url(self) -> str:
         return f'https://vk.com/id{self.id}'
+
+    def get_covers(self) -> List[Cover]:
+        return [link.cover for link in self.links_to_covers]
 
 
 class Author2Cover(BaseModel):
@@ -244,19 +250,14 @@ if __name__ == '__main__':
 
     author = Author.get_by_id(57847587)
     print(f'{author}, covers:')
-    # TODO: добавить в Author метод для получения обложек
-    # TODO: добавить в Cover метод для получения авторов
-    # TODO: добавить пример вывода авторов из конкретной обложки
-    for link in author.links_to_covers:
-        game = link.cover.game
+    for cover in author.get_covers():
+        game = cover.game
         game_series = game.series
         game_series_title = game_series.name if game_series else "-"
-        print(
-            f'    Cover #{link.cover.id}, text: {link.cover.text!r}, '
-            f'game: {game.name!r}, game series: {game_series_title!r}'
-        )
+        print(f'    Cover #{cover.id}, text: {cover.text!r}, game: {game.name!r}, game series: {game_series_title!r}')
 
     print()
 
     cover = Cover.get_by_id(1)
     print(cover)
+    print(cover.get_authors())
