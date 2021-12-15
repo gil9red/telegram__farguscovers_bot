@@ -7,8 +7,11 @@ __author__ = 'ipetrash'
 import contextlib
 from typing import Type, Iterable
 
-from db import GameSeries, Game, Author, Cover, BaseModel, NotDefinedParameterException
 from peewee import Field
+
+from bot import regexp_patterns
+from db import GameSeries, Game, Author, Cover, BaseModel, NotDefinedParameterException
+from third_party.regexp import fill_string_pattern
 
 
 # SOURCE: https://stackoverflow.com/a/23780046/5909792
@@ -45,7 +48,29 @@ def test_paginating(model: Type[BaseModel], order_by: Field = None, filters: Ite
     assert objs_full[6:] == objs_page3
 
 
+def test_regexp_patterns(debug=False):
+    max_page = 999
+    max_id = 999_999_999_999
+    max_callback_data_size = 64
+
+    for name, value in vars(regexp_patterns).items():
+        if name.startswith('PATTERN_PAGE_'):
+            debug and print(f'{name} = {value}')
+
+            callback_data_value = fill_string_pattern(value, max_page, max_id)
+            size_callback_data = len(bytes(callback_data_value, "utf-8"))
+
+            debug and print(f'    Size {size_callback_data} of {callback_data_value!r}')
+
+            assert size_callback_data <= max_callback_data_size, \
+                f"Превышение размера callback_data для {name!r}. Размер: {size_callback_data}"
+
+            debug and print()
+
+
 if __name__ == '__main__':
+    test_regexp_patterns()
+
     # Проверка, что указанные методы при заданных значениях выбросят ValueError
     for func in [GameSeries.get_by, Game.get_by, GameSeries.get_by_slug, Game.get_by_slug]:
         for value in ['', '    ', ' ! ', None]:
