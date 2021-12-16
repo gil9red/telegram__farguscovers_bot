@@ -110,9 +110,7 @@ def test_get_by_page_of_cover():
     assert not _get_items(by_game=author_id, filters=[Cover.id == -1])  # Невыполнимое условие
 
 
-if __name__ == '__main__':
-    test_regexp_patterns()
-
+def test_get_by_on_exception():
     # Проверка, что указанные методы при заданных значениях выбросят ValueError
     for func in [GameSeries.get_by, Game.get_by, GameSeries.get_by_slug, Game.get_by_slug]:
         for value in ['', '    ', ' ! ', None]:
@@ -122,6 +120,42 @@ if __name__ == '__main__':
             except AssertionError:
                 print(f'Invalid test for {func} for {value!r}')
                 raise
+
+
+def test_game_get_by_on_valid():
+    game_by_name = Game.get_by('Max Payne 2: The Fall of Max Payne')
+    assert game_by_name
+
+    game_by_id = Game.get_by_id(game_by_name.id)
+    assert game_by_id
+
+    game_by_slug = Game.get_by_slug(game_by_name.slug)
+    assert game_by_slug
+
+    assert game_by_name == game_by_id
+    assert game_by_name == game_by_slug
+
+
+def test_game_series_get_by_on_valid():
+    game_series_by_name = GameSeries.get_by('Warhammer 40,000')
+    assert game_series_by_name
+
+    game_series_by_id = GameSeries.get_by_id(game_series_by_name.id)
+    assert game_series_by_id
+
+    game_series_by_slug = GameSeries.get_by_slug(game_series_by_name.slug)
+    assert game_series_by_slug
+
+    assert game_series_by_name == game_series_by_id
+    assert game_series_by_name == game_series_by_slug
+
+
+if __name__ == '__main__':
+    test_regexp_patterns()
+
+    test_get_by_on_exception()
+    test_game_series_get_by_on_valid()
+    test_game_get_by_on_valid()
 
     assert Cover.get_first() == Cover.get_by_id(1)
     assert Cover.get_first().id == Cover.get_by_id(1).id
