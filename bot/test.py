@@ -5,7 +5,7 @@ __author__ = 'ipetrash'
 
 
 import contextlib
-from typing import Type, Iterable
+from typing import Type, Iterable, List
 
 from peewee import Field
 
@@ -68,6 +68,48 @@ def test_regexp_patterns(debug=False):
             debug and print()
 
 
+def test_get_by_page_of_cover():
+    def _get_items(page: int = 1, **kwargs) -> List[Cover]:
+        items = []
+
+        while cover := Cover.get_by_page(page=page, **kwargs):
+            page += 1
+            items.append(cover)
+
+        return items
+
+    assert Cover.get_by_page(page=1) == Cover.get_first()
+
+    assert Cover.get_by_page(page=999999) is None
+    assert not Cover.get_by_page(page=999999)
+    items = _get_items(page=999999)
+    assert not items
+    assert len(items) == 0
+
+    author_id = 3917270
+    author = Author.get_by_id(author_id)
+    items = _get_items(by_author=author_id)
+    assert items
+    assert items == _get_items(by_author=author)
+    assert Cover.get_by_page(page=1, by_author=author_id) == author.get_covers()[0]
+    assert Cover.get_by_page(page=1, by_author=author) == author.get_covers()[0]
+    assert not _get_items(by_author=author_id, filters=[Cover.id == -1])  # Невыполнимое условие
+
+    game_series_id = 26
+    game_series = GameSeries.get_by_id(game_series_id)
+    items = _get_items(by_game_series=game_series_id)
+    assert items
+    assert items == _get_items(by_game_series=game_series)
+    assert not _get_items(by_game_series=author_id, filters=[Cover.id == -1])  # Невыполнимое условие
+
+    game_id = 32
+    game = GameSeries.get_by_id(game_id)
+    items = _get_items(by_game=game_id)
+    assert items
+    assert items == _get_items(by_game=game)
+    assert not _get_items(by_game=author_id, filters=[Cover.id == -1])  # Невыполнимое условие
+
+
 if __name__ == '__main__':
     test_regexp_patterns()
 
@@ -90,7 +132,7 @@ if __name__ == '__main__':
     filters = [Author.name.startswith('Макс')]
     test_paginating(Author, filters=filters)
     test_paginating(Author, order_by=Author.id.desc(), filters=filters)
-    
+
     test_paginating(GameSeries)
     filters = [GameSeries.name.startswith('A')]
     test_paginating(GameSeries, filters=filters)
@@ -121,3 +163,5 @@ if __name__ == '__main__':
     assert cover.get_authors()[0].get_covers()
     assert cover.get_authors()[0].get_covers() == cover.get_authors()[0].get_covers(reverse=True)[::-1]
     assert cover.get_authors()[0].get_covers()[::-1] == cover.get_authors()[0].get_covers(reverse=True)
+
+    test_get_by_page_of_cover()

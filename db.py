@@ -8,7 +8,7 @@ import datetime as DT
 import time
 
 from pathlib import Path
-from typing import Type, Optional, List, Iterable
+from typing import Type, Optional, List, Iterable, Union
 
 # pip install peewee
 from peewee import (
@@ -194,6 +194,49 @@ class Cover(BaseModel):
     @property
     def abs_file_name(self) -> Path:
         return DIR_DATA_VK / self.file_name
+
+    @classmethod
+    def get_by_page(
+            cls,
+            page: int = 1,
+            by_author: Union[int, 'Author'] = None,
+            by_game_series: Union[int, 'GameSeries'] = None,
+            by_game: Union[int, 'Game'] = None,
+            filters: Iterable = None,
+    ) -> Optional['Cover']:
+        total_filters = []
+
+        if by_author:
+            total_filters.append(
+                cls.id.in_(
+                    # Из Author2Cover вернем cover_id по заданному автору
+                    Author2Cover.select(Author2Cover.cover).where(Author2Cover.author == by_author)
+                )
+            )
+
+        if by_game_series:
+            total_filters.append(
+                cls.game.in_(
+                    # Из Game вернем id по заданной серии игр
+                    Game.select(Game.id).where(Game.series == by_game_series)
+                )
+            )
+
+        if by_game:
+            total_filters.append(
+                cls.game == by_game
+            )
+
+        if filters:
+            total_filters.extend(filters)
+
+        covers = cls.paginating(
+            page=page,
+            items_per_page=1,
+            order_by=cls.id,
+            filters=total_filters,
+        )
+        return covers[0] if covers else None
 
     def get_authors(self, reverse=False) -> List['Author']:
         items = [link.author for link in self.links_to_authors]
