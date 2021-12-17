@@ -80,9 +80,10 @@ def test_get_by_page_of_cover():
 
     assert Cover.get_by_page(page=1) == Cover.get_first()
 
-    assert Cover.get_by_page(page=999999) is None
-    assert not Cover.get_by_page(page=999999)
-    items = _get_items(page=999999)
+    non_existent_page_number = 999999
+    assert Cover.get_by_page(page=non_existent_page_number) is None
+    assert not Cover.get_by_page(page=non_existent_page_number)
+    items = _get_items(page=non_existent_page_number)
     assert not items
     assert len(items) == 0
 
