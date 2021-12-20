@@ -183,7 +183,7 @@ class Game(BaseModel):
 
 
 class Cover(BaseModel):
-    text = TextField()
+    text = TextField(null=False)
     file_name = TextField(unique=True)
     url_post = TextField()
     url_post_image = TextField()
