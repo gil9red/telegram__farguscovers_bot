@@ -30,7 +30,7 @@ def on_request(update: Update, context: CallbackContext):
 
     text = message.text
 
-    reply_message(text)
+    reply_message(text, update, context)
 
 
 def on_error(update: Update, context: CallbackContext):
