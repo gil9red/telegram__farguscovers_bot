@@ -49,3 +49,7 @@ DB_FILE_NAME = str(DB_DIR_NAME / 'database.sqlite')
 
 MAX_MESSAGE_LENGTH = 4096
 ITEMS_PER_PAGE = 10
+
+DEFAULT_AUTHOR_ID = 0
+DEFAULT_AUTHOR_NAME = 'Обложки "Фаргус"'
+DEFAULT_AUTHOR_URL = 'https://vk.com/farguscovers'

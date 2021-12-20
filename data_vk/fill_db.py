@@ -8,7 +8,7 @@ import datetime as DT
 import json
 from collections import defaultdict
 
-from config import FILE_NAME_DUMP
+from config import FILE_NAME_DUMP, DEFAULT_AUTHOR_NAME, DEFAULT_AUTHOR_URL, DEFAULT_AUTHOR_ID
 from db import Game, GameSeries, Author, Cover, Author2Cover, BaseModel
 
 
@@ -22,12 +22,14 @@ def append_to_db(dump: dict):
     authors = []
     for author_dump in dump['authors']:
         author_id = author_dump['id']
+        author_name = author_dump['name']
 
-        author = Author.get_or_none(id=author_id)
-        if not author:
-            author_name = author_dump['name']
-            author = Author.create(id=author_id, name=author_name)
+        author = Author.add(id=author_id, name=author_name)
+        authors.append(author)
 
+    # Пусть у каждой обложки будет автор, по умолчанию, это сама группа
+    if not authors:
+        author = Author.add(id=DEFAULT_AUTHOR_ID, name=DEFAULT_AUTHOR_NAME, url=DEFAULT_AUTHOR_URL)
         authors.append(author)
 
     cover_file_name = dump['photo_file_name']

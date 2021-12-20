@@ -246,10 +246,22 @@ class Cover(BaseModel):
 
 class Author(BaseModel):
     name = TextField()
+    url = TextField(unique=True)
 
-    @property
-    def url(self) -> str:
-        return f'https://vk.com/id{self.id}'
+    @classmethod
+    def add(cls, id: int, name: str, url: str = None) -> 'Author':
+        if not url:
+            url = f'https://vk.com/id{id}'
+
+        obj = cls.get_or_none(id=id)
+        if not obj:
+            obj = cls.create(
+                id=id,
+                name=name,
+                url=url,
+            )
+
+        return obj
 
     def get_covers(self, reverse=False) -> List[Cover]:
         items = [link.cover for link in self.links_to_covers]
