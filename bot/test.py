@@ -12,7 +12,7 @@ from peewee import Field
 
 from bot import regexp_patterns
 from config import DEFAULT_AUTHOR_ID
-from db import GameSeries, Game, Author, Cover, BaseModel, NotDefinedParameterException
+from bot.db import GameSeries, Game, Author, Cover, BaseModel, NotDefinedParameterException
 from third_party.regexp import fill_string_pattern
 
 

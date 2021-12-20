@@ -9,7 +9,7 @@ import json
 from collections import defaultdict
 
 from config import FILE_NAME_DUMP, DEFAULT_AUTHOR_NAME, DEFAULT_AUTHOR_URL, DEFAULT_AUTHOR_ID
-from db import Game, GameSeries, Author, Cover, Author2Cover, BaseModel
+from bot.db import Game, GameSeries, Author, Cover, Author2Cover, BaseModel
 
 
 def append_to_db(dump: dict):

@@ -10,7 +10,7 @@ from telegram.ext import (
 )
 
 from bot.common import log_func, process_error, log, reply_message
-from db import Cover
+from bot.db import Cover
 
 
 @log_func(log)
