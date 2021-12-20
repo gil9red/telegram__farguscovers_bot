@@ -84,9 +84,13 @@ class BaseModel(Model):
         return list(query)
 
     @classmethod
+    def get_inherited_models(cls) -> List[Type['BaseModel']]:
+        return sorted(cls.__subclasses__(), key=lambda x: x.__name__)
+
+    @classmethod
     def print_count_of_tables(cls):
         items = []
-        for sub_cls in sorted(cls.__subclasses__(), key=lambda x: x.__name__):
+        for sub_cls in cls.get_inherited_models():
             name = sub_cls.__name__
             count = sub_cls.select().count()
             items.append(f'{name}: {count}')
@@ -206,7 +210,7 @@ class Cover(BaseModel):
     ) -> Optional['Cover']:
         total_filters = []
 
-        if by_author:
+        if by_author is not None:
             total_filters.append(
                 cls.id.in_(
                     # Из Author2Cover вернем cover_id по заданному автору
@@ -214,7 +218,7 @@ class Cover(BaseModel):
                 )
             )
 
-        if by_game_series:
+        if by_game_series is not None:
             total_filters.append(
                 cls.game.in_(
                     # Из Game вернем id по заданной серии игр
@@ -222,7 +226,7 @@ class Cover(BaseModel):
                 )
             )
 
-        if by_game:
+        if by_game is not None:
             total_filters.append(
                 cls.game == by_game
             )
