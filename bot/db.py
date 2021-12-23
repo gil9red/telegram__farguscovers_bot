@@ -293,7 +293,7 @@ class User(BaseModel):
 
 
 db.connect()
-db.create_tables([GameSeries, Game, Cover, Author, Author2Cover, User])
+db.create_tables(BaseModel.get_inherited_models())
 
 # Задержка в 50мс, чтобы дать время на запуск SqliteQueueDatabase и создание таблиц
 # Т.к. в SqliteQueueDatabase запросы на чтение выполняются сразу, а на запись попадают в очередь
@@ -304,23 +304,33 @@ if __name__ == '__main__':
     # Author: 164, Author2Cover: 581, Cover: 567, Game: 451, GameSeries: 200, User: 0
     print()
 
-    print(f'First cover date: {Cover.get_first().date_time}')
-    print(f'Last cover date: {Cover.get_last().date_time}')
+    first = Cover.get_first()
+    last = Cover.get_last()
+    print(f'First cover date: {first.date_time if first else "-"}')
+    print(f'Last cover date: {last.date_time if last else "-"}')
     # First cover date: 2012-08-08 00:43:29
     # Last cover date: 2020-03-17 20:00:05
 
     print()
 
-    author = Author.get_by_id(57847587)
-    print(f'{author}, covers:')
-    for cover in author.get_covers():
-        game = cover.game
-        game_series = game.series
-        game_series_title = game_series.name if game_series else "-"
-        print(f'    Cover #{cover.id}, text: {cover.text!r}, game: {game.name!r}, game series: {game_series_title!r}')
+    try:
+        author = Author.get_by_id(57847587)
+        print(f'{author}, covers:')
+        for cover in author.get_covers():
+            game = cover.game
+            game_series = game.series
+            game_series_title = game_series.name if game_series else "-"
+            print(
+                f'    Cover #{cover.id}, text: {cover.text!r}, game: {game.name!r}, game series: {game_series_title!r}'
+            )
+    except Exception as e:
+        print(e)
 
     print()
 
-    cover = Cover.get_by_id(1)
-    print(cover)
-    print(cover.get_authors())
+    try:
+        cover = Cover.get_by_id(1)
+        print(cover)
+        print(cover.get_authors())
+    except Exception as e:
+        print(e)
