@@ -131,4 +131,5 @@ dmypy.json
 # For current project
 TOKEN.txt
 make_requirements.bat
+database/
 logs/
