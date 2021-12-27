@@ -101,7 +101,7 @@ def get_slug(text: Optional[str]) -> str:
     return re.sub(r'\W', '', text).lower()
 
 
-log = get_logger(__file__, DIR_LOGS / 'log.txt')
+log = get_logger(__file__, DIR_LOGS)
 
 
 if __name__ == '__main__':
