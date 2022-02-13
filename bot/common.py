@@ -4,7 +4,6 @@
 __author__ = 'ipetrash'
 
 
-import functools
 import logging
 import sys
 import re
@@ -44,47 +43,6 @@ def get_logger(file_name: str, dir_name='logs'):
     log.addHandler(ch)
 
     return log
-
-
-def log_func(log: logging.Logger):
-    def actual_decorator(func):
-        @functools.wraps(func)
-        def wrapper(update: Update, context: CallbackContext):
-            if update:
-                chat_id = user_id = first_name = last_name = username = language_code = None
-
-                if update.effective_chat:
-                    chat_id = update.effective_chat.id
-
-                if update.effective_user:
-                    user_id = update.effective_user.id
-                    first_name = update.effective_user.first_name
-                    last_name = update.effective_user.last_name
-                    username = update.effective_user.username
-                    language_code = update.effective_user.language_code
-
-                try:
-                    message = update.effective_message.text
-                except:
-                    message = ''
-
-                try:
-                    query_data = update.callback_query.data
-                except:
-                    query_data = ''
-
-                msg = f'[chat_id={chat_id}, user_id={user_id}, ' \
-                      f'first_name={first_name!r}, last_name={last_name!r}, ' \
-                      f'username={username!r}, language_code={language_code}, ' \
-                      f'message={message!r}, query_data={query_data!r}]'
-                msg = func.__name__ + msg
-
-                log.debug(msg)
-
-            return func(update, context)
-
-        return wrapper
-    return actual_decorator
 
 
 def process_error(log: logging.Logger, update: Update, context: CallbackContext):

@@ -344,6 +344,68 @@ class TgUser(BaseModel):
         query.execute()
 
 
+# SOURCE: https://core.telegram.org/bots/api#chat
+class TgChat(BaseModel):
+    type = TextField()
+    title = TextField(null=True)
+    username = TextField(null=True)
+    first_name = TextField(null=True)
+    last_name = TextField(null=True)
+    description = TextField(null=True)
+    last_activity = DateTimeField(default=DT.datetime.now)
+
+    @classmethod
+    def add(
+            cls,
+            id: int,
+            type: str = None,
+            title: str = None,
+            username: str = None,
+            first_name: str = None,
+            last_name: str = None,
+            description: str = None,
+    ) -> 'TgChat':
+        obj = cls.get_or_none(cls.id == id)
+        if not obj:
+            obj = cls.create(
+                id=id,
+                type=type,
+                title=title,
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+                description=description,
+            )
+
+        return obj
+
+    @classmethod
+    def get_from(cls, chat: Optional[telegram.Chat]) -> Optional['TgChat']:
+        if not chat:
+            return
+
+        return cls.add(
+            id=chat.id,
+            type=chat.type,
+            title=chat.title,
+            username=chat.username,
+            first_name=chat.first_name,
+            last_name=chat.last_name,
+            description=chat.description
+        )
+
+    def actualize(self, chat: Optional[telegram.Chat]):
+        self.type = chat.type
+        self.title = chat.title
+        self.username = chat.username
+        self.first_name = chat.first_name
+        self.last_name = chat.last_name
+        self.description = chat.description
+        self.last_activity = DT.datetime.now()
+
+        self.save()
+
+
 db.connect()
 db.create_tables(BaseModel.get_inherited_models())
 

@@ -9,11 +9,13 @@ from telegram.ext import (
     Dispatcher, CallbackContext, MessageHandler, CommandHandler, Filters
 )
 
-from bot.common import log_func, process_error, log, reply_message
+from bot.common import process_error, log, reply_message
+from bot.decorators import log_func, process_request
 from bot.db import Cover
 
 
 @log_func(log)
+@process_request(log)
 def on_start(update: Update, context: CallbackContext):
     text = (
         'Бот для отображения обложек группы ВК https://vk.com/farguscovers\n\n'
@@ -25,6 +27,7 @@ def on_start(update: Update, context: CallbackContext):
 
 
 @log_func(log)
+@process_request(log)
 def on_request(update: Update, context: CallbackContext):
     message = update.effective_message
 
