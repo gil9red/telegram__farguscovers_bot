@@ -353,6 +353,7 @@ class TgChat(BaseModel):
     last_name = TextField(null=True)
     description = TextField(null=True)
     last_activity = DateTimeField(default=DT.datetime.now)
+    number_requests = IntegerField(default=0)
 
     @classmethod
     def add(
@@ -394,7 +395,7 @@ class TgChat(BaseModel):
             description=chat.description
         )
 
-    def actualize(self, chat: Optional[telegram.Chat]):
+    def actualize(self, chat: Optional[telegram.Chat], inc_number_requests=True):
         self.type = chat.type
         self.title = chat.title
         self.username = chat.username
@@ -404,6 +405,14 @@ class TgChat(BaseModel):
         self.last_activity = DT.datetime.now()
 
         self.save()
+
+        if inc_number_requests:
+            self.inc_number_requests()
+
+    def inc_number_requests(self):
+        cls = type(self)
+        query = self.update(number_requests=cls.number_requests + 1).where(cls.id == self.id)
+        query.execute()
 
 
 db.connect()
