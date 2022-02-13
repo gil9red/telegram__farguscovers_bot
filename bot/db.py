@@ -15,6 +15,7 @@ from peewee import (
     Model, TextField, ForeignKeyField, CharField, DateTimeField, IntegerField, Field
 )
 from playhouse.sqliteq import SqliteQueueDatabase
+import telegram
 
 from config import DB_FILE_NAME, DIR_DATA_VK, ITEMS_PER_PAGE
 from bot.common import get_slug
@@ -290,6 +291,54 @@ class TgUser(BaseModel):
     language_code = TextField(null=True)
     last_activity = DateTimeField(default=DT.datetime.now)
     number_requests = IntegerField(default=0)
+
+    @classmethod
+    def add(
+            cls,
+            id: int,
+            first_name: str,
+            last_name: str = None,
+            username: str = None,
+            language_code: str = None,
+    ) -> 'TgUser':
+        obj = cls.get_or_none(cls.id == id)
+        if not obj:
+            obj = cls.create(
+                id=id,
+                first_name=first_name,
+                last_name=last_name,
+                username=username,
+                language_code=language_code,
+            )
+
+        return obj
+
+    @classmethod
+    def get_from(cls, user: Optional[telegram.User]) -> Optional['TgUser']:
+        if not user:
+            return
+
+        return cls.add(
+            id=user.id,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            username=user.username,
+            language_code=user.language_code,
+        )
+
+    def actualize(self, user: Optional[telegram.User]):
+        self.first_name = user.first_name
+        self.last_name = user.last_name
+        self.username = user.username
+        self.language_code = user.language_code
+        self.last_activity = DT.datetime.now()
+
+        self.save()
+
+    def inc_number_requests(self):
+        cls = type(self)
+        query = self.update(number_requests=cls.number_requests + 1).where(cls.id == self.id)
+        query.execute()
 
 
 db.connect()
