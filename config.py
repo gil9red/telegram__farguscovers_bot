@@ -47,6 +47,10 @@ DB_DIR_NAME.mkdir(parents=True, exist_ok=True)
 # Путь к файлу базы данных
 DB_FILE_NAME = str(DB_DIR_NAME / 'database.sqlite')
 
+USER_NAME_ADMINS = [
+    '@ilya_petrash',
+]
+
 MAX_MESSAGE_LENGTH = 4096
 ITEMS_PER_PAGE = 10
 

@@ -12,11 +12,14 @@ from pathlib import Path
 from typing import Optional
 
 from telegram import Update
-from telegram.ext import CallbackContext
+from telegram.ext import CallbackContext, Filters
 
 import config
-from config import DIR_LOGS
+from config import DIR_LOGS, USER_NAME_ADMINS
 from third_party.reply_message import reply_message, SeverityEnum
+
+
+FILTER_BY_ADMIN = Filters.user(username=USER_NAME_ADMINS)
 
 
 def get_logger(file_name: str, dir_name='logs'):
@@ -59,7 +62,7 @@ def get_slug(text: Optional[str]) -> str:
     return re.sub(r'\W', '', text).lower()
 
 
-log = get_logger(__file__, DIR_LOGS)
+log = get_logger('main', DIR_LOGS)
 
 
 if __name__ == '__main__':
