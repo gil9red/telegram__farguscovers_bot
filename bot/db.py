@@ -326,7 +326,7 @@ class TgUser(BaseModel):
             language_code=user.language_code,
         )
 
-    def actualize(self, user: Optional[telegram.User]):
+    def actualize(self, user: Optional[telegram.User], inc_number_requests=True):
         self.first_name = user.first_name
         self.last_name = user.last_name
         self.username = user.username
@@ -334,6 +334,9 @@ class TgUser(BaseModel):
         self.last_activity = DT.datetime.now()
 
         self.save()
+
+        if inc_number_requests:
+            self.inc_number_requests()
 
     def inc_number_requests(self):
         cls = type(self)
