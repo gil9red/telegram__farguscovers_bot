@@ -283,7 +283,7 @@ class Author2Cover(BaseModel):
         )
 
 
-class User(BaseModel):
+class TgUser(BaseModel):
     first_name = TextField()
     last_name = TextField(null=True)
     username = TextField(null=True)
@@ -301,7 +301,7 @@ time.sleep(0.050)
 
 if __name__ == '__main__':
     BaseModel.print_count_of_tables()
-    # Author: 164, Author2Cover: 581, Cover: 567, Game: 451, GameSeries: 200, User: 0
+    # Author: 164, Author2Cover: 581, Cover: 567, Game: 451, GameSeries: 200, TelegramUser: 0
     print()
 
     first = Cover.get_first()
