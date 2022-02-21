@@ -6,14 +6,20 @@ __author__ = 'ipetrash'
 
 import time
 
-from telegram import Update
+import telegram
+from telegram import Update, InputMediaPhoto
 from telegram.ext import (
-    Dispatcher, CallbackContext, MessageHandler, CommandHandler, Filters
+    Dispatcher, CallbackContext, MessageHandler, CommandHandler, Filters, CallbackQueryHandler
 )
 
-from bot.common import process_error, log, reply_message, FILTER_BY_ADMIN
+# pip install python-telegram-bot-pagination
+from telegram_bot_pagination import InlineKeyboardPaginator
+
+from bot.common import process_error, log, reply_message, FILTER_BY_ADMIN, is_equal_inline_keyboards
 from bot.decorators import log_func, process_request
 from bot.db import Cover
+from bot.regexp_patterns import PATTERN_PAGE_COVER
+from third_party.regexp import fill_string_pattern
 
 
 @log_func(log)
@@ -30,12 +36,57 @@ def on_start(update: Update, context: CallbackContext):
 
 @log_func(log)
 @process_request(log)
-def on_request(update: Update, context: CallbackContext):
+def on_cover(update: Update, context: CallbackContext):
     message = update.effective_message
 
-    text = message.text
+    query = update.callback_query
+    if query:
+        query.answer()
 
-    reply_message(text, update, context)
+    total_covers = Cover.select().count()
+
+    if context.match:
+        page = int(context.match.group(1))
+    else:
+        page = 1
+
+    cover = Cover.get_by_page(page=page)
+    title = cover.text + "\n" + cover.game.name
+
+    paginator = InlineKeyboardPaginator(
+        page_count=total_covers,
+        current_page=page,
+        data_pattern=fill_string_pattern(PATTERN_PAGE_COVER, '{page}')
+    )
+
+    reply_markup = paginator.markup
+
+    if not query:
+        message.reply_photo(
+            photo=cover.server_file_id,
+            caption=title,
+            reply_markup=paginator.markup,
+            quote=True,
+        )
+        return
+
+    # Fix error: "telegram.error.BadRequest: Message is not modified"
+    if is_equal_inline_keyboards(reply_markup, query.message.reply_markup):
+        return
+
+    try:
+        message.edit_media(
+            media=InputMediaPhoto(
+                media=cover.server_file_id,
+                caption=title,
+            ),
+            reply_markup=reply_markup,
+        )
+    except telegram.error.BadRequest as e:
+        if 'Message is not modified' in str(e):
+            return
+
+        raise e
 
 
 @log_func(log)
@@ -96,6 +147,9 @@ def setup(dp: Dispatcher):
         CommandHandler('fill_server_file_id', on_fill_server_file_id, FILTER_BY_ADMIN)
     )
 
-    dp.add_handler(MessageHandler(Filters.text, on_request))
+    dp.add_handler(
+        CallbackQueryHandler(on_cover, pattern=PATTERN_PAGE_COVER)
+    )
+    dp.add_handler(MessageHandler(Filters.text, on_cover))
 
     dp.add_error_handler(on_error)
