@@ -7,7 +7,7 @@ __author__ = 'ipetrash'
 import time
 
 import telegram
-from telegram import Update, InputMediaPhoto
+from telegram import Update, InputMediaPhoto, InlineKeyboardButton
 from telegram.ext import (
     Dispatcher, CallbackContext, MessageHandler, CommandHandler, Filters, CallbackQueryHandler
 )
@@ -20,6 +20,12 @@ from bot.decorators import log_func, process_request
 from bot.db import Cover
 from bot.regexp_patterns import PATTERN_PAGE_COVER
 from third_party.regexp import fill_string_pattern
+
+
+def calc_pages(page: int, start_page: int, max_page: int) -> tuple[int, int]:
+    prev_page = max_page if page <= start_page else page - 1
+    next_page = start_page if page >= max_page else page + 1
+    return prev_page, next_page
 
 
 @log_func(log)
@@ -50,6 +56,8 @@ def on_cover(update: Update, context: CallbackContext):
     else:
         page = 1
 
+    prev_page, next_page = calc_pages(page=page, start_page=1, max_page=total_covers)
+
     cover = Cover.get_by_page(page=page)
     title = cover.text + "\n" + cover.game.name
 
@@ -57,6 +65,10 @@ def on_cover(update: Update, context: CallbackContext):
         page_count=total_covers,
         current_page=page,
         data_pattern=fill_string_pattern(PATTERN_PAGE_COVER, '{page}')
+    )
+    paginator.add_after(
+        InlineKeyboardButton(text='⬅️', callback_data=fill_string_pattern(PATTERN_PAGE_COVER, prev_page)),
+        InlineKeyboardButton(text='➡️', callback_data=fill_string_pattern(PATTERN_PAGE_COVER, next_page)),
     )
 
     reply_markup = paginator.markup
