@@ -4,10 +4,11 @@
 __author__ = 'ipetrash'
 
 
+import html
 import time
 
 import telegram
-from telegram import Update, InputMediaPhoto, InlineKeyboardButton
+from telegram import Update, InputMediaPhoto, InlineKeyboardButton, ParseMode
 from telegram.ext import (
     Dispatcher, CallbackContext, MessageHandler, CommandHandler, Filters, CallbackQueryHandler
 )
@@ -59,7 +60,10 @@ def on_cover(update: Update, context: CallbackContext):
     prev_page, next_page = calc_pages(page=page, start_page=1, max_page=total_covers)
 
     cover = Cover.get_by_page(page=page)
-    title = cover.text + "\n" + cover.game.name
+    cover_text = html.escape(cover.text)
+    game_name = html.escape(cover.game.name)
+    url = f'<a href="{cover.url_post_image}">{cover_text}</a>'
+    title = url + "\n" + game_name
 
     paginator = InlineKeyboardPaginator(
         page_count=total_covers,
@@ -77,6 +81,7 @@ def on_cover(update: Update, context: CallbackContext):
         message.reply_photo(
             photo=cover.server_file_id,
             caption=title,
+            parse_mode=ParseMode.HTML,
             reply_markup=paginator.markup,
             quote=True,
         )
@@ -91,6 +96,7 @@ def on_cover(update: Update, context: CallbackContext):
             media=InputMediaPhoto(
                 media=cover.server_file_id,
                 caption=title,
+                parse_mode=ParseMode.HTML,
             ),
             reply_markup=reply_markup,
         )
