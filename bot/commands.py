@@ -33,7 +33,7 @@ def calc_pages(page: int, start_page: int, max_page: int) -> tuple[int, int]:
 @process_request(log)
 def on_start(update: Update, context: CallbackContext):
     text = (
-        'Бот для отображения обложек группы ВК https://vk.com/farguscovers\n\n'
+        'Бот для отображения обложек с стены группы ВК https://vk.com/farguscovers\n\n'
         f'Всего {Cover.select().count()} обложек за период '
         f'{Cover.get_first().date_time.year}-{Cover.get_last().date_time.year}'
     )
