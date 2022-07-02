@@ -98,6 +98,10 @@ class BaseModel(Model):
 
         print(', '.join(items))
 
+    @classmethod
+    def count(cls) -> int:
+        return cls.select().count()
+
     def __str__(self):
         fields = []
         for k, field in self._meta.fields.items():
