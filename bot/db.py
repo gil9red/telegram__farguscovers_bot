@@ -152,6 +152,9 @@ class GameSeries(BaseModel):
 
         return obj
 
+    def get_number_of_covers(self) -> int:
+        return Cover.count_by(by_game_series=self)
+
 
 class Game(BaseModel):
     name = TextField()
@@ -190,6 +193,9 @@ class Game(BaseModel):
     def series_name(self) -> str:
         return self.series.name if self.series else ""
 
+    def get_number_of_covers(self) -> int:
+        return Cover.count_by(by_game=self)
+
 
 class Cover(BaseModel):
     text = TextField(null=False)
@@ -205,14 +211,13 @@ class Cover(BaseModel):
         return DIR_DATA_VK / self.file_name
 
     @classmethod
-    def get_by_page(
+    def get_filters(
             cls,
-            page: int = 1,
             by_author: Union[int, 'Author'] = None,
             by_game_series: Union[int, 'GameSeries'] = None,
             by_game: Union[int, 'Game'] = None,
             filters: Iterable = None,
-    ) -> Optional['Cover']:
+    ) -> List:
         total_filters = []
 
         if by_author is not None:
@@ -238,6 +243,40 @@ class Cover(BaseModel):
 
         if filters:
             total_filters.extend(filters)
+
+        return total_filters
+
+    @classmethod
+    def count_by(
+            cls,
+            by_author: Union[int, 'Author'] = None,
+            by_game_series: Union[int, 'GameSeries'] = None,
+            by_game: Union[int, 'Game'] = None,
+            filters: Iterable = None,
+    ) -> int:
+        total_filters = cls.get_filters(
+            by_author=by_author,
+            by_game_series=by_game_series,
+            by_game=by_game,
+            filters=filters,
+        )
+        return cls.select().filter(*total_filters).count()
+
+    @classmethod
+    def get_by_page(
+            cls,
+            page: int = 1,
+            by_author: Union[int, 'Author'] = None,
+            by_game_series: Union[int, 'GameSeries'] = None,
+            by_game: Union[int, 'Game'] = None,
+            filters: Iterable = None,
+    ) -> Optional['Cover']:
+        total_filters = cls.get_filters(
+            by_author=by_author,
+            by_game_series=by_game_series,
+            by_game=by_game,
+            filters=filters,
+        )
 
         covers = cls.paginating(
             page=page,
@@ -276,6 +315,9 @@ class Author(BaseModel):
         items = [link.cover for link in self.links_to_covers]
         items.sort(reverse=reverse, key=lambda x: x.id)
         return items
+
+    def get_number_of_covers(self) -> int:
+        return Cover.count_by(by_author=self)
 
 
 class Author2Cover(BaseModel):
@@ -461,3 +503,6 @@ if __name__ == '__main__':
         print(cover.get_authors())
     except Exception as e:
         print(e)
+
+    print()
+    print(Cover.count_by(by_author=57847587, by_game_series=GameSeries.get_by('Mafia'), by_game=Game.get_by('Mafia 2')))
