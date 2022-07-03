@@ -5,6 +5,7 @@ __author__ = 'ipetrash'
 
 
 import datetime as DT
+import re
 import unittest
 from typing import Type, Iterable, List
 
@@ -25,20 +26,36 @@ class TestRegexpPatterns(unittest.TestCase):
         max_id = 999_999_999_999
         max_callback_data_size = 64
 
-        for name, value in vars(regexp_patterns).items():
-            if name.startswith('PATTERN_PAGE_'):
-                DEBUG and print(f'{name} = {value}')
+        for name, pattern in vars(regexp_patterns).items():
+            if not isinstance(pattern, re.Pattern):
+                continue
 
-                callback_data_value = fill_string_pattern(value, max_page, max_id)
-                size_callback_data = len(bytes(callback_data_value, "utf-8"))
-                DEBUG and print(f'    Size {size_callback_data} of {callback_data_value!r}\n')
+            DEBUG and print(f'{name} = {pattern}')
 
-                # Индивидуальная проверка переменных
-                with self.subTest(name=name, value=value, max_page=max_page, max_id=max_id):
-                    self.assertTrue(
-                        size_callback_data <= max_callback_data_size,
-                        f"Превышение размера callback_data для {name!r}. Размер: {size_callback_data}"
-                    )
+            if name == 'PATTERN_START_ARGUMENT':
+                model_name = max([m.__name__ for m in BaseModel.get_inherited_models()], key=len)
+                callback_data_value = fill_string_pattern(pattern, model_name, max_id, max_id)
+
+            elif name.startswith('PATTERN_PAGE_COVER'):
+                callback_data_value = fill_string_pattern(
+                    pattern,
+                    max_page,
+                    Author.get_last().id,
+                    GameSeries.get_last().id,
+                    Game.get_last().id,
+                )
+            else:
+                callback_data_value = fill_string_pattern(pattern, max_page)
+
+            size_callback_data = len(bytes(callback_data_value, "utf-8"))
+            DEBUG and print(f'    Size {size_callback_data} of {callback_data_value!r}\n')
+
+            # Индивидуальная проверка переменных
+            with self.subTest(name=name, pattern=pattern, max_page=max_page, max_id=max_id):
+                self.assertTrue(
+                    size_callback_data <= max_callback_data_size,
+                    f"Превышение размера callback_data для {name!r}. Размер: {size_callback_data}"
+                )
 
 
 class TestDb(unittest.TestCase):

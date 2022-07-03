@@ -4,15 +4,14 @@
 __author__ = 'ipetrash'
 
 
-import json
 import logging
 import sys
 import re
 
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
-from telegram import Update, InlineKeyboardMarkup
+from telegram import Update
 from telegram.ext import CallbackContext, Filters
 
 import config
@@ -23,19 +22,8 @@ from third_party.reply_message import reply_message, SeverityEnum
 FILTER_BY_ADMIN = Filters.user(username=USER_NAME_ADMINS)
 
 
-def is_equal_inline_keyboards(
-        keyboard_1: Union[InlineKeyboardMarkup, str],
-        keyboard_2: InlineKeyboardMarkup
-) -> bool:
-    if isinstance(keyboard_1, InlineKeyboardMarkup):
-        keyboard_1_inline_keyboard = keyboard_1.to_dict()['inline_keyboard']
-    elif isinstance(keyboard_1, str):
-        keyboard_1_inline_keyboard = json.loads(keyboard_1)['inline_keyboard']
-    else:
-        raise Exception(f'Unsupported format (keyboard_1={type(keyboard_1)})!')
-
-    keyboard_2_inline_keyboard = keyboard_2.to_dict()['inline_keyboard']
-    return keyboard_1_inline_keyboard == keyboard_2_inline_keyboard
+def get_deep_linking(argument, context: CallbackContext) -> str:
+    return f'{context.bot.link}?start={argument}'
 
 
 def get_logger(file_name: str, dir_name='logs'):

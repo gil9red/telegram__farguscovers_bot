@@ -142,10 +142,11 @@ class GameSeries(BaseModel):
         return cls.get_by_slug(slug=get_slug(name))
 
     @classmethod
-    def add(cls, name: str) -> 'GameSeries':
+    def add(cls, name: str, id: int = None) -> 'GameSeries':
         obj = cls.get_by(name)
         if not obj:
             obj = cls.create(
+                id=id,
                 name=name,
                 slug=get_slug(name),
             )
@@ -154,6 +155,10 @@ class GameSeries(BaseModel):
 
     def get_number_of_covers(self) -> int:
         return Cover.count_by(by_game_series=self)
+
+    @classmethod
+    def get_unknown(cls) -> 'GameSeries':
+        return cls.add(name='<Без серии>', id=0)
 
 
 class Game(BaseModel):
@@ -487,10 +492,8 @@ if __name__ == '__main__':
         print(f'{author}, covers:')
         for cover in author.get_covers():
             game = cover.game
-            game_series = game.series
-            game_series_title = game_series.name if game_series else "-"
             print(
-                f'    Cover #{cover.id}, text: {cover.text!r}, game: {game.name!r}, game series: {game_series_title!r}'
+                f'    Cover #{cover.id}, text: {cover.text!r}, game: {game.name!r}, game series: {game.series.name!r}'
             )
     except Exception as e:
         print(e)
@@ -506,3 +509,6 @@ if __name__ == '__main__':
 
     print()
     print(Cover.count_by(by_author=57847587, by_game_series=GameSeries.get_by('Mafia'), by_game=Game.get_by('Mafia 2')))
+
+    print()
+    print(Game.select().where(Game.series.is_null()).count())

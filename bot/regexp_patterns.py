@@ -8,32 +8,19 @@ import re
 
 
 # Пагинация обложек
-PATTERN_PAGE_COVER = re.compile(r'^cover#(\d+)$')
+PATTERN_PAGE_COVER = re.compile(r'^page of cover#(\d+) a#(.+) gs#(.+) g#(.+)$')
 
-# Пагинация обложек по игре
-PATTERN_PAGE_COVER_BY_GAME = re.compile(r'^cover#(\d+)_by_game_id=(\d+)$')
+PATTERN_PAGE_COVER_AS_NEW_MSG = re.compile(r'^page as new msg of cover#(\d+) a#(.+) gs#(.+) g#(.+)$')
 
-# Пагинация обложек по серии игр
-PATTERN_PAGE_COVER_BY_GAME_SERIES = re.compile(r'^cover#(\d+)_by_game_series_id=(\d+)$')
+PATTERN_REPLY_ALL_COVERS = re.compile(r'^Все обложки$', flags=re.IGNORECASE)
 
-# Пагинация обложек по автору
-PATTERN_PAGE_COVER_BY_AUTHOR = re.compile(r'^cover#(\d+)_by_author_id=(\d+)$')
+PATTERN_REPLY_ALL_AUTHORS = re.compile(r'^Авторы$', flags=re.IGNORECASE)
+PATTERN_PAGE_AUTHORS = re.compile(r'^page of authors#(\d+)$')
 
-# NOTE: Пока не используется:
-# # Пагинация авторов с сортировкой по названию. Сортировка по возрастанию
-# PATTERN_PAGE_AUTHORS_BY_NAME = re.compile(r'^authors#(\d+)_by_name__asc$')
-#
-# # Пагинация авторов с сортировкой по количеству обложек. Сортировка по убыванию
-# PATTERN_PAGE_AUTHORS_BY_COVERS = re.compile(r'^authors#(\d+)_by_covers__desc$')
-#
-# # Пагинация игр с сортировкой по названию. Сортировка по возрастанию
-# PATTERN_PAGE_GAMES_BY_NAME = re.compile(r'^games#(\d+)_by_name__asc$')
-#
-# # Пагинация игр с сортировкой по количеству обложек. Сортировка по убыванию
-# PATTERN_PAGE_GAMES_BY_COVERS = re.compile(r'^games#(\d+)_by_covers__desc$')
-#
-# # Пагинация серий игр с сортировкой по названию. Сортировка по возрастанию
-# PATTERN_PAGE_GAME_SERIES_BY_NAME = re.compile(r'^game_series#(\d+)_by_name__asc$')
-#
-# # Пагинация серий игр с сортировкой по количеству обложек. Сортировка по убыванию
-# PATTERN_PAGE_GAME_SERIES_BY_COVERS = re.compile(r'^game_series#(\d+)_by_covers__desc$')
+PATTERN_REPLY_ALL_GAME_SERIES = re.compile(r'^Серии игр$', flags=re.IGNORECASE)
+PATTERN_PAGE_GAME_SERIES = re.compile(r'^page of game series#(\d+)$')
+
+PATTERN_REPLY_ALL_GAMES = re.compile(r'^Игры$', flags=re.IGNORECASE)
+PATTERN_PAGE_GAMES = re.compile(r'^page of games #(\d+)$')
+
+PATTERN_START_ARGUMENT = re.compile(r'^(?P<class_name>\w+)_(?P<object_id>\d+)_(?P<message_id>\d+)$')

@@ -5,10 +5,14 @@ __author__ = 'ipetrash'
 
 
 import html
+import re
 import time
+from typing import Union
 
-import telegram
-from telegram import Update, InputMediaPhoto, InlineKeyboardButton, ParseMode
+from telegram import (
+    Update, InputMediaPhoto, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, ReplyKeyboardMarkup
+)
+from telegram.error import BadRequest
 from telegram.ext import (
     Dispatcher, CallbackContext, MessageHandler, CommandHandler, Filters, CallbackQueryHandler
 )
@@ -16,11 +20,12 @@ from telegram.ext import (
 # pip install python-telegram-bot-pagination
 from telegram_bot_pagination import InlineKeyboardPaginator
 
-from bot.common import process_error, log, reply_message, FILTER_BY_ADMIN, is_equal_inline_keyboards
+from bot.common import process_error, log, reply_message, FILTER_BY_ADMIN, SeverityEnum, get_deep_linking
 from bot.decorators import log_func, process_request
-from bot.db import Cover
-from bot.regexp_patterns import PATTERN_PAGE_COVER
+from bot.db import Cover, Author, GameSeries, Game, ITEMS_PER_PAGE
+from bot import regexp_patterns as P
 from third_party.regexp import fill_string_pattern
+from third_party.reply_message import reply_text_or_edit_with_keyboard_paginator, is_equal_inline_keyboards
 
 
 def calc_pages(page: int, start_page: int, max_page: int) -> tuple[int, int]:
@@ -29,58 +34,265 @@ def calc_pages(page: int, start_page: int, max_page: int) -> tuple[int, int]:
     return prev_page, next_page
 
 
+def get_reply_keyboard() -> ReplyKeyboardMarkup:
+    commands = [
+        [fill_string_pattern(P.PATTERN_REPLY_ALL_COVERS)],
+        [
+            fill_string_pattern(P.PATTERN_REPLY_ALL_AUTHORS),
+            fill_string_pattern(P.PATTERN_REPLY_ALL_GAME_SERIES),
+            fill_string_pattern(P.PATTERN_REPLY_ALL_GAMES)
+        ],
+    ]
+    return ReplyKeyboardMarkup(commands, resize_keyboard=True)
+
+
+def get_html_url(url: str, title: str) -> str:
+    return f'<a href="{url}">{title}</a>'
+
+
+def get_deep_linking_html_url(
+        update: Update,
+        context: CallbackContext,
+        title: str,
+        obj: Union[Author, GameSeries, Game],
+) -> str:
+    message = update.effective_message
+
+    start_argument = fill_string_pattern(
+        P.PATTERN_START_ARGUMENT,
+        obj.__class__.__name__,
+        obj.id,
+        message.message_id
+    )
+    url = get_deep_linking(start_argument, context)
+    return get_html_url(url, title)
+
+
 @log_func(log)
 @process_request(log)
 def on_start(update: Update, context: CallbackContext):
+    # При открытии ссылки (deep linking)
+    # https://t.me/<bot_name>?start=<start_argument>
+    if context.args:
+        start_argument = context.args[0]
+
+        m = P.PATTERN_START_ARGUMENT.match(start_argument)
+        data = m.groupdict()
+        class_name = data['class_name']
+        object_id = int(data['object_id'])
+        message_id = int(data['message_id'])
+
+        match class_name:
+            case Author.__name__:
+                reply_author(update, context, author_id=object_id, reply_to_message_id=message_id)
+
+            case GameSeries.__name__:
+                reply_game_series(update, context, game_series_id=object_id, reply_to_message_id=message_id)
+
+            case Game.__name__:
+                reply_game(update, context, game_id=object_id, reply_to_message_id=message_id)
+
+            case _:
+                raise Exception(f'Неподдерживаемый тип {class_name!r}')
+
+        # Удаление сообщения с /start, что останется после клика на ссылку
+        update.effective_message.delete()
+
+        return
+
     text = (
         'Бот для отображения обложек с стены группы ВК https://vk.com/farguscovers\n\n'
         f'Всего {Cover.select().count()} обложек за период '
         f'{Cover.get_first().date_time.year}-{Cover.get_last().date_time.year}'
     )
 
-    reply_message(text, update, context)
+    reply_message(
+        text,
+        update, context,
+        reply_markup=get_reply_keyboard(),
+    )
 
 
-@log_func(log)
-@process_request(log)
-def on_cover(update: Update, context: CallbackContext):
+def reply_author(update: Update, context: CallbackContext, author_id: int, reply_to_message_id: int = None):
+    author = Author.get_by_id(author_id)
+    # TODO: Больше инфы, статистику, ссылку на профиль и т.д.
+    text = author.name
+
+    # TODO: Нужно вывести кнопки с вариантами все обложки, серии и игры
+    markup = InlineKeyboardMarkup.from_row([
+        InlineKeyboardButton(
+            text='Все обложки',
+            callback_data=fill_string_pattern(P.PATTERN_PAGE_COVER_AS_NEW_MSG, 1, author_id, None, None)
+        ),
+    ])
+
+    reply_message(
+        text,
+        update, context,
+        reply_markup=markup,
+        reply_to_message_id=reply_to_message_id,
+    )
+
+
+def reply_game_series(update: Update, context: CallbackContext, game_series_id: int, reply_to_message_id: int = None):
+    game_series = GameSeries.get_by_id(game_series_id)
+    # TODO: Больше инфы, статистику, ссылку на профиль и т.д.
+    text = game_series.name
+
+    # TODO: Нужно вывести кнопки с вариантами все обложки, серии и игры
+    markup = InlineKeyboardMarkup.from_row([
+        InlineKeyboardButton(
+            text='Все обложки',
+            callback_data=fill_string_pattern(P.PATTERN_PAGE_COVER_AS_NEW_MSG, 1, None, game_series_id, None)
+        ),
+    ])
+
+    reply_message(
+        text,
+        update, context,
+        reply_markup=markup,
+        reply_to_message_id=reply_to_message_id,
+    )
+
+
+def reply_game(update: Update, context: CallbackContext, game_id: int, reply_to_message_id: int = None):
+    game = Game.get_by_id(game_id)
+    # TODO: Больше инфы, статистику, ссылку на профиль и т.д.
+    text = game.name
+
+    # TODO: Нужно вывести кнопки с вариантами все обложки, серии и игры
+    markup = InlineKeyboardMarkup.from_row([
+        InlineKeyboardButton(
+            text='Все обложки',
+            callback_data=fill_string_pattern(P.PATTERN_PAGE_COVER_AS_NEW_MSG, 1, None, None, game_id)
+        ),
+    ])
+
+    reply_message(
+        text,
+        update, context,
+        reply_markup=markup,
+        reply_to_message_id=reply_to_message_id,
+    )
+
+
+def reply_cover(update: Update, context: CallbackContext, force_reply: bool = False):
     message = update.effective_message
 
     query = update.callback_query
     if query:
         query.answer()
 
-    total_covers = Cover.select().count()
+    author_id = game_series_id = game_id = None
 
-    if context.match:
+    if context.match and len(context.match.groups()) == 4:
         page = int(context.match.group(1))
+
+        try:
+            author_id = int(context.match.group(2))
+        except:
+            pass
+
+        try:
+            game_series_id = int(context.match.group(3))
+        except:
+            pass
+
+        try:
+            game_id = int(context.match.group(4))
+        except:
+            pass
+
+        total_covers = Cover.count_by(
+            by_author=author_id,
+            by_game_series=game_series_id,
+            by_game=game_id,
+        )
     else:
         page = 1
+        total_covers = Cover.select().count()
 
-    prev_page, next_page = calc_pages(page=page, start_page=1, max_page=total_covers)
+    cover = Cover.get_by_page(
+        page=page,
+        by_author=author_id,
+        by_game_series=game_series_id,
+        by_game=game_id,
+    )
 
-    cover = Cover.get_by_page(page=page)
     cover_text = html.escape(cover.text)
-    game_name = html.escape(cover.game.name)
-    url = f'<a href="{cover.url_post_image}">{cover_text}</a>'
-    title = url + "\n" + game_name
+    url_source = get_html_url(cover.url_post_image, "[источник]")
+
+    game_html_url = get_deep_linking_html_url(
+        update, context,
+        title=html.escape(cover.game.name),
+        obj=cover.game,
+    )
+
+    game_series_html_url = get_deep_linking_html_url(
+        update, context,
+        title=html.escape(cover.game.series_name),
+        obj=cover.game.series,
+    )
+
+    author_html_urls = [
+        get_deep_linking_html_url(
+            update, context,
+            title=html.escape(a.name),
+            obj=a,
+        )
+        for a in cover.get_authors()
+    ]
+
+    text = (
+        f"Название: {cover_text} {url_source}\n" +
+        f"Игра: {game_html_url}\n" +
+        f"Серия: {game_series_html_url}\n" +
+        f"Автор(ы): {', '.join(author_html_urls)}"
+    )
+    if author_id or game_series_id or game_id:
+        author = Author.get_by_id(author_id) if author_id else None
+        game_series = GameSeries.get_by_id(game_series_id) if game_series_id else None
+        game = Game.get_by_id(game_id) if game_id else None
+
+        names = []
+        if author:
+            names.append(html.escape(author.name))
+
+        if game_series:
+            names.append(html.escape(game_series.name))
+
+        if game:
+            names.append(html.escape(game.name))
+
+        text += f'\n\nФильтрация по: {", ".join(names)}'
+
+    pattern = P.PATTERN_PAGE_COVER
 
     paginator = InlineKeyboardPaginator(
         page_count=total_covers,
         current_page=page,
-        data_pattern=fill_string_pattern(PATTERN_PAGE_COVER, '{page}')
+        data_pattern=fill_string_pattern(pattern, '{page}', author_id, game_series_id, game_id)
     )
-    paginator.add_after(
-        InlineKeyboardButton(text='⬅️', callback_data=fill_string_pattern(PATTERN_PAGE_COVER, prev_page)),
-        InlineKeyboardButton(text='➡️', callback_data=fill_string_pattern(PATTERN_PAGE_COVER, next_page)),
-    )
+    if total_covers > 1:
+        prev_page, next_page = calc_pages(page=page, start_page=1, max_page=total_covers)
+
+        paginator.add_after(
+            InlineKeyboardButton(
+                text='⬅️',
+                callback_data=fill_string_pattern(pattern, prev_page, author_id, game_series_id, game_id)
+            ),
+            InlineKeyboardButton(
+                text='➡️',
+                callback_data=fill_string_pattern(pattern, next_page, author_id, game_series_id, game_id)
+            ),
+        )
 
     reply_markup = paginator.markup
 
-    if not query:
+    if not query or force_reply:
         message.reply_photo(
             photo=cover.server_file_id,
-            caption=title,
+            caption=text,
             parse_mode=ParseMode.HTML,
             reply_markup=paginator.markup,
             quote=True,
@@ -95,12 +307,12 @@ def on_cover(update: Update, context: CallbackContext):
         message.edit_media(
             media=InputMediaPhoto(
                 media=cover.server_file_id,
-                caption=title,
+                caption=text,
                 parse_mode=ParseMode.HTML,
             ),
             reply_markup=reply_markup,
         )
-    except telegram.error.BadRequest as e:
+    except BadRequest as e:
         if 'Message is not modified' in str(e):
             return
 
@@ -109,7 +321,111 @@ def on_cover(update: Update, context: CallbackContext):
 
 @log_func(log)
 @process_request(log)
-def on_fill_server_file_id(update: Update, context: CallbackContext):
+def on_cover(update: Update, context: CallbackContext):
+    reply_cover(update, context)
+
+
+@log_func(log)
+@process_request(log)
+def on_new_cover_msg(update: Update, context: CallbackContext):
+    reply_cover(update, context, force_reply=True)
+
+
+def reply_page_objects(
+        update: Update,
+        context: CallbackContext,
+        model_title: str,
+        model: Union[Author, GameSeries, Game],
+        pattern_page: re.Pattern,
+):
+    message = update.effective_message
+
+    query = update.callback_query
+    if query:
+        query.answer()
+
+    if context.match and len(context.match.groups()) == 1:
+        page = int(context.match.group(1))
+    else:
+        page = 1
+
+    total = model.count()
+
+    items_per_page = ITEMS_PER_PAGE
+    start = ((page - 1) * items_per_page) + 1
+    objects = model.paginating(page=page, items_per_page=items_per_page, order_by=model.name.asc())
+
+    # TODO: Проверить, что не будет переполнения с ITEMS_PER_PAGE
+    lines = []
+    for i, obj in enumerate(objects, start):
+        html_url = get_deep_linking_html_url(
+            update, context,
+            title=html.escape(obj.name),
+            obj=obj,
+        )
+        total_covers = obj.get_number_of_covers()
+        title = f'{i}. <b>{html_url}"</b> ({total_covers})'
+        lines.append(title)
+
+    text = f'{model_title} ({total}):\n' + '\n'.join(lines)
+
+    reply_text_or_edit_with_keyboard_paginator(
+        message, query, text,
+        page_count=total,
+        items_per_page=items_per_page,
+        current_page=page,
+        data_pattern=fill_string_pattern(pattern_page, '{page}'),
+        parse_mode=ParseMode.HTML,
+    )
+
+
+@log_func(log)
+@process_request(log)
+def on_all_authors(update: Update, context: CallbackContext):
+    reply_page_objects(
+        update, context,
+        model_title='Авторы',
+        model=Author,
+        pattern_page=P.PATTERN_PAGE_AUTHORS,
+    )
+
+
+@log_func(log)
+@process_request(log)
+def on_all_game_series(update: Update, context: CallbackContext):
+    reply_page_objects(
+        update, context,
+        model_title='Серии игр',
+        model=GameSeries,
+        pattern_page=P.PATTERN_PAGE_GAME_SERIES,
+    )
+
+
+@log_func(log)
+@process_request(log)
+def on_all_game(update: Update, context: CallbackContext):
+    reply_page_objects(
+        update, context,
+        model_title='Игры',
+        model=Game,
+        pattern_page=P.PATTERN_PAGE_GAMES,
+    )
+
+
+@log_func(log)
+@process_request(log)
+def on_request(update: Update, context: CallbackContext):
+    reply_message(
+        'Неизвестная команда 🤔',
+        update=update, context=context,
+        severity=SeverityEnum.ERROR,
+        reply_markup=get_reply_keyboard()
+    )
+
+
+@log_func(log)
+@process_request(log)
+def on_fill_server_file_id(update: Update, _: CallbackContext):
     message = update.effective_message
 
     covers = Cover.select().where(Cover.server_file_id.is_null())
@@ -165,9 +481,19 @@ def setup(dp: Dispatcher):
         CommandHandler('fill_server_file_id', on_fill_server_file_id, FILTER_BY_ADMIN)
     )
 
-    dp.add_handler(
-        CallbackQueryHandler(on_cover, pattern=PATTERN_PAGE_COVER)
-    )
-    dp.add_handler(MessageHandler(Filters.text, on_cover))
+    dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_REPLY_ALL_COVERS), on_cover))
+    dp.add_handler(CallbackQueryHandler(on_cover, pattern=P.PATTERN_PAGE_COVER))
+    dp.add_handler(CallbackQueryHandler(on_new_cover_msg, pattern=P.PATTERN_PAGE_COVER_AS_NEW_MSG))
+
+    dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_REPLY_ALL_AUTHORS), on_all_authors))
+    dp.add_handler(CallbackQueryHandler(on_all_authors, pattern=P.PATTERN_PAGE_AUTHORS))
+
+    dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_REPLY_ALL_GAME_SERIES), on_all_game_series))
+    dp.add_handler(CallbackQueryHandler(on_all_game_series, pattern=P.PATTERN_PAGE_GAME_SERIES))
+
+    dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_REPLY_ALL_GAMES), on_all_game))
+    dp.add_handler(CallbackQueryHandler(on_all_game, pattern=P.PATTERN_PAGE_GAMES))
+
+    dp.add_handler(MessageHandler(Filters.text, on_request))
 
     dp.add_error_handler(on_error)

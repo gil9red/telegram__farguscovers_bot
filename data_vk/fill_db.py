@@ -87,8 +87,12 @@ if __name__ == '__main__':
     for dump in dumps:
         append_to_db(dump)
 
+    for game in list(Game.select().where(Game.series.is_null())):
+        game.series = GameSeries.get_unknown()
+        game.save()
+
     BaseModel.print_count_of_tables()
-    # Author: 164, Author2Cover: 581, Cover: 567, Game: 451, GameSeries: 200, User: 0
+    # Author: 165, Author2Cover: 607, Cover: 567, Game: 451, GameSeries: 200, TgChat: 2, TgUser: 2
 
     make_identical_authors_unique()
     # Renamed: 'DELETED' -> 'DELETED (id74388128)'
