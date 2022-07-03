@@ -55,14 +55,18 @@ def get_deep_linking_html_url(
         context: CallbackContext,
         title: str,
         obj: Union[Author, GameSeries, Game],
+        reply_to_message_id: int = None,
 ) -> str:
     message = update.effective_message
+
+    if reply_to_message_id is None:
+        reply_to_message_id = message.message_id
 
     start_argument = fill_string_pattern(
         P.PATTERN_START_ARGUMENT,
         obj.__class__.__name__,
         obj.id,
-        message.message_id
+        reply_to_message_id
     )
     url = get_deep_linking(start_argument, context)
     return get_html_url(url, title)
@@ -113,15 +117,29 @@ def on_start(update: Update, context: CallbackContext):
     )
 
 
-def reply_author(update: Update, context: CallbackContext, author_id: int, reply_to_message_id: int = None):
+def reply_author(
+        update: Update,
+        context: CallbackContext,
+        author_id: int,
+        reply_to_message_id: int = None
+):
     author = Author.get_by_id(author_id)
-    # TODO: Больше инфы, статистику, ссылку на профиль и т.д.
-    text = author.name
 
-    # TODO: Нужно вывести кнопки с вариантами все обложки, серии и игры
+    author_html_url = get_html_url(
+        url=author.url,
+        title=html.escape(author.name)
+    )
+    text = (
+        f'<b>Автор {author_html_url}</b>\n'
+        '\n'
+        f'Обложки: {author.get_number_of_covers()}\n'  # TODO: Фильтрация обложек по автору
+        f'Серии: {author.get_number_of_game_series()}\n'  # TODO: Фильтрация серий по автору
+        f'Игры: {author.get_number_of_games()}'  # TODO: Фильтрация игр по автору
+    )
+
     markup = InlineKeyboardMarkup.from_row([
         InlineKeyboardButton(
-            text='Все обложки',
+            text='Обложки',
             callback_data=fill_string_pattern(P.PATTERN_PAGE_COVER_AS_NEW_MSG, 1, author_id, None, None)
         ),
     ])
@@ -130,19 +148,30 @@ def reply_author(update: Update, context: CallbackContext, author_id: int, reply
         text,
         update, context,
         reply_markup=markup,
+        parse_mode=ParseMode.HTML,
         reply_to_message_id=reply_to_message_id,
     )
 
 
-def reply_game_series(update: Update, context: CallbackContext, game_series_id: int, reply_to_message_id: int = None):
+def reply_game_series(
+        update: Update,
+        context: CallbackContext,
+        game_series_id: int,
+        reply_to_message_id: int = None
+):
     game_series = GameSeries.get_by_id(game_series_id)
-    # TODO: Больше инфы, статистику, ссылку на профиль и т.д.
-    text = game_series.name
 
-    # TODO: Нужно вывести кнопки с вариантами все обложки, серии и игры
+    text = (
+        f'<b>Серия {html.escape(game_series.name)}</b>\n'
+        '\n'
+        f'Авторы: {game_series.get_number_of_authors()}\n'   # TODO: Фильтрация авторов по серии
+        f'Обложки: {game_series.get_number_of_covers()}\n'  # TODO: Фильтрация обложек по серии
+        f'Игр: {game_series.get_number_of_games()}'  # TODO: Фильтрация игр по серии
+    )
+
     markup = InlineKeyboardMarkup.from_row([
         InlineKeyboardButton(
-            text='Все обложки',
+            text='Обложки',
             callback_data=fill_string_pattern(P.PATTERN_PAGE_COVER_AS_NEW_MSG, 1, None, game_series_id, None)
         ),
     ])
@@ -151,19 +180,37 @@ def reply_game_series(update: Update, context: CallbackContext, game_series_id: 
         text,
         update, context,
         reply_markup=markup,
+        parse_mode=ParseMode.HTML,
         reply_to_message_id=reply_to_message_id,
     )
 
 
-def reply_game(update: Update, context: CallbackContext, game_id: int, reply_to_message_id: int = None):
+def reply_game(
+        update: Update,
+        context: CallbackContext,
+        game_id: int,
+        reply_to_message_id: int = None
+):
     game = Game.get_by_id(game_id)
-    # TODO: Больше инфы, статистику, ссылку на профиль и т.д.
-    text = game.name
 
-    # TODO: Нужно вывести кнопки с вариантами все обложки, серии и игры
+    game_series_html_url = get_deep_linking_html_url(
+        update, context,
+        title=html.escape(game.series_name),
+        obj=game.series,
+        reply_to_message_id=reply_to_message_id,
+    )
+
+    text = (
+        f'<b>Игра {html.escape(game.name)}</b>\n'
+        '\n'
+        f'Авторы: {game.get_number_of_authors()}\n'   # TODO: Фильтрация авторов по игре
+        f'Обложки: {game.get_number_of_covers()}\n'  # TODO: Фильтрация обложек по игре
+        f'Серия: {game_series_html_url}'
+    )
+
     markup = InlineKeyboardMarkup.from_row([
         InlineKeyboardButton(
-            text='Все обложки',
+            text='Обложки',
             callback_data=fill_string_pattern(P.PATTERN_PAGE_COVER_AS_NEW_MSG, 1, None, None, game_id)
         ),
     ])
@@ -172,6 +219,7 @@ def reply_game(update: Update, context: CallbackContext, game_id: int, reply_to_
         text,
         update, context,
         reply_markup=markup,
+        parse_mode=ParseMode.HTML,
         reply_to_message_id=reply_to_message_id,
     )
 
@@ -244,9 +292,9 @@ def reply_cover(update: Update, context: CallbackContext, force_reply: bool = Fa
     ]
 
     text = (
-        f"Название: {cover_text} {url_source}\n" +
-        f"Игра: {game_html_url}\n" +
-        f"Серия: {game_series_html_url}\n" +
+        f"Название: {cover_text} {url_source}\n"
+        f"Игра: {game_html_url}\n"
+        f"Серия: {game_series_html_url}\n"
         f"Автор(ы): {', '.join(author_html_urls)}"
     )
     if author_id or game_series_id or game_id:
@@ -364,7 +412,7 @@ def reply_page_objects(
             obj=obj,
         )
         total_covers = obj.get_number_of_covers()
-        title = f'{i}. <b>{html_url}"</b> ({total_covers})'
+        title = f'{i}. <b>{html_url}</b> ({total_covers})'
         lines.append(title)
 
     text = f'{model_title} ({total}):\n' + '\n'.join(lines)

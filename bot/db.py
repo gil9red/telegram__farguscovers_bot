@@ -48,7 +48,7 @@ db = SqliteQueueDatabase(
 
 class BaseModel(Model):
     """
-    Базовая модель для классов-таблиц
+    Базовая модель классов-таблиц
     """
 
     class Meta:
@@ -153,12 +153,27 @@ class GameSeries(BaseModel):
 
         return obj
 
-    def get_number_of_covers(self) -> int:
-        return Cover.count_by(by_game_series=self)
-
     @classmethod
     def get_unknown(cls) -> 'GameSeries':
         return cls.add(name='<Без серии>', id=0)
+
+    def get_authors(self) -> List['Author']:
+        game_ids = Game.select(Game.id).where(Game.series == self)
+        cover_ids = Cover.select(Cover.id).where(Cover.game.in_(game_ids))
+        query = Author2Cover.select(Author2Cover.author).distinct().where(Author2Cover.cover.in_(cover_ids))
+        return [a2c.author for a2c in query]
+
+    def get_number_of_authors(self) -> int:
+        return len(self.get_authors())
+
+    def get_games(self) -> List['Game']:
+        return list(self.games)
+
+    def get_number_of_games(self) -> int:
+        return len(self.get_games())
+
+    def get_number_of_covers(self) -> int:
+        return Cover.count_by(by_game_series=self)
 
 
 class Game(BaseModel):
@@ -197,6 +212,14 @@ class Game(BaseModel):
     @property
     def series_name(self) -> str:
         return self.series.name if self.series else ""
+
+    def get_authors(self) -> List['Author']:
+        cover_ids = Cover.select(Cover.id).where(Cover.game == self)
+        query = Author2Cover.select(Author2Cover.author).distinct().where(Author2Cover.cover.in_(cover_ids))
+        return [a2c.author for a2c in query]
+
+    def get_number_of_authors(self) -> int:
+        return len(self.get_authors())
 
     def get_number_of_covers(self) -> int:
         return Cover.count_by(by_game=self)
@@ -323,6 +346,30 @@ class Author(BaseModel):
 
     def get_number_of_covers(self) -> int:
         return Cover.count_by(by_author=self)
+
+    def get_games(self) -> List[Game]:
+        items = []
+        for link in self.links_to_covers:
+            game = link.cover.game
+            if game not in items:
+                items.append(game)
+
+        return items
+
+    def get_number_of_games(self) -> int:
+        return len(self.get_games())
+
+    def get_game_series(self) -> List[GameSeries]:
+        items = []
+        for link in self.links_to_covers:
+            series = link.cover.game.series
+            if series not in items:
+                items.append(series)
+
+        return items
+
+    def get_number_of_game_series(self) -> int:
+        return len(self.get_game_series())
 
 
 class Author2Cover(BaseModel):
