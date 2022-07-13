@@ -35,6 +35,32 @@ class SeverityEnum(enum.Enum):
     ERROR = '⚠ {text}'
 
 
+def calc_pages(page: int, start_page: int, max_page: int) -> tuple[int, int]:
+    prev_page = max_page if page <= start_page else page - 1
+    next_page = start_page if page >= max_page else page + 1
+    return prev_page, next_page
+
+
+def add_prev_next_buttons(paginator: InlineKeyboardPaginator):
+    if paginator.page_count > 1:
+        prev_page, next_page = calc_pages(
+            page=paginator.current_page,
+            start_page=1,
+            max_page=paginator.page_count
+        )
+
+        paginator.add_after(
+            InlineKeyboardButton(
+                text='⬅️',
+                callback_data=paginator.data_pattern.format(page=prev_page)
+            ),
+            InlineKeyboardButton(
+                text='➡️',
+                callback_data=paginator.data_pattern.format(page=next_page)
+            ),
+        )
+
+
 def is_equal_inline_keyboards(
         keyboard_1: Union[InlineKeyboardMarkup, str],
         keyboard_2: InlineKeyboardMarkup
@@ -137,6 +163,8 @@ def reply_text_or_edit_with_keyboard_paginator(
 
     if after_inline_buttons:
         paginator.add_after(*after_inline_buttons)
+    else:
+        add_prev_next_buttons(paginator)
 
     reply_markup = paginator.markup
 

@@ -22,7 +22,7 @@ from telegram_bot_pagination import InlineKeyboardPaginator
 
 from bot.common import (
     process_error, log, reply_message, FILTER_BY_ADMIN, SeverityEnum, get_deep_linking,
-    is_equal_inline_keyboards, reply_text_or_edit_with_keyboard_paginator
+    is_equal_inline_keyboards, reply_text_or_edit_with_keyboard_paginator, add_prev_next_buttons
 )
 from bot.decorators import log_func, process_request
 from bot.db import Field, Cover, Author, GameSeries, Game, ITEMS_PER_PAGE
@@ -39,12 +39,6 @@ def get_int_from_match(match: re.Match, name: str, default: int = None) -> int:
         return int(match[name])
     except:
         return default
-
-
-def calc_pages(page: int, start_page: int, max_page: int) -> tuple[int, int]:
-    prev_page = max_page if page <= start_page else page - 1
-    next_page = start_page if page >= max_page else page + 1
-    return prev_page, next_page
 
 
 def get_reply_keyboard() -> ReplyKeyboardMarkup:
@@ -371,19 +365,7 @@ def reply_cover_page_card(update: Update, context: CallbackContext, as_new_msg: 
         current_page=page,
         data_pattern=fill_string_pattern(pattern, '{page}', author_id, game_series_id, game_id)
     )
-    if total_covers > 1:
-        prev_page, next_page = calc_pages(page=page, start_page=1, max_page=total_covers)
-
-        paginator.add_after(
-            InlineKeyboardButton(
-                text='⬅️',
-                callback_data=fill_string_pattern(pattern, prev_page, author_id, game_series_id, game_id)
-            ),
-            InlineKeyboardButton(
-                text='➡️',
-                callback_data=fill_string_pattern(pattern, next_page, author_id, game_series_id, game_id)
-            ),
-        )
+    add_prev_next_buttons(paginator)
 
     reply_markup = paginator.markup
 
