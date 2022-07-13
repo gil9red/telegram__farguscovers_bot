@@ -15,6 +15,8 @@ def fill_string_pattern(pattern: re.Pattern, *args) -> str:
     return _fill_string_pattern(pattern, *args)
 
 
+PATTERN_COVERS_REPLY_HELP = re.compile(r'^Помощь$', flags=re.IGNORECASE)
+
 # Запрос обложек и их пагинация
 PATTERN_COVERS_REPLY_ALL = re.compile(r'^Все обложки$', flags=re.IGNORECASE)
 PATTERN_COVER_PAGE = re.compile(

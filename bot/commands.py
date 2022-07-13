@@ -693,6 +693,8 @@ def on_error(update: Update, context: CallbackContext):
 
 def setup(dp: Dispatcher):
     dp.add_handler(CommandHandler('start', on_start))
+    dp.add_handler(CommandHandler('help', on_start))
+    dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_COVERS_REPLY_HELP), on_start))
 
     dp.add_handler(
         CommandHandler('fill_server_file_id', on_fill_server_file_id, FILTER_BY_ADMIN)
