@@ -697,22 +697,26 @@ def setup(dp: Dispatcher):
     dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_COVERS_REPLY_HELP), on_start))
 
     dp.add_handler(
-        CommandHandler('fill_server_file_id', on_fill_server_file_id, FILTER_BY_ADMIN)
+        CommandHandler(P.COMMAND_FILL_SERVER_FILE_ID, on_fill_server_file_id, FILTER_BY_ADMIN)
     )
 
+    dp.add_handler(CommandHandler(P.COMMAND_COVERS_ALL, on_cover_card))
     dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_COVERS_REPLY_ALL), on_cover_card))
     dp.add_handler(CallbackQueryHandler(on_cover_card, pattern=P.PATTERN_COVER_PAGE))
     dp.add_handler(CallbackQueryHandler(on_cover_card_as_new_msg, pattern=P.PATTERN_COVER_NEW_PAGE))
 
+    dp.add_handler(CommandHandler(P.COMMAND_AUTHORS_ALL, on_author_page_list))
     dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_AUTHORS_REPLY_ALL), on_author_page_list))
     dp.add_handler(CallbackQueryHandler(on_author_page_list, pattern=P.PATTERN_AUTHORS_PAGE))
     dp.add_handler(CallbackQueryHandler(on_author_list_as_new_msg, pattern=P.PATTERN_AUTHORS_NEW_PAGE))
 
+    dp.add_handler(CommandHandler(P.COMMAND_GAME_SERIES_ALL, on_game_series_page_list))
     dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_GAME_SERIES_REPLY_ALL), on_game_series_page_list))
     dp.add_handler(CallbackQueryHandler(on_game_series_page_list, pattern=P.PATTERN_GAME_SERIES_PAGE))
     dp.add_handler(CallbackQueryHandler(on_game_series_list_as_new_msg, pattern=P.PATTERN_GAME_SERIES_NEW_PAGE))
     dp.add_handler(CallbackQueryHandler(on_game_series_card, pattern=P.PATTERN_GAME_SERIES_NEW_CARD))
 
+    dp.add_handler(CommandHandler(P.COMMAND_GAMES_ALL, on_game_page_list))
     dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_GAMES_REPLY_ALL), on_game_page_list))
     dp.add_handler(CallbackQueryHandler(on_game_page_list, pattern=P.PATTERN_GAMES_PAGE))
     dp.add_handler(CallbackQueryHandler(on_game_list_as_new_msg, pattern=P.PATTERN_GAMES_NEW_PAGE))
