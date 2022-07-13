@@ -11,50 +11,114 @@ from typing import Type, Iterable, List
 
 from peewee import Field
 
-from bot import regexp_patterns
+from bot import regexp_patterns as P
 from config import DEFAULT_AUTHOR_ID
 from bot.db import GameSeries, Game, Author, Cover, BaseModel, NotDefinedParameterException
-from third_party.regexp import fill_string_pattern
 
 
 DEBUG = False
 
 
 class TestRegexpPatterns(unittest.TestCase):
-    def test_regexp_patterns(self):
-        max_page = 999
-        max_id = 999_999_999_999
-        max_callback_data_size = 64
+    MAX_PAGE = 9999
+    MAX_ID = 999_999_999_999
+    MAX_ID_DB = 999_999  # Для текущих объект в базе
+    MAX_MESSAGE_ID = 99_999_999_999
+    MAX_DATA_SIZE = 64
 
-        for name, pattern in vars(regexp_patterns).items():
-            if not isinstance(pattern, re.Pattern):
+    def do_check_callback_data_value(self, pattern, *args):
+        callback_data_value = P.fill_string_pattern(pattern, *args)
+
+        size_callback_data = len(bytes(callback_data_value, "utf-8"))
+        DEBUG and print(f'    Size {size_callback_data} of {callback_data_value!r}\n')
+        self.assertTrue(
+            size_callback_data <= self.MAX_DATA_SIZE,
+            f"Превышение размера callback_data для {pattern}. Размер: {size_callback_data}"
+        )
+
+    def test_reply(self):
+        for name, pattern in vars(P).items():
+            if 'REPLY' not in name or not isinstance(pattern, re.Pattern):
                 continue
 
-            DEBUG and print(f'{name} = {pattern}')
+            self.assertTrue(P.fill_string_pattern(pattern))
 
-            if name == 'PATTERN_START_ARGUMENT':
-                model_name = max([m.__name__ for m in BaseModel.get_inherited_models()], key=len)
-                callback_data_value = fill_string_pattern(pattern, model_name, max_id, max_id)
+    def test_pattern_authors_page(self):
+        with self.subTest('Nulls'):
+            self.assertEqual(
+                'authors page=1 gs# g#',
+                P.fill_string_pattern(P.PATTERN_AUTHORS_PAGE, 1, None, None)
+            )
+            self.assertEqual(
+                'authors new page=1 gs# g#',
+                P.fill_string_pattern(P.PATTERN_AUTHORS_NEW_PAGE, 1, None, None)
+            )
 
-            elif name.startswith('PATTERN_PAGE_COVER'):
-                callback_data_value = fill_string_pattern(
+        with self.subTest('Max'):
+            for pattern in (P.PATTERN_AUTHORS_PAGE, P.PATTERN_AUTHORS_NEW_PAGE):
+                self.do_check_callback_data_value(
                     pattern,
-                    max_page,
-                    Author.get_last().id,
-                    GameSeries.get_last().id,
-                    Game.get_last().id,
+                    self.MAX_PAGE, self.MAX_ID_DB, self.MAX_ID_DB
                 )
-            else:
-                callback_data_value = fill_string_pattern(pattern, max_page)
 
-            size_callback_data = len(bytes(callback_data_value, "utf-8"))
-            DEBUG and print(f'    Size {size_callback_data} of {callback_data_value!r}\n')
+    def test_pattern_cover_page(self):
+        with self.subTest('Nulls'):
+            self.assertEqual(
+                'covers page=1 a# gs# g#',
+                P.fill_string_pattern(P.PATTERN_COVER_PAGE, 1, None, None, None)
+            )
+            self.assertEqual(
+                'covers new page=1 a# gs# g#',
+                P.fill_string_pattern(P.PATTERN_COVER_NEW_PAGE, 1, None, None, None)
+            )
 
-            # Индивидуальная проверка переменных
-            with self.subTest(name=name, pattern=pattern, max_page=max_page, max_id=max_id):
-                self.assertTrue(
-                    size_callback_data <= max_callback_data_size,
-                    f"Превышение размера callback_data для {name!r}. Размер: {size_callback_data}"
+        with self.subTest('Max'):
+            for pattern in (P.PATTERN_COVER_PAGE, P.PATTERN_COVER_NEW_PAGE):
+                self.do_check_callback_data_value(
+                    pattern,
+                    self.MAX_PAGE, self.MAX_ID, self.MAX_ID_DB, self.MAX_ID_DB
+                )
+
+    def test_pattern_game_series_page(self):
+        with self.subTest('Nulls'):
+            self.assertEqual(
+                'game series page=1 a#',
+                P.fill_string_pattern(P.PATTERN_GAME_SERIES_PAGE, 1, None)
+            )
+            self.assertEqual(
+                'game series new page=1 a#',
+                P.fill_string_pattern(P.PATTERN_GAME_SERIES_NEW_PAGE, 1, None)
+            )
+
+        with self.subTest('Max'):
+            for pattern in (P.PATTERN_GAME_SERIES_PAGE, P.PATTERN_GAME_SERIES_NEW_PAGE):
+                self.do_check_callback_data_value(
+                    pattern,
+                    self.MAX_PAGE, self.MAX_ID
+                )
+
+    def test_pattern_game_series_new_card(self):
+        pattern = P.PATTERN_GAME_SERIES_NEW_CARD
+        self.do_check_callback_data_value(
+            pattern, self.MAX_ID_DB
+        )
+
+    def test_pattern_games_page(self):
+        with self.subTest('Nulls'):
+            self.assertEqual(
+                'games page=1 a# gs#',
+                P.fill_string_pattern(P.PATTERN_GAMES_PAGE, 1, None, None)
+            )
+            self.assertEqual(
+                'games new page=1 a# gs#',
+                P.fill_string_pattern(P.PATTERN_GAMES_NEW_PAGE, 1, None, None)
+            )
+
+        with self.subTest('Max'):
+            for pattern in (P.PATTERN_GAMES_PAGE, P.PATTERN_GAMES_NEW_PAGE):
+                self.do_check_callback_data_value(
+                    pattern,
+                    self.MAX_PAGE, self.MAX_ID, self.MAX_ID_DB
                 )
 
 
