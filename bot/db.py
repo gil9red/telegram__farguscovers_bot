@@ -99,8 +99,11 @@ class BaseModel(Model):
         print(', '.join(items))
 
     @classmethod
-    def count(cls) -> int:
-        return cls.select().count()
+    def count(cls, filters: Iterable = None) -> int:
+        query = cls.select()
+        if filters:
+            query = query.filter(*filters)
+        return query.count()
 
     def __str__(self):
         fields = []
@@ -157,6 +160,27 @@ class GameSeries(BaseModel):
     def get_unknown(cls) -> 'GameSeries':
         return cls.add(name='<Без серии>', id=0)
 
+    @classmethod
+    def get_filters(
+            cls,
+            by_author: Union[int, 'Author'] = None,
+            filters: Iterable = None,
+    ) -> List:
+        total_filters = []
+
+        if by_author is not None:
+            cover_ids = Author2Cover.select(Author2Cover.cover).where(Author2Cover.author == by_author)
+            game_ids = Cover.select(Cover.game).distinct().where(Cover.id.in_(cover_ids))
+            game_series_ids = Game.select(Game.series).distinct().where(Game.id.in_(game_ids))
+            total_filters.append(
+                cls.id.in_(game_series_ids)
+            )
+
+        if filters:
+            total_filters.extend(filters)
+
+        return total_filters
+
     def get_authors(self) -> List['Author']:
         game_ids = Game.select(Game.id).where(Game.series == self)
         cover_ids = Cover.select(Cover.id).where(Cover.game.in_(game_ids))
@@ -209,6 +233,32 @@ class Game(BaseModel):
 
         return obj
 
+    @classmethod
+    def get_filters(
+            cls,
+            by_author: Union[int, 'Author'] = None,
+            by_game_series: Union[int, 'GameSeries'] = None,
+            filters: Iterable = None,
+    ) -> List:
+        total_filters = []
+
+        if by_author is not None:
+            cover_ids = Author2Cover.select(Author2Cover.cover).where(Author2Cover.author == by_author)
+            game_ids = Cover.select(Cover.game).distinct().where(Cover.id.in_(cover_ids))
+            total_filters.append(
+                cls.id.in_(game_ids)
+            )
+
+        if by_game_series is not None:
+            total_filters.append(
+                cls.series == by_game_series
+            )
+
+        if filters:
+            total_filters.extend(filters)
+
+        return total_filters
+
     @property
     def series_name(self) -> str:
         return self.series.name if self.series else ""
@@ -260,7 +310,7 @@ class Cover(BaseModel):
             total_filters.append(
                 cls.game.in_(
                     # Из Game вернем id по заданной серии игр
-                    Game.select(Game.id).where(Game.series == by_game_series)
+                    Game.select(Game.id).distinct().where(Game.series == by_game_series)
                 )
             )
 
@@ -288,7 +338,7 @@ class Cover(BaseModel):
             by_game=by_game,
             filters=filters,
         )
-        return cls.select().filter(*total_filters).count()
+        return cls.count(total_filters)
 
     @classmethod
     def get_by_page(
@@ -315,7 +365,11 @@ class Cover(BaseModel):
         return covers[0] if covers else None
 
     def get_authors(self, reverse=False) -> List['Author']:
-        items = [link.author for link in self.links_to_authors]
+        items = []
+        for link in self.links_to_authors:
+            author = link.author
+            if author not in items:
+                items.append(author)
         items.sort(reverse=reverse, key=lambda x: x.id)
         return items
 
@@ -338,6 +392,35 @@ class Author(BaseModel):
             )
 
         return obj
+
+    @classmethod
+    def get_filters(
+            cls,
+            by_game_series: Union[int, 'GameSeries'] = None,
+            by_game: Union[int, 'Game'] = None,
+            filters: Iterable = None,
+    ) -> List:
+        total_filters = []
+
+        if by_game_series is not None:
+            game_ids = Game.select(Game.id).distinct().where(Game.series == by_game_series)
+            cover_ids = Cover.select(Cover.id).where(Cover.game.in_(game_ids))
+            author_ids = Author2Cover.select(Author2Cover.author).distinct().where(Author2Cover.cover.in_(cover_ids))
+            total_filters.append(
+                cls.id.in_(author_ids)
+            )
+
+        if by_game is not None:
+            cover_ids = Cover.select(Cover.id).where(Cover.game == by_game)
+            author_ids = Author2Cover.select(Author2Cover.author).distinct().where(Author2Cover.cover.in_(cover_ids))
+            total_filters.append(
+                cls.id.in_(author_ids)
+            )
+
+        if filters:
+            total_filters.extend(filters)
+
+        return total_filters
 
     def get_covers(self, reverse=False) -> List[Cover]:
         items = [link.cover for link in self.links_to_covers]
