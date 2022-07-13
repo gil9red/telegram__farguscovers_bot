@@ -303,7 +303,7 @@ def get_cover_text(
     ]
 
     text = (
-        f"Название: {cover_text} {url_source}\n"
+        f"<b>{cover_text}</b> {url_source}\n"
         f"Игра: {game_html_url}\n"
         f"Серия: {game_series_html_url}\n"
         f"Автор(ы): {', '.join(author_html_urls)}"
