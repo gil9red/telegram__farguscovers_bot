@@ -144,7 +144,7 @@ def reply_author_card(
         title=html.escape(author.name)
     )
     text = (
-        f'<b>Автор {author_html_url}</b>\n'
+        f'<b>Автор "{author_html_url}"</b>\n'
         '\n'
         f'Обложки: {author.get_number_of_covers()}\n'
         f'Серии: {author.get_number_of_game_series()}\n'
@@ -184,7 +184,7 @@ def reply_game_series_card(
     game_series = GameSeries.get_by_id(game_series_id)
 
     text = (
-        f'<b>Серия {html.escape(game_series.name)}</b>\n'
+        f'<b>Серия "{html.escape(game_series.name)}"</b>\n'
         '\n'
         f'Обложки: {game_series.get_number_of_covers()}\n'
         f'Авторы: {game_series.get_number_of_authors()}\n'
@@ -238,7 +238,7 @@ def reply_game_card(
     )
 
     text = (
-        f'<b>Игра {html.escape(game.name)}</b>\n'
+        f'<b>Игра "{html.escape(game.name)}"</b>\n'
         '\n'
         f'Обложки: {game.get_number_of_covers()}\n'
         f'Авторы: {game.get_number_of_authors()}\n'
