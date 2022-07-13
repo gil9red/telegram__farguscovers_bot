@@ -21,7 +21,7 @@ PATTERN_COVERS_REPLY_HELP = re.compile(r'^Помощь$', flags=re.IGNORECASE)
 
 # Запрос обложек и их пагинация
 COMMAND_COVERS_ALL = 'covers_all'
-PATTERN_COVERS_REPLY_ALL = re.compile(r'^Все обложки$', flags=re.IGNORECASE)
+PATTERN_COVERS_REPLY_ALL = re.compile(r'^Обложки$', flags=re.IGNORECASE)
 PATTERN_COVER_PAGE = re.compile(
     r'^covers page=(?P<page>\d+) a#(?P<author_id>\d*) gs#(?P<game_series_id>\d*) g#(?P<game_id>\d*)$'
 )
