@@ -41,7 +41,12 @@ class TestRegexpPatterns(unittest.TestCase):
             if 'REPLY' not in name or not isinstance(pattern, re.Pattern):
                 continue
 
-            self.assertTrue(P.fill_string_pattern(pattern))
+            self.assertTrue(
+                P.fill_string_pattern(
+                    pattern,
+                    self.MAX_ID  # Только для PATTERN_REPLY_COVER_BY_PAGE
+                )
+            )
 
     def test_pattern_authors_page(self):
         with self.subTest('Nulls'):
