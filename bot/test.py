@@ -121,6 +121,12 @@ class TestRegexpPatterns(unittest.TestCase):
                     self.MAX_PAGE, self.MAX_ID, self.MAX_ID_DB
                 )
 
+    def test_pattern_start_argument(self):
+        self.do_check_callback_data_value(
+            P.PATTERN_START_ARGUMENT,
+            GameSeries.__name__, self.MAX_ID_DB, self.MAX_ID, self.MAX_ID, self.MAX_ID
+        )
+
 
 class TestDb(unittest.TestCase):
     def test_get_by_raises_exception(self):

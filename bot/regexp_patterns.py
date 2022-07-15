@@ -58,5 +58,5 @@ PATTERN_GAMES_NEW_PAGE = re.compile(
 )
 
 PATTERN_START_ARGUMENT = re.compile(
-    r'^(?P<class_name>[a-zA-Z]+)_(?P<object_id>\d+)_(?P<message_id>\d+)$'
+    r'^(?P<class_name>[a-zA-Z]+)_(?P<object_id>\d+)_(?P<chat_id>\d+)_(?P<message_id>\d+)$'
 )

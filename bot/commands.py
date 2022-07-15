@@ -71,9 +71,10 @@ def get_deep_linking_start_arg_html_url(
 
     start_argument = fill_string_pattern(
         P.PATTERN_START_ARGUMENT,
-        obj.__class__.__name__,
-        obj.id,
-        reply_to_message_id
+        obj.__class__.__name__,    # class_name
+        obj.id,                    # object_id
+        update.effective_chat.id,  # chat_id
+        reply_to_message_id        # message_id
     )
 
     url = get_deep_linking(start_argument, context)
@@ -115,7 +116,13 @@ def reply_from_start_argument(
     m = P.PATTERN_START_ARGUMENT.match(start_argument)
     class_name = m['class_name']
     object_id = get_int_from_match(m, 'object_id')
+    chat_id = get_int_from_match(m, 'chat_id')
     message_id = get_int_from_match(m, 'message_id')
+
+    # Если разные чаты, то нельзя создавать связь нового сообщения к переданному в message_id,
+    # иначе будет ошибка (замечено, если делать для разных чатов)
+    if chat_id != update.effective_chat.id:
+        message_id = None
 
     match class_name:
         case Author.__name__:
