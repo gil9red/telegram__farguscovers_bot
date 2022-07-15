@@ -97,9 +97,11 @@ def on_start(update: Update, context: CallbackContext):
     text = (
         'Бот для отображения обложек с стены группы ВК https://vk.com/farguscovers\n\n'
         f'Всего {Cover.count()} обложек за период '
-        f'{Cover.get_first().date_time.year}-{Cover.get_last().date_time.year}'
+        f'{Cover.get_first().date_time.year}-{Cover.get_last().date_time.year}\n\n',
+        'Чтобы открыть обложку по номеру, просто введите номер\n'
+        'В боте ссылки используются для перехода к сущностям. '
+        'После клика на ссылку ниже появится кнопка запуска на которую нужно кликнуть.',
     )
-
     reply_message(
         text,
         update, context,
@@ -388,6 +390,14 @@ def reply_cover_page_card(
             **cover_filters
         )
     else:
+        if page not in range(1, total_covers + 1):
+            reply_message(
+                f'Неправильный номер обложки! Разрешенный диапазон от 1 до {total_covers}',
+                update=update, context=context,
+                severity=SeverityEnum.ERROR
+            )
+            return
+
         cover = Cover.get_by_page(
             page=page,
             **cover_filters
@@ -462,6 +472,12 @@ def on_cover_card(update: Update, context: CallbackContext):
 @log_func(log)
 @process_request(log)
 def on_cover_card_as_new_msg(update: Update, context: CallbackContext):
+    reply_cover_page_card(update, context, as_new_msg=True)
+
+
+@log_func(log)
+@process_request(log)
+def on_cover_by_page(update: Update, context: CallbackContext):
     reply_cover_page_card(update, context, as_new_msg=True)
 
 
@@ -735,6 +751,7 @@ def setup(dp: Dispatcher):
     dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_COVERS_REPLY_ALL), on_cover_card))
     dp.add_handler(CallbackQueryHandler(on_cover_card, pattern=P.PATTERN_COVER_PAGE))
     dp.add_handler(CallbackQueryHandler(on_cover_card_as_new_msg, pattern=P.PATTERN_COVER_NEW_PAGE))
+    dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_REPLY_COVER_BY_PAGE), on_cover_by_page))
 
     dp.add_handler(CommandHandler(P.COMMAND_AUTHORS_ALL, on_author_page_list))
     dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_AUTHORS_REPLY_ALL), on_author_page_list))

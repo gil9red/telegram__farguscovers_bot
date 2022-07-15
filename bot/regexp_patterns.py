@@ -28,6 +28,7 @@ PATTERN_COVER_PAGE = re.compile(
 PATTERN_COVER_NEW_PAGE = re.compile(
     r'^covers new page=(?P<page>\d+) a#(?P<author_id>\d*) gs#(?P<game_series_id>\d*) g#(?P<game_id>\d*)$'
 )
+PATTERN_REPLY_COVER_BY_PAGE = re.compile(r'^(?P<page>\d+)$')
 
 COMMAND_AUTHORS_ALL = 'authors'
 PATTERN_AUTHORS_REPLY_ALL = re.compile(r'^Авторы$', flags=re.IGNORECASE)
