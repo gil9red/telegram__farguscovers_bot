@@ -359,9 +359,6 @@ def reply_cover_page_card(
 ):
     message = update.effective_message
 
-    if reply_to_message_id is not None:
-        reply_to_message_id = message.message_id
-
     query = update.callback_query
     if query:
         query.answer()
@@ -415,16 +412,20 @@ def reply_cover_page_card(
     reply_markup = paginator.markup
 
     if not query or as_new_msg:
+        if reply_to_message_id is None:
+            reply_to_message_id = message.message_id
+
         message = message.reply_photo(
             photo=cover.server_file_id,
             caption=PLEASE_WAIT_INFO,
+            reply_to_message_id=reply_to_message_id,
             quote=True,
         )
 
         text = get_cover_text(
             update=update, context=context,
             cover=cover,
-            reply_to_message_id=reply_to_message_id,
+            reply_to_message_id=message.message_id,
             **cover_filters,
         )
 
@@ -441,10 +442,13 @@ def reply_cover_page_card(
         return
 
     try:
+        if reply_to_message_id is None:
+            reply_to_message_id = message.message_id
+
         text = get_cover_text(
             update=update, context=context,
             cover=cover,
-            reply_to_message_id=message.message_id,
+            reply_to_message_id=reply_to_message_id,
             **cover_filters,
         )
 
