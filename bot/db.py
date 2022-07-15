@@ -12,7 +12,7 @@ from typing import Type, Optional, List, Iterable, Union
 
 # pip install peewee
 from peewee import (
-    Model, TextField, ForeignKeyField, CharField, DateTimeField, IntegerField, Field
+    Model, TextField, ForeignKeyField, CharField, DateTimeField, IntegerField, Field, fn
 )
 from playhouse.sqliteq import SqliteQueueDatabase
 import telegram
@@ -363,6 +363,35 @@ class Cover(BaseModel):
             filters=total_filters,
         )
         return covers[0] if covers else None
+
+    @classmethod
+    def get_page(
+            cls,
+            need_cover_id: int,
+            by_author: Union[int, 'Author'] = None,
+            by_game_series: Union[int, 'GameSeries'] = None,
+            by_game: Union[int, 'Game'] = None,
+            filters: Iterable = None,
+    ) -> int:
+        total_filters = cls.get_filters(
+            by_author=by_author,
+            by_game_series=by_game_series,
+            by_game=by_game,
+            filters=filters,
+        )
+        query = cls.select(
+            fn.row_number().over(order_by=[cls.id]).alias('page'),
+            cls.id
+        )
+        if total_filters:
+            query = query.where(*total_filters)
+        query = query.order_by(cls.id)
+
+        for page, cover_id in query.tuples():
+            if cover_id == need_cover_id:
+                return page
+
+        raise Exception(f'Не удалось определить номер для #{need_cover_id} по {total_filters}')
 
     def get_authors(self, reverse=False) -> List['Author']:
         items = []

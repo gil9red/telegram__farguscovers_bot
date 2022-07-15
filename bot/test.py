@@ -331,6 +331,58 @@ class TestDbCover(unittest.TestCase):
         self.assertEqual(covers, author.get_covers(reverse=True)[::-1])
         self.assertEqual(covers[::-1], author.get_covers(reverse=True))
 
+    def test_count_by(self):
+        self.assertEqual(Cover.count_by(), Cover.count())
+        self.assertEqual(
+            Cover.count_by(by_author=None, by_game_series=None, by_game=None),
+            Cover.count()
+        )
+
+        by_author = None
+        by_game_series = None
+        by_game = None
+        cover_filters = dict(
+            by_author=by_author,
+            by_game_series=by_game_series,
+            by_game=by_game,
+        )
+        self.assertEqual(
+            Cover.count_by(by_author=by_author, by_game_series=by_game_series, by_game=by_game),
+            Cover.count_by(**cover_filters)
+        )
+
+    def test_get_page(self):
+        page = 1
+        for by_author, by_game_series, by_game in [
+            (None, None, None),
+            (Author.get_first(), None, None),
+            (Author.get_last(), None, None),
+            (None, GameSeries.get_first(), None),
+            (None, GameSeries.get_last(), None),
+            (None, None, Game.get_first()),
+            (None, None, Game.get_last()),
+        ]:
+            with self.subTest(
+                    page=page,by_author=by_author,
+                    by_game_series=by_game_series,
+                    by_game=by_game,
+            ):
+                cover = Cover.get_by_page(
+                    page=page,
+                    by_author=by_author,
+                    by_game_series=by_game_series,
+                    by_game=by_game,
+                )
+                self.assertEqual(
+                    page,
+                    Cover.get_page(
+                        need_cover_id=cover.id,
+                        by_author=by_author,
+                        by_game_series=by_game_series,
+                        by_game=by_game,
+                    )
+                )
+
 
 class TestDbCoverAll(unittest.TestCase):
     def test_all_covers(self):

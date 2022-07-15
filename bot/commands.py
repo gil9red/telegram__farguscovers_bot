@@ -7,7 +7,7 @@ __author__ = 'ipetrash'
 import html
 import re
 import time
-from typing import Union, Iterator
+from typing import Union, Iterator, Optional
 
 from telegram import (
     Update, InputMediaPhoto, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, ReplyKeyboardMarkup
@@ -61,7 +61,7 @@ def get_deep_linking_start_arg_html_url(
         update: Update,
         context: CallbackContext,
         title: str,
-        obj: Union[Author, GameSeries, Game],
+        obj: Union[Cover, Author, GameSeries, Game],
         reply_to_message_id: int = None,
 ) -> str:
     message = update.effective_message
@@ -125,6 +125,9 @@ def reply_from_start_argument(
         message_id = None
 
     match class_name:
+        case Cover.__name__:
+            reply_cover_page_card(update, context, cover_id=object_id, reply_to_message_id=message_id)
+
         case Author.__name__:
             reply_author_card(update, context, author_id=object_id, reply_to_message_id=message_id)
 
@@ -278,12 +281,18 @@ def get_cover_text(
         context: CallbackContext,
         cover: Cover,
         reply_to_message_id: int,
-        author_id: int = None,
-        game_series_id: int = None,
-        game_id: int = None,
+        by_author: int = None,
+        by_game_series: int = None,
+        by_game: int = None,
 ) -> str:
-    cover_text = html.escape(cover.text)
-    url_source = get_html_url(cover.url_post_image, "[источник]")
+    url_cover = get_deep_linking_start_arg_html_url(
+        update, context,
+        title=html.escape(cover.text),
+        obj=cover,
+        reply_to_message_id=reply_to_message_id,
+    )
+
+    url_source = get_html_url(cover.url_post_image, "источник")
 
     game_html_url = get_deep_linking_start_arg_html_url(
         update, context,
@@ -310,15 +319,15 @@ def get_cover_text(
     ]
 
     text = (
-        f"<b>{cover_text}</b> {url_source}\n"
+        f"<b>{url_cover}</b> [{url_source}]\n"
         f"Игра: {game_html_url}\n"
         f"Серия: {game_series_html_url}\n"
         f"Автор(ы): {', '.join(author_html_urls)}"
     )
-    if author_id or game_series_id or game_id:
-        author = Author.get_by_id(author_id) if author_id else None
-        game_series = GameSeries.get_by_id(game_series_id) if game_series_id else None
-        game = Game.get_by_id(game_id) if game_id else None
+    if by_author or by_game_series or by_game:
+        author = Author.get_by_id(by_author) if by_author else None
+        game_series = GameSeries.get_by_id(by_game_series) if by_game_series else None
+        game = Game.get_by_id(by_game) if by_game else None
 
         names = []
         if author:
@@ -335,42 +344,61 @@ def get_cover_text(
     return text
 
 
-def reply_cover_page_card(update: Update, context: CallbackContext, as_new_msg: bool = False):
+def reply_cover_page_card(
+        update: Update,
+        context: CallbackContext,
+        as_new_msg: bool = False,
+        page: int = 1,
+        cover_id: int = None,
+        by_author_id: int = None,
+        by_game_series_id: int = None,
+        by_game_id: int = None,
+        reply_to_message_id: int = None,
+):
     message = update.effective_message
+
+    if reply_to_message_id is not None:
+        reply_to_message_id = message.message_id
 
     query = update.callback_query
     if query:
         query.answer()
 
-    page = 1
-    author_id = game_series_id = game_id = None
+    # Если есть возможность вытащить из контекста значения
     if context.match and context.match.groups():
         page = get_int_from_match(context.match, 'page', default=page)
-        author_id = get_int_from_match(context.match, 'author_id')
-        game_series_id = get_int_from_match(context.match, 'game_series_id')
-        game_id = get_int_from_match(context.match, 'game_id')
+        by_author_id = get_int_from_match(context.match, 'author_id', default=by_author_id)
+        by_game_series_id = get_int_from_match(context.match, 'game_series_id', default=by_game_series_id)
+        by_game_id = get_int_from_match(context.match, 'game_id', default=by_game_id)
 
-        total_covers = Cover.count_by(
-            by_author=author_id,
-            by_game_series=game_series_id,
-            by_game=game_id,
+    cover_filters: dict[str, Optional[int]] = dict(
+        by_author=by_author_id,
+        by_game_series=by_game_series_id,
+        by_game=by_game_id,
+    )
+
+    total_covers = Cover.count_by(**cover_filters)
+
+    # Если был явно передан ид. обложки, то найдем ее в базе, а после найдем ее номер
+    # с учетом фильтрации
+    if cover_id is not None:
+        cover = Cover.get_by_id(cover_id)
+        page = Cover.get_page(
+            need_cover_id=cover.id,
+            **cover_filters
         )
     else:
-        total_covers = Cover.count()
-
-    cover = Cover.get_by_page(
-        page=page,
-        by_author=author_id,
-        by_game_series=game_series_id,
-        by_game=game_id,
-    )
+        cover = Cover.get_by_page(
+            page=page,
+            **cover_filters
+        )
 
     pattern = P.PATTERN_COVER_PAGE
 
     paginator = InlineKeyboardPaginator(
         page_count=total_covers,
         current_page=page,
-        data_pattern=fill_string_pattern(pattern, '{page}', author_id, game_series_id, game_id)
+        data_pattern=fill_string_pattern(pattern, '{page}', by_author_id, by_game_series_id, by_game_id)
     )
     add_prev_next_buttons(paginator)
 
@@ -386,10 +414,8 @@ def reply_cover_page_card(update: Update, context: CallbackContext, as_new_msg: 
         text = get_cover_text(
             update=update, context=context,
             cover=cover,
-            reply_to_message_id=message.message_id,
-            author_id=author_id,
-            game_series_id=game_series_id,
-            game_id=game_id,
+            reply_to_message_id=reply_to_message_id,
+            **cover_filters,
         )
 
         message.edit_caption(
@@ -409,9 +435,7 @@ def reply_cover_page_card(update: Update, context: CallbackContext, as_new_msg: 
             update=update, context=context,
             cover=cover,
             reply_to_message_id=message.message_id,
-            author_id=author_id,
-            game_series_id=game_series_id,
-            game_id=game_id,
+            **cover_filters,
         )
 
         message.edit_media(
