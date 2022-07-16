@@ -30,9 +30,22 @@ class NotDefinedParameterException(Exception):
         super().__init__(text)
 
 
+class SqliteQueueDatabaseDebug(SqliteQueueDatabase):
+    elapsed_time_ns: int = 0
+
+    def start_timer(self):
+        self.elapsed_time_ns = 0
+
+    def execute_sql(self, *args, **kwargs):
+        t = time.perf_counter_ns()
+        result = super().execute_sql(*args, **kwargs)
+        self.elapsed_time_ns += time.perf_counter_ns() - t
+        return result
+
+
 # This working with multithreading
 # SOURCE: http://docs.peewee-orm.com/en/latest/peewee/playhouse.html#sqliteq
-db = SqliteQueueDatabase(
+db = SqliteQueueDatabaseDebug(
     DB_FILE_NAME,
     pragmas={
         'foreign_keys': 1,

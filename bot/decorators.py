@@ -11,7 +11,7 @@ import time
 from telegram import Update
 from telegram.ext import CallbackContext
 
-from bot.db import TgUser, TgChat
+from bot.db import db, TgUser, TgChat
 
 
 def log_func(log: logging.Logger):
@@ -61,6 +61,9 @@ def process_request(log: logging.Logger):
         def wrapper(update: Update, context: CallbackContext):
             func_name = func.__name__
 
+            t = time.perf_counter_ns()
+            db.start_timer()
+
             if update:
                 user = update.effective_user
                 chat = update.effective_chat
@@ -73,11 +76,12 @@ def process_request(log: logging.Logger):
                 if chat_db:
                     chat_db.actualize(chat)
 
-            t = time.perf_counter_ns()
             result = func(update, context)
-            elapsed_ms = (time.perf_counter_ns() - t) // 1_000_000
 
-            log.debug(f'[{func_name}] Elapsed {elapsed_ms} ms')
+            elapsed_ms = (time.perf_counter_ns() - t) // 1_000_000
+            elapsed_db_ms = db.elapsed_time_ns // 1_000_000
+
+            log.debug(f'[{func_name}] Elapsed {elapsed_ms} ms (db: {elapsed_db_ms} ms)')
 
             return result
 
