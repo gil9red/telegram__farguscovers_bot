@@ -9,8 +9,10 @@ import time
 
 # pip install python-telegram-bot
 from telegram.ext import Updater, Defaults
+from telegram.utils.request import Request
 
 from bot import commands
+from bot.bot_debug import ExtBotDebug
 from bot.common import log
 from config import TOKEN
 
@@ -23,9 +25,12 @@ def main():
     log.debug(f'System: CPU_COUNT={cpu_count}, WORKERS={workers}')
 
     updater = Updater(
-        TOKEN,
         workers=workers,
-        defaults=Defaults(run_async=True),
+        bot=ExtBotDebug(
+            token=TOKEN,
+            request=Request(con_pool_size=workers + 4),
+            defaults=Defaults(run_async=True),
+        ),
     )
     bot = updater.bot
     log.debug(f'Bot name {bot.first_name!r} ({bot.name})')

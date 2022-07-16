@@ -14,11 +14,11 @@ from typing import Type, Optional, List, Iterable, Union
 from peewee import (
     Model, TextField, ForeignKeyField, CharField, DateTimeField, IntegerField, Field, fn
 )
-from playhouse.sqliteq import SqliteQueueDatabase
 import telegram
 
 from config import DB_FILE_NAME, DIR_DATA_VK, ITEMS_PER_PAGE
 from bot.common import get_slug
+from bot.debug import SqliteQueueDatabaseDebug
 from third_party.shorten import shorten
 
 
@@ -28,19 +28,6 @@ class NotDefinedParameterException(Exception):
         text = f'Parameter "{self.parameter_name}" must be defined!'
 
         super().__init__(text)
-
-
-class SqliteQueueDatabaseDebug(SqliteQueueDatabase):
-    elapsed_time_ns: int = 0
-
-    def start_timer(self):
-        self.elapsed_time_ns = 0
-
-    def execute_sql(self, *args, **kwargs):
-        t = time.perf_counter_ns()
-        result = super().execute_sql(*args, **kwargs)
-        self.elapsed_time_ns += time.perf_counter_ns() - t
-        return result
 
 
 # This working with multithreading

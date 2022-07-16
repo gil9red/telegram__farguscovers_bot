@@ -11,6 +11,7 @@ import time
 from telegram import Update
 from telegram.ext import CallbackContext
 
+from bot.bot_debug import ExtBotDebug
 from bot.db import db, TgUser, TgChat
 
 
@@ -64,6 +65,11 @@ def process_request(log: logging.Logger):
             t = time.perf_counter_ns()
             db.start_timer()
 
+            if not isinstance(context.bot, ExtBotDebug):
+                raise Exception('Бот должен иметь тип ExtBotDebug!')
+            bot: ExtBotDebug = context.bot
+            bot.start_timer()
+
             if update:
                 user = update.effective_user
                 chat = update.effective_chat
@@ -80,8 +86,9 @@ def process_request(log: logging.Logger):
 
             elapsed_ms = (time.perf_counter_ns() - t) // 1_000_000
             elapsed_db_ms = db.elapsed_time_ns // 1_000_000
+            elapsed_bot_ms = bot.elapsed_time_ns // 1_000_000
 
-            log.debug(f'[{func_name}] Elapsed {elapsed_ms} ms (db {elapsed_db_ms} ms)')
+            log.debug(f'[{func_name}] Elapsed {elapsed_ms} ms (db/bot: {elapsed_db_ms}/{elapsed_bot_ms})')
 
             return result
 
