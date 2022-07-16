@@ -81,7 +81,7 @@ def process_request(log: logging.Logger):
             elapsed_ms = (time.perf_counter_ns() - t) // 1_000_000
             elapsed_db_ms = db.elapsed_time_ns // 1_000_000
 
-            log.debug(f'[{func_name}] Elapsed {elapsed_ms} ms (db: {elapsed_db_ms} ms)')
+            log.debug(f'[{func_name}] Elapsed {elapsed_ms} ms (db {elapsed_db_ms} ms)')
 
             return result
 
