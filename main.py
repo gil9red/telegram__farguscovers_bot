@@ -12,8 +12,8 @@ from telegram.ext import Updater, Defaults
 from telegram.utils.request import Request
 
 from bot import commands
-from bot.bot_debug import ExtBotDebug
 from bot.common import log
+from bot.debug import ExtBotDebug
 from config import TOKEN
 
 

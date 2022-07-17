@@ -11,7 +11,7 @@ import time
 from telegram import Update
 from telegram.ext import CallbackContext
 
-from bot.bot_debug import ExtBotDebug
+from bot.debug import ExtBotDebug
 from bot.db import db, TgUser, TgChat
 
 
