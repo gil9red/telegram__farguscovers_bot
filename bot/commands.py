@@ -25,7 +25,7 @@ from bot.common import (
     is_equal_inline_keyboards, reply_text_or_edit_with_keyboard_paginator, add_prev_next_buttons
 )
 from bot.decorators import log_func, process_request
-from bot.db import Field, Cover, Author, GameSeries, Game, ITEMS_PER_PAGE
+from bot.db import Field, Cover, Author, GameSeries, Game, TgChat, ITEMS_PER_PAGE
 from bot import regexp_patterns as P
 from bot.regexp_patterns import fill_string_pattern
 from config import PLEASE_WAIT
@@ -104,6 +104,12 @@ def on_start(update: Update, context: CallbackContext):
     # При открытии ссылки (deep linking)
     # https://t.me/<bot_name>?start=<start_argument>
     if context.args:
+        # Если открытие по deep linking является первым запросом, то
+        # предварительно отправим описание бота
+        chat = TgChat.get_from(update.effective_chat)
+        if chat.is_first_request():
+            reply_help(update, context)
+
         reply_from_start_argument(update, context)
 
         # Удаление сообщения с /start, что останется после клика на ссылку

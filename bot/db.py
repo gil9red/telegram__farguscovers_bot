@@ -624,6 +624,9 @@ class TgChat(BaseModel):
         query = self.update(number_requests=cls.number_requests + 1).where(cls.id == self.id)
         query.execute()
 
+    def is_first_request(self) -> bool:
+        return self.number_requests in (0, 1)
+
 
 db.connect()
 db.create_tables(BaseModel.get_inherited_models())
