@@ -81,6 +81,23 @@ def get_deep_linking_start_arg_html_url(
     return get_html_url(url, title)
 
 
+def reply_help(update: Update, context: CallbackContext):
+    text = (
+        'Бот для отображения обложек с стены группы ВК https://vk.com/farguscovers\n\n'
+        f'Всего {Cover.count()} обложек за период '
+        f'{Cover.get_first().date_time.year}-{Cover.get_last().date_time.year}.\n\n'
+        'Для взаимодействия с ботом можно использовать клавиатуру и меню команд, что будут ниже.\n'
+        'Чтобы открыть обложку по номеру, просто введите номер.\n'
+        'В боте ссылки используются для перехода к сущностям. '
+        'После клика на ссылку ниже появится кнопка запуска на которую нужно кликнуть.'
+    )
+    reply_message(
+        text,
+        update, context,
+        reply_markup=get_reply_keyboard(),
+    )
+
+
 @log_func(log)
 @process_request(log)
 def on_start(update: Update, context: CallbackContext):
@@ -91,22 +108,9 @@ def on_start(update: Update, context: CallbackContext):
 
         # Удаление сообщения с /start, что останется после клика на ссылку
         update.effective_message.delete()
-
         return
 
-    text = (
-        'Бот для отображения обложек с стены группы ВК https://vk.com/farguscovers\n\n'
-        f'Всего {Cover.count()} обложек за период '
-        f'{Cover.get_first().date_time.year}-{Cover.get_last().date_time.year}\n\n'
-        'Чтобы открыть обложку по номеру, просто введите номер\n'
-        'В боте ссылки используются для перехода к сущностям. '
-        'После клика на ссылку ниже появится кнопка запуска на которую нужно кликнуть.'
-    )
-    reply_message(
-        text,
-        update, context,
-        reply_markup=get_reply_keyboard(),
-    )
+    reply_help(update, context)
 
 
 def reply_from_start_argument(
