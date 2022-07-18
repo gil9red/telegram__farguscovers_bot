@@ -359,7 +359,7 @@ class Cover(BaseModel):
         covers = cls.paginating(
             page=page,
             items_per_page=1,
-            order_by=cls.id,
+            order_by=cls.date_time,
             filters=total_filters,
         )
         return covers[0] if covers else None
@@ -380,12 +380,12 @@ class Cover(BaseModel):
             filters=filters,
         )
         query = cls.select(
-            fn.row_number().over(order_by=[cls.id]).alias('page'),
+            fn.row_number().over(order_by=[cls.date_time]).alias('page'),
             cls.id
         )
         if total_filters:
             query = query.where(*total_filters)
-        query = query.order_by(cls.id)
+        query = query.order_by(cls.date_time)
 
         for page, cover_id in query.tuples():
             if cover_id == need_cover_id:
