@@ -492,8 +492,8 @@ def on_gif_start_deep_linking(update: Update, context: CallbackContext):
                 callback_data=fill_string_pattern(P.PATTERN_DELETE_MESSAGE)
             ),
             InlineKeyboardButton(
-                text='Ссылка в репозитории',
-                url='https://github.com/gil9red/telegram__farguscovers_bot#работа-со-ссылками'
+                text='Посмотреть остальные GIF',
+                url='https://github.com/gil9red/telegram__farguscovers_bot#скриншоты'
             )
         ])
     )
