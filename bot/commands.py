@@ -28,7 +28,7 @@ from bot.decorators import log_func, process_request
 from bot.db import Field, Cover, Author, GameSeries, Game, TgChat, ITEMS_PER_PAGE
 from bot import regexp_patterns as P
 from bot.regexp_patterns import fill_string_pattern
-from config import PLEASE_WAIT
+from config import PLEASE_WAIT, SCREENSHOT_GIF_START_DEEP_LINKING
 
 
 PLEASE_WAIT_INFO = SeverityEnum.INFO.value.format(text=PLEASE_WAIT)
@@ -84,18 +84,22 @@ def get_deep_linking_start_arg_html_url(
 
 def reply_help(update: Update, context: CallbackContext):
     text = (
-        'Бот для отображения обложек с стены группы ВК https://vk.com/farguscovers\n\n'
+        '<a href="https://github.com/gil9red/telegram__farguscovers_bot">Бот для отображения обложек</a> '
+        'с стены группы ВК https://vk.com/farguscovers\n\n'
         f'Всего {Cover.count()} обложек за период '
         f'{Cover.get_first().date_time.year}-{Cover.get_last().date_time.year}.\n\n'
         'Для взаимодействия с ботом можно использовать клавиатуру и меню команд, что будут ниже.\n'
         'Чтобы открыть обложку по номеру, просто введите номер.\n'
         'В боте ссылки используются для перехода к сущностям. '
-        'После клика на ссылку ниже появится кнопка запуска на которую нужно кликнуть.'
+        f'После клика на ссылку ниже появится кнопка запуска на которую '
+        f'нужно кликнуть (инструкция /{P.COMMAND_GIF_START_DEEP_LINKING}).'
     )
     reply_message(
         text,
         update, context,
+        parse_mode=ParseMode.HTML,
         reply_markup=get_reply_keyboard(),
+        disable_web_page_preview=True,
     )
 
 
@@ -477,6 +481,29 @@ def reply_cover_page_card(
 
 @log_func(log)
 @process_request(log)
+def on_gif_start_deep_linking(update: Update, context: CallbackContext):
+    message = update.effective_message
+
+    message.reply_document(
+        document=open(SCREENSHOT_GIF_START_DEEP_LINKING, 'rb'),
+        reply_markup=InlineKeyboardMarkup.from_column([
+            InlineKeyboardButton(
+                text='Убрать',
+                callback_data=fill_string_pattern(P.PATTERN_DELETE_MESSAGE)
+            ),
+            InlineKeyboardButton(
+                text='Ссылка в репозитории',
+                url='https://github.com/gil9red/telegram__farguscovers_bot#работа-со-ссылками'
+            )
+        ])
+    )
+
+    # Удаление сообщения, вызвавшего команду
+    message.delete()
+
+
+@log_func(log)
+@process_request(log)
 def on_cover_card(update: Update, context: CallbackContext):
     reply_cover_page_card(update, context)
 
@@ -690,6 +717,15 @@ def on_game_list_as_new_msg(update: Update, context: CallbackContext):
 
 @log_func(log)
 @process_request(log)
+def on_callback_delete_message(update: Update, context: CallbackContext):
+    query = update.callback_query
+    query.answer()
+
+    query.message.delete()
+
+
+@log_func(log)
+@process_request(log)
 def on_request(update: Update, context: CallbackContext):
     reply_message(
         'Неизвестная команда 🤔',
@@ -755,6 +791,8 @@ def setup(dp: Dispatcher):
     dp.add_handler(CommandHandler('help', on_start))
     dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_COVERS_REPLY_HELP), on_start))
 
+    dp.add_handler(CommandHandler(P.COMMAND_GIF_START_DEEP_LINKING, on_gif_start_deep_linking))
+
     dp.add_handler(
         CommandHandler(P.COMMAND_FILL_SERVER_FILE_ID, on_fill_server_file_id, FILTER_BY_ADMIN)
     )
@@ -780,6 +818,8 @@ def setup(dp: Dispatcher):
     dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_GAMES_REPLY_ALL), on_game_page_list))
     dp.add_handler(CallbackQueryHandler(on_game_page_list, pattern=P.PATTERN_GAMES_PAGE))
     dp.add_handler(CallbackQueryHandler(on_game_list_as_new_msg, pattern=P.PATTERN_GAMES_NEW_PAGE))
+
+    dp.add_handler(CallbackQueryHandler(on_callback_delete_message, pattern=P.PATTERN_DELETE_MESSAGE))
 
     dp.add_handler(MessageHandler(Filters.text, on_request))
 

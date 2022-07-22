@@ -38,6 +38,10 @@ except:
     TOKEN_FILE_NAME.touch()
     sys.exit()
 
+SCREENSHOT_GIF_START_DEEP_LINKING = DIR / 'etc' / 'screenshots' / 'start_deep_linking.gif'
+if not SCREENSHOT_GIF_START_DEEP_LINKING.exists():
+    raise Exception(f'Отсутствует файл: {SCREENSHOT_GIF_START_DEEP_LINKING}')
+
 ERROR_TEXT = 'Возникла какая-то проблема. Попробуйте повторить запрос или попробовать чуть позже...'
 PLEASE_WAIT = 'Пожалуйста, подождите...'
 

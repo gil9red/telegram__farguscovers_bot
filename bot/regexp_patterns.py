@@ -17,6 +17,8 @@ def fill_string_pattern(pattern: re.Pattern, *args) -> str:
 
 COMMAND_FILL_SERVER_FILE_ID = 'fill_server_file_id'
 
+COMMAND_GIF_START_DEEP_LINKING = 'gif_start_deep_linking'
+
 PATTERN_COVERS_REPLY_HELP = re.compile(r'^Помощь$', flags=re.IGNORECASE)
 
 # Запрос обложек и их пагинация
@@ -61,3 +63,5 @@ PATTERN_GAMES_NEW_PAGE = re.compile(
 PATTERN_START_ARGUMENT = re.compile(
     r'^(?P<class_name>[a-zA-Z]+)_(?P<object_id>\d+)_(?P<chat_id>\d+)_(?P<message_id>\d+)$'
 )
+
+PATTERN_DELETE_MESSAGE = re.compile('^delete_message$')
