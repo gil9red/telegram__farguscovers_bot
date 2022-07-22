@@ -32,7 +32,7 @@ from config import PLEASE_WAIT
 
 
 PLEASE_WAIT_INFO = SeverityEnum.INFO.value.format(text=PLEASE_WAIT)
-URL_SOURCE = "источник"
+TITLE_URL_SOURCE = "источник"
 
 
 def get_int_from_match(match: re.Match, name: str, default: int = None) -> int:
@@ -162,7 +162,7 @@ def reply_author_card(
 ):
     author = Author.get_by_id(author_id)
 
-    url_source = get_html_url(author.url, URL_SOURCE)
+    url_source = get_html_url(author.url, TITLE_URL_SOURCE)
     text = (
         f'<b>Автор "{html.escape(author.name)}"</b> [{url_source}]\n'
         '\n'
@@ -302,7 +302,7 @@ def get_cover_text(
         reply_to_message_id=reply_to_message_id,
     )
 
-    url_source = get_html_url(cover.url_post_image, URL_SOURCE)
+    url_source = get_html_url(cover.url_post_image, TITLE_URL_SOURCE)
 
     game_html_url = get_deep_linking_start_arg_html_url(
         update, context,
