@@ -10,7 +10,8 @@ import time
 from typing import Union, Iterator, Optional
 
 from telegram import (
-    Update, InputMediaPhoto, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, ReplyKeyboardMarkup
+    Update, InputMediaPhoto, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode,
+    ReplyKeyboardMarkup, ReplyKeyboardRemove
 )
 from telegram.error import BadRequest
 from telegram.ext import (
@@ -482,6 +483,28 @@ def reply_cover_page_card(
 
 @log_func(log)
 @process_request(log)
+def on_show_reply(update: Update, context: CallbackContext):
+    reply_message(
+        text='Готово!',
+        update=update, context=context,
+        severity=SeverityEnum.INFO,
+        reply_markup=get_reply_keyboard(),
+    )
+
+
+@log_func(log)
+@process_request(log)
+def on_hide_reply(update: Update, context: CallbackContext):
+    reply_message(
+        text='Готово!',
+        update=update, context=context,
+        severity=SeverityEnum.INFO,
+        reply_markup=ReplyKeyboardRemove()
+    )
+
+
+@log_func(log)
+@process_request(log)
 def on_gif_start_deep_linking(update: Update, context: CallbackContext):
     message = update.effective_message
 
@@ -797,6 +820,9 @@ def setup(dp: Dispatcher):
     dp.add_handler(
         CommandHandler(P.COMMAND_FILL_SERVER_FILE_ID, on_fill_server_file_id, FILTER_BY_ADMIN)
     )
+
+    dp.add_handler(CommandHandler(P.COMMAND_SHOW_REPLY, on_show_reply))
+    dp.add_handler(CommandHandler(P.COMMAND_HIDE_REPLY, on_hide_reply))
 
     dp.add_handler(CommandHandler(P.COMMAND_COVERS_ALL, on_cover_card))
     dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_COVERS_REPLY_ALL), on_cover_card))

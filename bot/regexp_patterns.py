@@ -65,3 +65,6 @@ PATTERN_START_ARGUMENT = re.compile(
 )
 
 PATTERN_DELETE_MESSAGE = re.compile('^delete_message$')
+
+COMMAND_SHOW_REPLY = 'show_reply'
+COMMAND_HIDE_REPLY = 'hide_reply'
