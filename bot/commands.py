@@ -100,7 +100,6 @@ def reply_help(update: Update, context: CallbackContext):
         text,
         update, context,
         parse_mode=ParseMode.HTML,
-        reply_markup=get_reply_keyboard(),
         disable_web_page_preview=True,
     )
 
@@ -754,8 +753,7 @@ def on_request(update: Update, context: CallbackContext):
     reply_message(
         'Неизвестная команда 🤔',
         update=update, context=context,
-        severity=SeverityEnum.ERROR,
-        reply_markup=get_reply_keyboard()
+        severity=SeverityEnum.ERROR
     )
 
 
