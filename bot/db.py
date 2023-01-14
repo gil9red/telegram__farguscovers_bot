@@ -8,7 +8,7 @@ import datetime as DT
 import time
 
 from pathlib import Path
-from typing import Type, Optional, List, Iterable, Union
+from typing import Type, Optional, Iterable, Union
 
 # pip install peewee
 from peewee import (
@@ -72,7 +72,7 @@ class BaseModel(Model):
             items_per_page: int = ITEMS_PER_PAGE,
             order_by: Field = None,
             filters: Iterable = None,
-    ) -> List[Type['BaseModel']]:
+    ) -> list[Type['BaseModel']]:
         query = cls.select()
 
         if filters:
@@ -85,7 +85,7 @@ class BaseModel(Model):
         return list(query)
 
     @classmethod
-    def get_inherited_models(cls) -> List[Type['BaseModel']]:
+    def get_inherited_models(cls) -> list[Type['BaseModel']]:
         return sorted(cls.__subclasses__(), key=lambda x: x.__name__)
 
     @classmethod
@@ -165,7 +165,7 @@ class GameSeries(BaseModel):
             cls,
             by_author: Union[int, 'Author'] = None,
             filters: Iterable = None,
-    ) -> List:
+    ) -> list:
         total_filters = []
 
         if by_author is not None:
@@ -181,7 +181,7 @@ class GameSeries(BaseModel):
 
         return total_filters
 
-    def get_authors(self) -> List['Author']:
+    def get_authors(self) -> list['Author']:
         game_ids = Game.select(Game.id).where(Game.series == self)
         cover_ids = Cover.select(Cover.id).where(Cover.game.in_(game_ids))
         query = Author2Cover.select(Author2Cover.author).distinct().where(Author2Cover.cover.in_(cover_ids))
@@ -190,7 +190,7 @@ class GameSeries(BaseModel):
     def get_number_of_authors(self) -> int:
         return len(self.get_authors())
 
-    def get_games(self) -> List['Game']:
+    def get_games(self) -> list['Game']:
         return list(self.games)
 
     def get_number_of_games(self) -> int:
@@ -239,7 +239,7 @@ class Game(BaseModel):
             by_author: Union[int, 'Author'] = None,
             by_game_series: Union[int, 'GameSeries'] = None,
             filters: Iterable = None,
-    ) -> List:
+    ) -> list:
         total_filters = []
 
         if by_author is not None:
@@ -263,7 +263,7 @@ class Game(BaseModel):
     def series_name(self) -> str:
         return self.series.name if self.series else ""
 
-    def get_authors(self) -> List['Author']:
+    def get_authors(self) -> list['Author']:
         cover_ids = Cover.select(Cover.id).where(Cover.game == self)
         query = Author2Cover.select(Author2Cover.author).distinct().where(Author2Cover.cover.in_(cover_ids))
         return [a2c.author for a2c in query]
@@ -295,7 +295,7 @@ class Cover(BaseModel):
             by_game_series: Union[int, 'GameSeries'] = None,
             by_game: Union[int, 'Game'] = None,
             filters: Iterable = None,
-    ) -> List:
+    ) -> list:
         total_filters = []
 
         if by_author is not None:
@@ -393,7 +393,7 @@ class Cover(BaseModel):
 
         raise Exception(f'Не удалось определить номер для #{need_cover_id} по {total_filters}')
 
-    def get_authors(self, reverse=False) -> List['Author']:
+    def get_authors(self, reverse=False) -> list['Author']:
         items = []
         for link in self.links_to_authors:
             author = link.author
@@ -428,7 +428,7 @@ class Author(BaseModel):
             by_game_series: Union[int, 'GameSeries'] = None,
             by_game: Union[int, 'Game'] = None,
             filters: Iterable = None,
-    ) -> List:
+    ) -> list:
         total_filters = []
 
         if by_game_series is not None:
@@ -451,7 +451,7 @@ class Author(BaseModel):
 
         return total_filters
 
-    def get_covers(self, reverse=False) -> List[Cover]:
+    def get_covers(self, reverse=False) -> list[Cover]:
         items = [link.cover for link in self.links_to_covers]
         items.sort(reverse=reverse, key=lambda x: x.id)
         return items
@@ -459,7 +459,7 @@ class Author(BaseModel):
     def get_number_of_covers(self) -> int:
         return Cover.count_by(by_author=self)
 
-    def get_games(self) -> List[Game]:
+    def get_games(self) -> list[Game]:
         items = []
         for link in self.links_to_covers:
             game = link.cover.game
@@ -471,7 +471,7 @@ class Author(BaseModel):
     def get_number_of_games(self) -> int:
         return len(self.get_games())
 
-    def get_game_series(self) -> List[GameSeries]:
+    def get_game_series(self) -> list[GameSeries]:
         items = []
         for link in self.links_to_covers:
             series = link.cover.game.series

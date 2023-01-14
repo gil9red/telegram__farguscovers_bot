@@ -7,7 +7,7 @@ __author__ = 'ipetrash'
 import html
 import re
 import time
-from typing import Union, Iterator, Optional
+from typing import Iterator
 
 from telegram import (
     Update, InputMediaPhoto, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode,
@@ -63,7 +63,7 @@ def get_deep_linking_start_arg_html_url(
         update: Update,
         context: CallbackContext,
         title: str,
-        obj: Union[Cover, Author, GameSeries, Game],
+        obj: Cover | Author | GameSeries | Game,
         reply_to_message_id: int = None,
 ) -> str:
     message = update.effective_message
@@ -383,7 +383,7 @@ def reply_cover_page_card(
         by_game_series_id = get_int_from_match(context.match, 'game_series_id', default=by_game_series_id)
         by_game_id = get_int_from_match(context.match, 'game_id', default=by_game_id)
 
-    cover_filters: dict[str, Optional[int]] = dict(
+    cover_filters: dict[str, int | None] = dict(
         by_author=by_author_id,
         by_game_series=by_game_series_id,
         by_game=by_game_id,
@@ -547,7 +547,7 @@ def reply_page_objects(
         update: Update,
         context: CallbackContext,
         model_title: str,
-        model: Union[Author, GameSeries, Game],
+        model: Author | GameSeries | Game,
         paginator_pattern: str,
         filters: Iterator[Field] = None,
         as_new_msg=False,

@@ -13,7 +13,6 @@ import sys
 import re
 
 from pathlib import Path
-from typing import Optional, Union, List
 
 import telegram.error
 from telegram import Update, InlineKeyboardMarkup, ReplyMarkup, Message, CallbackQuery, InlineKeyboardButton
@@ -62,7 +61,7 @@ def add_prev_next_buttons(paginator: InlineKeyboardPaginator):
 
 
 def is_equal_inline_keyboards(
-        keyboard_1: Union[InlineKeyboardMarkup, str],
+        keyboard_1: InlineKeyboardMarkup | str,
         keyboard_2: InlineKeyboardMarkup
 ) -> bool:
     if isinstance(keyboard_1, InlineKeyboardMarkup):
@@ -101,9 +100,9 @@ def reply_message(
 
 def reply_text_or_edit_with_keyboard(
     message: Message,
-    query: Optional[CallbackQuery],
+    query: CallbackQuery | None,
     text: str,
-    reply_markup: Union[InlineKeyboardMarkup, str],
+    reply_markup: InlineKeyboardMarkup | str,
     quote: bool = False,
     as_new_msg: bool = False,
     force_edit: bool = False,
@@ -138,14 +137,14 @@ def reply_text_or_edit_with_keyboard(
 
 def reply_text_or_edit_with_keyboard_paginator(
         message: Message,
-        query: Optional[CallbackQuery],
+        query: CallbackQuery | None,
         text: str,
         page_count: int,
         items_per_page: int,
         current_page: int,
         paginator_pattern: str,
-        before_inline_buttons: List[InlineKeyboardButton] = None,
-        after_inline_buttons: List[InlineKeyboardButton] = None,
+        before_inline_buttons: list[InlineKeyboardButton] = None,
+        after_inline_buttons: list[InlineKeyboardButton] = None,
         quote: bool = False,
         as_new_msg: bool = False,
         force_edit: bool = False,
@@ -215,7 +214,7 @@ def process_error(log: logging.Logger, update: Update, context: CallbackContext)
         reply_message(config.ERROR_TEXT, update, context, severity=SeverityEnum.ERROR)
 
 
-def get_slug(text: Optional[str]) -> str:
+def get_slug(text: str | None) -> str:
     if not text:
         return ''
 
