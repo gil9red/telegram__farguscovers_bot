@@ -391,7 +391,7 @@ def reply_cover_page_card(
 
     total_covers = Cover.count_by(**cover_filters)
 
-    # Если был явно передан ид. обложки, то найдем ее в базе, а после найдем ее номер
+    # Если был явно передан id обложки, то найдем ее в базе, а после найдем ее номер
     # с учетом фильтрации
     if cover_id is not None:
         cover = Cover.get_by_id(cover_id)
