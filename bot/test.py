@@ -132,6 +132,15 @@ class TestRegexpPatterns(unittest.TestCase):
             GameSeries.__name__, self.MAX_ID_DB, self.MAX_ID, self.MAX_ID, self.MAX_ID
         )
 
+    def test_pattern_find(self):
+        text = ' крутой Семён!'
+
+        result = P.fill_string_pattern(P.PATTERN_REPLY_FIND, text)
+        self.assertTrue(result)
+
+        m = P.PATTERN_REPLY_FIND.search(result)
+        self.assertEqual(text, m['text'])
+
 
 class TestDb(unittest.TestCase):
     def test_get_by_raises_exception(self):
@@ -387,6 +396,24 @@ class TestDbCover(unittest.TestCase):
                         by_game=by_game,
                     )
                 )
+
+    def test_find(self):
+        text = self.cover.text
+        covers = Cover.find(text)
+        self.assertIn(self.cover, covers, f'Не удалось найти обложку по ее тексту: {text!r}')
+
+        text = self.cover.game.name
+        covers = Cover.find(text)
+        self.assertIn(self.cover, covers, f'Не удалось найти обложку по названию игры: {text!r}')
+
+        text = self.cover.game.series_name
+        covers = Cover.find(text)
+        self.assertIn(self.cover, covers, f'Не удалось найти обложку по названию серии игры: {text!r}')
+
+        for author in self.cover.get_authors():
+            text = author.name
+            covers = Cover.find(text)
+            self.assertIn(self.cover, covers, f'Не удалось найти обложку по имени автора: {text!r}')
 
 
 class TestDbCoverAll(unittest.TestCase):

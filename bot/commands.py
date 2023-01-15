@@ -29,7 +29,7 @@ from bot.decorators import log_func, process_request
 from bot.db import Field, Cover, Author, GameSeries, Game, TgChat, ITEMS_PER_PAGE
 from bot import regexp_patterns as P
 from bot.regexp_patterns import fill_string_pattern
-from config import PLEASE_WAIT, SCREENSHOT_GIF_START_DEEP_LINKING
+from config import PLEASE_WAIT, SCREENSHOT_GIF_START_DEEP_LINKING, MAX_MESSAGE_LENGTH
 
 
 PLEASE_WAIT_INFO = SeverityEnum.INFO.value.format(text=PLEASE_WAIT)
@@ -81,6 +81,66 @@ def get_deep_linking_start_arg_html_url(
 
     url = get_deep_linking(start_argument, context)
     return get_html_url(url, title)
+
+
+def get_context_value(context: CallbackContext) -> str | None:
+    value = None
+    try:
+        # Значение вытаскиваем из регулярки
+        if context.match:
+            value = context.match.group(1)
+        else:
+            # Значение из значений команды
+            value = ' '.join(context.args)
+    except:
+        pass
+
+    return value
+
+
+def reply_cover_ids(items: list[Cover], update: Update, context: CallbackContext, sep: str = ', '):
+    def _get_search_result(items: list[Cover]) -> str:
+        result = sep.join(
+            get_deep_linking_start_arg_html_url(
+                update=update, context=context,
+                title=f'{cover.id}',
+                obj=cover
+            )
+            for cover in items
+        )
+        return f'Найдено {len(items)}:\n{result}'
+
+    def _get_result(items: list[Cover], post_fix='...') -> str:
+        text = _get_search_result(items)
+        if len(text) <= MAX_MESSAGE_LENGTH:
+            return text
+
+        # Результат может быть слишком большим, а нужно вместить сообщение в MAX_MESSAGE_LENGTH
+        # Поэтому, если при составлении текста результата длина вышла больше нужно уменьшить
+        prev = 0
+        while True:
+            i = text.find(sep, prev + 1)
+            if i == -1:
+                break
+
+            # Если на этой итерации кусочек текста превысил максимум, значит нужно остановиться,
+            # а предыдущий кусочек текста сохранить -- его размер как раз подходит
+            if len(text[:i]) + len(post_fix) > MAX_MESSAGE_LENGTH:
+                text = text[:prev] + post_fix
+                break
+
+            prev = i
+
+        return text
+
+    text = _get_result(items) if items else 'Не найдено!'
+
+    reply_message(
+        text,
+        update, context,
+        parse_mode=ParseMode.HTML,
+        severity=SeverityEnum.INFO
+    )
 
 
 def reply_help(update: Update, context: CallbackContext):
@@ -749,6 +809,22 @@ def on_callback_delete_message(update: Update, context: CallbackContext):
 
 @log_func(log)
 @process_request(log)
+def on_find(update: Update, context: CallbackContext):
+    text = get_context_value(context)
+    if not text:
+        reply_message(
+            'Не введен текст для поиска!',
+            update, context,
+            severity=SeverityEnum.INFO
+        )
+        return
+
+    covers = Cover.find(text)
+    reply_cover_ids(covers, update, context)
+
+
+@log_func(log)
+@process_request(log)
 def on_request(update: Update, context: CallbackContext):
     reply_message(
         'Неизвестная команда 🤔',
@@ -845,6 +921,9 @@ def setup(dp: Dispatcher):
     dp.add_handler(CallbackQueryHandler(on_game_list_as_new_msg, pattern=P.PATTERN_GAMES_NEW_PAGE))
 
     dp.add_handler(CallbackQueryHandler(on_callback_delete_message, pattern=P.PATTERN_DELETE_MESSAGE))
+
+    dp.add_handler(CommandHandler(P.COMMAND_FIND, on_find))
+    dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_REPLY_FIND), on_find))
 
     dp.add_handler(MessageHandler(Filters.text, on_request))
 

@@ -402,6 +402,28 @@ class Cover(BaseModel):
         items.sort(reverse=reverse, key=lambda x: x.id)
         return items
 
+    @classmethod
+    def find(cls, text: str) -> list['Cover']:
+        items = []
+        if not text:
+            return items
+
+        # NOTE: Элементов в базе мало, поэтому эта реализация работает быстро,
+        #       но, конечно, лучше если поиск будет идти через саму базу
+        #       Нужно помнить, что в SQLITE поиск через LIKE не регистро-независимый для
+        #       не-ASCII, туда же идет и работа функций UPPER и LOWER
+        for cover in cls.select():
+            full_text = (
+                cover.text +
+                cover.game.name +
+                cover.game.series_name +
+                ''.join(a.name for a in cover.get_authors())
+            )
+            if text.upper() in full_text.upper():
+                items.append(cover)
+
+        return items
+
 
 class Author(BaseModel):
     name = TextField()
@@ -637,7 +659,7 @@ time.sleep(0.050)
 
 if __name__ == '__main__':
     BaseModel.print_count_of_tables()
-    # Author: 164, Author2Cover: 581, Cover: 567, Game: 451, GameSeries: 200, TelegramUser: 0
+    # Author: 165, Author2Cover: 607, Cover: 567, Game: 451, GameSeries: 200, TgChat: 16, TgUser: 16
     print()
 
     first = Cover.get_first()

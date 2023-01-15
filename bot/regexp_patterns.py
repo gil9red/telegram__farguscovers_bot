@@ -68,3 +68,6 @@ PATTERN_DELETE_MESSAGE = re.compile('^delete_message$')
 
 COMMAND_SHOW_REPLY = 'show_reply'
 COMMAND_HIDE_REPLY = 'hide_reply'
+
+COMMAND_FIND = 'find'
+PATTERN_REPLY_FIND = re.compile(r'^Find (?P<text>.+)$', flags=re.IGNORECASE)
