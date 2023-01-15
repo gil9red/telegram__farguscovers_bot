@@ -33,7 +33,7 @@ from config import PLEASE_WAIT, SCREENSHOT_GIF_START_DEEP_LINKING, MAX_MESSAGE_L
 
 
 PLEASE_WAIT_INFO = SeverityEnum.INFO.value.format(text=PLEASE_WAIT)
-TITLE_URL_SOURCE = "источник"
+TITLE_URL_SOURCE = "vk"
 
 
 def get_int_from_match(match: re.Match, name: str, default: int = None) -> int:
