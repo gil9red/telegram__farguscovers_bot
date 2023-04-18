@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__author__ = 'ipetrash'
+__author__ = "ipetrash"
 
 
 import os
@@ -18,11 +18,11 @@ from config import TOKEN
 
 
 def main():
-    log.debug('Start')
+    log.debug("Start")
 
     cpu_count = os.cpu_count()
     workers = cpu_count
-    log.debug(f'System: CPU_COUNT={cpu_count}, WORKERS={workers}')
+    log.debug(f"System: CPU_COUNT={cpu_count}, WORKERS={workers}")
 
     updater = Updater(
         workers=workers,
@@ -33,7 +33,7 @@ def main():
         ),
     )
     bot = updater.bot
-    log.debug(f'Bot name {bot.first_name!r} ({bot.name})')
+    log.debug(f"Bot name {bot.first_name!r} ({bot.name})")
 
     dp = updater.dispatcher
     commands.setup(dp)
@@ -41,16 +41,16 @@ def main():
     updater.start_polling()
     updater.idle()
 
-    log.debug('Finish')
+    log.debug("Finish")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     while True:
         try:
             main()
         except:
-            log.exception('')
+            log.exception("")
 
             timeout = 15
-            log.info(f'Restarting the bot after {timeout} seconds')
+            log.info(f"Restarting the bot after {timeout} seconds")
             time.sleep(timeout)
