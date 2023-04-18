@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__author__ = 'ipetrash'
+__author__ = "ipetrash"
 
 
 import html
@@ -10,20 +10,37 @@ import time
 from typing import Iterator
 
 from telegram import (
-    Update, InputMediaPhoto, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode,
-    ReplyKeyboardMarkup, ReplyKeyboardRemove
+    Update,
+    InputMediaPhoto,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    ParseMode,
+    ReplyKeyboardMarkup,
+    ReplyKeyboardRemove,
 )
 from telegram.error import BadRequest
 from telegram.ext import (
-    Dispatcher, CallbackContext, MessageHandler, CommandHandler, Filters, CallbackQueryHandler
+    Dispatcher,
+    CallbackContext,
+    MessageHandler,
+    CommandHandler,
+    Filters,
+    CallbackQueryHandler,
 )
 
 # pip install python-telegram-bot-pagination
 from telegram_bot_pagination import InlineKeyboardPaginator
 
 from bot.common import (
-    process_error, log, reply_message, FILTER_BY_ADMIN, SeverityEnum, get_deep_linking,
-    is_equal_inline_keyboards, reply_text_or_edit_with_keyboard_paginator, add_prev_next_buttons
+    process_error,
+    log,
+    reply_message,
+    FILTER_BY_ADMIN,
+    SeverityEnum,
+    get_deep_linking,
+    is_equal_inline_keyboards,
+    reply_text_or_edit_with_keyboard_paginator,
+    add_prev_next_buttons,
 )
 from bot.decorators import log_func, process_request
 from bot.db import Field, Cover, Author, GameSeries, Game, TgChat, ITEMS_PER_PAGE
@@ -49,7 +66,7 @@ def get_reply_keyboard() -> ReplyKeyboardMarkup:
         [
             fill_string_pattern(P.PATTERN_AUTHORS_REPLY_ALL),
             fill_string_pattern(P.PATTERN_GAME_SERIES_REPLY_ALL),
-            fill_string_pattern(P.PATTERN_GAMES_REPLY_ALL)
+            fill_string_pattern(P.PATTERN_GAMES_REPLY_ALL),
         ],
     ]
     return ReplyKeyboardMarkup(commands, resize_keyboard=True)
@@ -60,11 +77,11 @@ def get_html_url(url: str, title: str) -> str:
 
 
 def get_deep_linking_start_arg_html_url(
-        update: Update,
-        context: CallbackContext,
-        title: str,
-        obj: Cover | Author | GameSeries | Game,
-        reply_to_message_id: int = None,
+    update: Update,
+    context: CallbackContext,
+    title: str,
+    obj: Cover | Author | GameSeries | Game,
+    reply_to_message_id: int = None,
 ) -> str:
     message = update.effective_message
 
@@ -91,26 +108,31 @@ def get_context_value(context: CallbackContext) -> str | None:
             value = context.match.group(1)
         else:
             # Значение из значений команды
-            value = ' '.join(context.args)
+            value = " ".join(context.args)
     except:
         pass
 
     return value
 
 
-def reply_cover_ids(items: list[Cover], update: Update, context: CallbackContext, sep: str = ', '):
+def reply_cover_ids(
+    items: list[Cover],
+    update: Update,
+    context: CallbackContext,
+    sep: str = ", ",
+):
     def _get_search_result(items: list[Cover]) -> str:
         result = sep.join(
             get_deep_linking_start_arg_html_url(
                 update=update, context=context,
-                title=f'{cover.id}',
+                title=f"{cover.id}",
                 obj=cover
             )
             for cover in items
         )
-        return f'Найдено {len(items)}:\n{result}'
+        return f"Найдено {len(items)}:\n{result}"
 
-    def _get_result(items: list[Cover], post_fix='...') -> str:
+    def _get_result(items: list[Cover], post_fix="...") -> str:
         text = _get_search_result(items)
         if len(text) <= MAX_MESSAGE_LENGTH:
             return text
@@ -133,7 +155,7 @@ def reply_cover_ids(items: list[Cover], update: Update, context: CallbackContext
 
         return text
 
-    text = _get_result(items) if items else 'Не найдено!'
+    text = _get_result(items) if items else "Не найдено!"
 
     reply_message(
         text,
@@ -146,15 +168,15 @@ def reply_cover_ids(items: list[Cover], update: Update, context: CallbackContext
 def reply_help(update: Update, context: CallbackContext):
     text = (
         '<a href="https://github.com/gil9red/telegram__farguscovers_bot">Бот для отображения обложек</a> '
-        'с стены группы ВК https://vk.com/farguscovers\n\n'
-        f'Всего {Cover.count()} обложек за период '
-        f'{Cover.get_first().date_time.year}-{Cover.get_last().date_time.year}.\n\n'
-        f'Для взаимодействия с ботом можно использовать клавиатуру и меню команд, что будут ниже.\n'
-        f'Чтобы сразу посмотреть обложки кликни на /{P.COMMAND_COVERS_ALL}). Чтобы открыть обложку по номеру, '
-        f'просто введите номер.\n\n'
-        'В боте ссылки используются для перехода к сущностям. '
-        f'После клика на ссылку ниже появится кнопка запуска на которую '
-        f'нужно кликнуть (инструкция /{P.COMMAND_GIF_START_DEEP_LINKING}).'
+        "с стены группы ВК https://vk.com/farguscovers\n\n"
+        f"Всего {Cover.count()} обложек за период "
+        f"{Cover.get_first().date_time.year}-{Cover.get_last().date_time.year}.\n\n"
+        f"Для взаимодействия с ботом можно использовать клавиатуру и меню команд, что будут ниже.\n"
+        f"Чтобы сразу посмотреть обложки кликни на /{P.COMMAND_COVERS_ALL}). Чтобы открыть обложку по номеру, "
+        f"просто введите номер.\n\n"
+        "В боте ссылки используются для перехода к сущностям. "
+        f"После клика на ссылку ниже появится кнопка запуска на которую "
+        f"нужно кликнуть (инструкция /{P.COMMAND_GIF_START_DEEP_LINKING})."
     )
     reply_message(
         text,
@@ -186,16 +208,16 @@ def on_start(update: Update, context: CallbackContext):
 
 
 def reply_from_start_argument(
-        update: Update,
-        context: CallbackContext
+    update: Update,
+    context: CallbackContext
 ):
     start_argument = context.args[0]
 
     m = P.PATTERN_START_ARGUMENT.match(start_argument)
-    class_name = m['class_name']
-    object_id = get_int_from_match(m, 'object_id')
-    chat_id = get_int_from_match(m, 'chat_id')
-    message_id = get_int_from_match(m, 'message_id')
+    class_name = m["class_name"]
+    object_id = get_int_from_match(m, "object_id")
+    chat_id = get_int_from_match(m, "chat_id")
+    message_id = get_int_from_match(m, "message_id")
 
     # Если разные чаты, то нельзя создавать связь нового сообщения к переданному в message_id,
     # иначе будет ошибка (замечено, если делать для разных чатов)
@@ -204,49 +226,60 @@ def reply_from_start_argument(
 
     match class_name:
         case Cover.__name__:
-            reply_cover_page_card(update, context, cover_id=object_id, reply_to_message_id=message_id)
+            reply_cover_page_card(
+                update, context, cover_id=object_id, reply_to_message_id=message_id
+            )
 
         case Author.__name__:
-            reply_author_card(update, context, author_id=object_id, reply_to_message_id=message_id)
+            reply_author_card(
+                update, context, author_id=object_id, reply_to_message_id=message_id
+            )
 
         case GameSeries.__name__:
-            reply_game_series_card(update, context, game_series_id=object_id, reply_to_message_id=message_id)
+            reply_game_series_card(
+                update,
+                context,
+                game_series_id=object_id,
+                reply_to_message_id=message_id,
+            )
 
         case Game.__name__:
-            reply_game_card(update, context, game_id=object_id, reply_to_message_id=message_id)
+            reply_game_card(
+                update, context, game_id=object_id, reply_to_message_id=message_id
+            )
 
         case _:
-            raise Exception(f'Неподдерживаемый тип {class_name!r}')
+            raise Exception(f"Неподдерживаемый тип {class_name!r}")
 
 
 def reply_author_card(
-        update: Update,
-        context: CallbackContext,
-        author_id: int,
-        reply_to_message_id: int = None
+    update: Update,
+    context: CallbackContext,
+    author_id: int,
+    reply_to_message_id: int = None,
 ):
     author = Author.get_by_id(author_id)
 
     url_source = get_html_url(author.url, TITLE_URL_SOURCE)
     text = (
         f'<b>Автор "{html.escape(author.name)}"</b> [{url_source}]\n'
-        '\n'
-        f'Обложки: {author.get_number_of_covers()}\n'
-        f'Серии: {author.get_number_of_game_series()}\n'
-        f'Игры: {author.get_number_of_games()}'
+        "\n"
+        f"Обложки: {author.get_number_of_covers()}\n"
+        f"Серии: {author.get_number_of_game_series()}\n"
+        f"Игры: {author.get_number_of_games()}"
     )
 
     markup = InlineKeyboardMarkup.from_row([
         InlineKeyboardButton(
-            text='Обложки',
+            text="Обложки",
             callback_data=fill_string_pattern(P.PATTERN_COVER_NEW_PAGE, 1, author_id, None, None)
         ),
         InlineKeyboardButton(
-            text='Серии',
+            text="Серии",
             callback_data=fill_string_pattern(P.PATTERN_GAME_SERIES_NEW_PAGE, 1, author_id)
         ),
         InlineKeyboardButton(
-            text='Игры',
+            text="Игры",
             callback_data=fill_string_pattern(P.PATTERN_GAMES_NEW_PAGE, 1, author_id, None)
         ),
     ])
@@ -261,32 +294,32 @@ def reply_author_card(
 
 
 def reply_game_series_card(
-        update: Update,
-        context: CallbackContext,
-        game_series_id: int,
-        reply_to_message_id: int = None
+    update: Update,
+    context: CallbackContext,
+    game_series_id: int,
+    reply_to_message_id: int = None,
 ):
     game_series = GameSeries.get_by_id(game_series_id)
 
     text = (
         f'<b>Серия "{html.escape(game_series.name)}"</b>\n'
-        '\n'
-        f'Обложки: {game_series.get_number_of_covers()}\n'
-        f'Авторы: {game_series.get_number_of_authors()}\n'
-        f'Игр: {game_series.get_number_of_games()}'
+        "\n"
+        f"Обложки: {game_series.get_number_of_covers()}\n"
+        f"Авторы: {game_series.get_number_of_authors()}\n"
+        f"Игр: {game_series.get_number_of_games()}"
     )
 
     markup = InlineKeyboardMarkup.from_row([
         InlineKeyboardButton(
-            text='Обложки',
+            text="Обложки",
             callback_data=fill_string_pattern(P.PATTERN_COVER_NEW_PAGE, 1, None, game_series_id, None)
         ),
         InlineKeyboardButton(
-            text='Авторы',
+            text="Авторы",
             callback_data=fill_string_pattern(P.PATTERN_AUTHORS_NEW_PAGE, 1, game_series_id, None)
         ),
         InlineKeyboardButton(
-            text='Игры',
+            text="Игры",
             callback_data=fill_string_pattern(P.PATTERN_GAMES_NEW_PAGE, 1, None, game_series_id)
         ),
     ])
@@ -301,10 +334,10 @@ def reply_game_series_card(
 
 
 def reply_game_card(
-        update: Update,
-        context: CallbackContext,
-        game_id: int,
-        reply_to_message_id: int = None
+    update: Update,
+    context: CallbackContext,
+    game_id: int,
+    reply_to_message_id: int = None,
 ):
     message = update.effective_message
     game = Game.get_by_id(game_id)
@@ -324,23 +357,23 @@ def reply_game_card(
 
     text = (
         f'<b>Игра "{html.escape(game.name)}"</b>\n'
-        '\n'
-        f'Обложки: {game.get_number_of_covers()}\n'
-        f'Авторы: {game.get_number_of_authors()}\n'
-        f'Серия: {game_series_html_url}'
+        "\n"
+        f"Обложки: {game.get_number_of_covers()}\n"
+        f"Авторы: {game.get_number_of_authors()}\n"
+        f"Серия: {game_series_html_url}"
     )
 
     markup = InlineKeyboardMarkup.from_row([
         InlineKeyboardButton(
-            text='Обложки',
+            text="Обложки",
             callback_data=fill_string_pattern(P.PATTERN_COVER_NEW_PAGE, 1, None, None, game_id)
         ),
         InlineKeyboardButton(
-            text='Авторы',
+            text="Авторы",
             callback_data=fill_string_pattern(P.PATTERN_AUTHORS_NEW_PAGE, 1, None, game_id)
         ),
         InlineKeyboardButton(
-            text='Серия',
+            text="Серия",
             callback_data=fill_string_pattern(P.PATTERN_GAME_SERIES_NEW_CARD, game.series.id)
         ),
     ])
@@ -352,13 +385,13 @@ def reply_game_card(
 
 
 def get_cover_text(
-        update: Update,
-        context: CallbackContext,
-        cover: Cover,
-        reply_to_message_id: int,
-        by_author: int = None,
-        by_game_series: int = None,
-        by_game: int = None,
+    update: Update,
+    context: CallbackContext,
+    cover: Cover,
+    reply_to_message_id: int,
+    by_author: int = None,
+    by_game_series: int = None,
+    by_game: int = None,
 ) -> str:
     url_cover = get_deep_linking_start_arg_html_url(
         update, context,
@@ -420,15 +453,15 @@ def get_cover_text(
 
 
 def reply_cover_page_card(
-        update: Update,
-        context: CallbackContext,
-        as_new_msg: bool = False,
-        page: int = 1,
-        cover_id: int = None,
-        by_author_id: int = None,
-        by_game_series_id: int = None,
-        by_game_id: int = None,
-        reply_to_message_id: int = None,
+    update: Update,
+    context: CallbackContext,
+    as_new_msg: bool = False,
+    page: int = 1,
+    cover_id: int = None,
+    by_author_id: int = None,
+    by_game_series_id: int = None,
+    by_game_id: int = None,
+    reply_to_message_id: int = None,
 ):
     message = update.effective_message
 
@@ -438,10 +471,10 @@ def reply_cover_page_card(
 
     # Если есть возможность вытащить из контекста значения
     if context.match and context.match.groups():
-        page = get_int_from_match(context.match, 'page', default=page)
-        by_author_id = get_int_from_match(context.match, 'author_id', default=by_author_id)
-        by_game_series_id = get_int_from_match(context.match, 'game_series_id', default=by_game_series_id)
-        by_game_id = get_int_from_match(context.match, 'game_id', default=by_game_id)
+        page = get_int_from_match(context.match, "page", default=page)
+        by_author_id = get_int_from_match(context.match, "author_id", default=by_author_id)
+        by_game_series_id = get_int_from_match(context.match, "game_series_id", default=by_game_series_id)
+        by_game_id = get_int_from_match(context.match, "game_id", default=by_game_id)
 
     cover_filters: dict[str, int | None] = dict(
         by_author=by_author_id,
@@ -462,23 +495,22 @@ def reply_cover_page_card(
     else:
         if page not in range(1, total_covers + 1):
             reply_message(
-                f'Неправильный номер обложки! Разрешенный диапазон от 1 до {total_covers}',
+                f"Неправильный номер обложки! Разрешенный диапазон от 1 до {total_covers}",
                 update=update, context=context,
                 severity=SeverityEnum.ERROR
             )
             return
 
-        cover = Cover.get_by_page(
-            page=page,
-            **cover_filters
-        )
+        cover = Cover.get_by_page(page=page, **cover_filters)
 
     pattern = P.PATTERN_COVER_PAGE
 
     paginator = InlineKeyboardPaginator(
         page_count=total_covers,
         current_page=page,
-        data_pattern=fill_string_pattern(pattern, '{page}', by_author_id, by_game_series_id, by_game_id)
+        data_pattern=fill_string_pattern(
+            pattern, "{page}", by_author_id, by_game_series_id, by_game_id
+        ),
     )
     add_prev_next_buttons(paginator)
 
@@ -534,7 +566,7 @@ def reply_cover_page_card(
             reply_markup=reply_markup,
         )
     except BadRequest as e:
-        if 'Message is not modified' in str(e):
+        if "Message is not modified" in str(e):
             return
 
         raise e
@@ -544,7 +576,7 @@ def reply_cover_page_card(
 @process_request(log)
 def on_show_reply(update: Update, context: CallbackContext):
     reply_message(
-        text='Готово!',
+        text="Готово!",
         update=update, context=context,
         severity=SeverityEnum.INFO,
         reply_markup=get_reply_keyboard(),
@@ -555,10 +587,10 @@ def on_show_reply(update: Update, context: CallbackContext):
 @process_request(log)
 def on_hide_reply(update: Update, context: CallbackContext):
     reply_message(
-        text='Готово!',
+        text="Готово!",
         update=update, context=context,
         severity=SeverityEnum.INFO,
-        reply_markup=ReplyKeyboardRemove()
+        reply_markup=ReplyKeyboardRemove(),
     )
 
 
@@ -568,15 +600,15 @@ def on_gif_start_deep_linking(update: Update, context: CallbackContext):
     message = update.effective_message
 
     message.reply_document(
-        document=open(SCREENSHOT_GIF_START_DEEP_LINKING, 'rb'),
+        document=open(SCREENSHOT_GIF_START_DEEP_LINKING, "rb"),
         reply_markup=InlineKeyboardMarkup.from_column([
             InlineKeyboardButton(
-                text='Убрать',
+                text="Убрать",
                 callback_data=fill_string_pattern(P.PATTERN_DELETE_MESSAGE)
             ),
             InlineKeyboardButton(
-                text='Посмотреть остальные GIF',
-                url='https://github.com/gil9red/telegram__farguscovers_bot#скриншоты'
+                text="Посмотреть остальные GIF",
+                url="https://github.com/gil9red/telegram__farguscovers_bot#скриншоты"
             )
         ])
     )
@@ -604,13 +636,13 @@ def on_cover_by_page(update: Update, context: CallbackContext):
 
 
 def reply_page_objects(
-        update: Update,
-        context: CallbackContext,
-        model_title: str,
-        model: Author | GameSeries | Game,
-        paginator_pattern: str,
-        filters: Iterator[Field] = None,
-        as_new_msg=False,
+    update: Update,
+    context: CallbackContext,
+    model_title: str,
+    model: Author | GameSeries | Game,
+    paginator_pattern: str,
+    filters: Iterator[Field] = None,
+    as_new_msg=False,
 ):
     message = update.effective_message
 
@@ -628,7 +660,7 @@ def reply_page_objects(
         # После такого можно будет только редактировать сообщение
         force_edit = True
 
-    page = get_int_from_match(context.match, 'page', default=1)
+    page = get_int_from_match(context.match, "page", default=1)
 
     items_per_page = ITEMS_PER_PAGE
     start = ((page - 1) * items_per_page) + 1
@@ -636,7 +668,7 @@ def reply_page_objects(
         page=page,
         items_per_page=items_per_page,
         filters=filters,
-        order_by=model.name.asc()
+        order_by=model.name.asc(),
     )
 
     # TODO: Проверить, что не будет переполнения с ITEMS_PER_PAGE
@@ -649,12 +681,12 @@ def reply_page_objects(
             reply_to_message_id=message.message_id,
         )
         total_covers = obj.get_number_of_covers()
-        title = f'{i}. <b>{html_url}</b> ({total_covers})'
+        title = f"{i}. <b>{html_url}</b> ({total_covers})"
         lines.append(title)
 
     total = model.count(filters)
 
-    text = f'{model_title} ({total}):\n' + '\n'.join(lines)
+    text = f"{model_title} ({total}):\n" + "\n".join(lines)
 
     reply_text_or_edit_with_keyboard_paginator(
         message, query,
@@ -671,24 +703,21 @@ def reply_page_objects(
 
 
 def reply_author_page_list(
-        update: Update,
-        context: CallbackContext,
-        as_new_msg=False,
+    update: Update,
+    context: CallbackContext,
+    as_new_msg=False,
 ):
-    game_series_id = get_int_from_match(context.match, 'game_series_id')
-    game_id = get_int_from_match(context.match, 'game_id')
+    game_series_id = get_int_from_match(context.match, "game_series_id")
+    game_id = get_int_from_match(context.match, "game_id")
 
     model = Author
 
     reply_page_objects(
         update=update, context=context,
-        model_title='Авторы',
+        model_title="Авторы",
         model=model,
         paginator_pattern=fill_string_pattern(
-            P.PATTERN_AUTHORS_PAGE,
-            '{page}',
-            game_series_id,
-            game_id
+            P.PATTERN_AUTHORS_PAGE, "{page}", game_series_id, game_id
         ),
         filters=model.get_filters(
             by_game_series=game_series_id,
@@ -711,22 +740,20 @@ def on_author_list_as_new_msg(update: Update, context: CallbackContext):
 
 
 def reply_game_series_page_list(
-        update: Update,
-        context: CallbackContext,
-        as_new_msg=False,
+    update: Update,
+    context: CallbackContext,
+    as_new_msg=False,
 ):
-    author_id = get_int_from_match(context.match, 'author_id')
+    author_id = get_int_from_match(context.match, "author_id")
 
     model = GameSeries
 
     reply_page_objects(
         update=update, context=context,
-        model_title='Серии игр',
+        model_title="Серии игр",
         model=model,
         paginator_pattern=fill_string_pattern(
-            P.PATTERN_GAME_SERIES_PAGE,
-            '{page}',
-            author_id,
+            P.PATTERN_GAME_SERIES_PAGE, "{page}", author_id,
         ),
         filters=model.get_filters(
             by_author=author_id,
@@ -754,29 +781,26 @@ def on_game_series_card(update: Update, context: CallbackContext):
     if query:
         query.answer()
 
-    game_series_id = get_int_from_match(context.match, 'game_series_id')
+    game_series_id = get_int_from_match(context.match, "game_series_id")
     reply_game_series_card(update, context, game_series_id=game_series_id)
 
 
 def reply_game_page_list(
-        update: Update,
-        context: CallbackContext,
-        as_new_msg=False,
+    update: Update,
+    context: CallbackContext,
+    as_new_msg=False,
 ):
-    author_id = get_int_from_match(context.match, 'author_id')
-    game_series_id = get_int_from_match(context.match, 'game_series_id')
+    author_id = get_int_from_match(context.match, "author_id")
+    game_series_id = get_int_from_match(context.match, "game_series_id")
 
     model = Game
 
     reply_page_objects(
         update=update, context=context,
-        model_title='Игры',
+        model_title="Игры",
         model=model,
         paginator_pattern=fill_string_pattern(
-            P.PATTERN_GAMES_PAGE,
-            '{page}',
-            author_id,
-            game_series_id
+            P.PATTERN_GAMES_PAGE, "{page}", author_id, game_series_id
         ),
         filters=model.get_filters(
             by_author=author_id,
@@ -813,7 +837,7 @@ def on_find(update: Update, context: CallbackContext):
     text = get_context_value(context)
     if not text:
         reply_message(
-            'Не введен текст для поиска!',
+            "Не введен текст для поиска!",
             update, context,
             severity=SeverityEnum.INFO
         )
@@ -827,9 +851,9 @@ def on_find(update: Update, context: CallbackContext):
 @process_request(log)
 def on_request(update: Update, context: CallbackContext):
     reply_message(
-        'Неизвестная команда 🤔',
+        "Неизвестная команда 🤔",
         update=update, context=context,
-        severity=SeverityEnum.ERROR
+        severity=SeverityEnum.ERROR,
     )
 
 
@@ -841,11 +865,11 @@ def on_fill_server_file_id(update: Update, _: CallbackContext):
     covers = Cover.select().where(Cover.server_file_id.is_null())
     total_covers = covers.count()
 
-    title_progress = SeverityEnum.INFO.value.format(text='Загрузка обложек.')
+    title_progress = SeverityEnum.INFO.value.format(text="Загрузка обложек.")
 
     if not total_covers:
         message.reply_text(
-            f'{title_progress}\nВсе обложки уже загружены!',
+            f"{title_progress}\nВсе обложки уже загружены!",
             quote=True,
         )
         return
@@ -860,7 +884,7 @@ def on_fill_server_file_id(update: Update, _: CallbackContext):
     # Перебор всех обложек без server_file_id
     for i, cover in enumerate(covers, 1):
         message_photo = message.reply_photo(
-            photo=open(cover.abs_file_name, 'rb')
+            photo=open(cover.abs_file_name, "rb")
         )
         photo_large = max(message_photo.photo, key=lambda x: (x.width, x.height))
         message_photo.delete()
@@ -868,15 +892,15 @@ def on_fill_server_file_id(update: Update, _: CallbackContext):
         cover.server_file_id = photo_large.file_id
         cover.save()
 
-        message_progress.edit_text(f'{title_progress}\n{i} / {total_covers}')
+        message_progress.edit_text(f"{title_progress}\n{i} / {total_covers}")
 
         # У ботов лимиты на отправку сообщений
         time.sleep(0.3)
 
     elapsed_secs = int(time.perf_counter() - t)
     message_progress.edit_text(
-        f'{title_progress}\n'
-        f'Загружено {total_covers} обложек за {elapsed_secs} секунд.'
+        f"{title_progress}\n"
+        f"Загружено {total_covers} обложек за {elapsed_secs} секунд."
     )
 
 
@@ -885,42 +909,86 @@ def on_error(update: Update, context: CallbackContext):
 
 
 def setup(dp: Dispatcher):
-    dp.add_handler(CommandHandler('start', on_start))
-    dp.add_handler(CommandHandler('help', on_start))
+    dp.add_handler(CommandHandler("start", on_start))
+    dp.add_handler(CommandHandler("help", on_start))
     dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_COVERS_REPLY_HELP), on_start))
 
-    dp.add_handler(CommandHandler(P.COMMAND_GIF_START_DEEP_LINKING, on_gif_start_deep_linking))
+    dp.add_handler(
+        CommandHandler(P.COMMAND_GIF_START_DEEP_LINKING, on_gif_start_deep_linking)
+    )
 
     dp.add_handler(
-        CommandHandler(P.COMMAND_FILL_SERVER_FILE_ID, on_fill_server_file_id, FILTER_BY_ADMIN)
+        CommandHandler(
+            P.COMMAND_FILL_SERVER_FILE_ID, on_fill_server_file_id, FILTER_BY_ADMIN
+        )
     )
 
     dp.add_handler(CommandHandler(P.COMMAND_SHOW_REPLY, on_show_reply))
     dp.add_handler(CommandHandler(P.COMMAND_HIDE_REPLY, on_hide_reply))
 
     dp.add_handler(CommandHandler(P.COMMAND_COVERS_ALL, on_cover_card))
-    dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_COVERS_REPLY_ALL), on_cover_card))
+    dp.add_handler(
+        MessageHandler(Filters.regex(P.PATTERN_COVERS_REPLY_ALL), on_cover_card)
+    )
     dp.add_handler(CallbackQueryHandler(on_cover_card, pattern=P.PATTERN_COVER_PAGE))
-    dp.add_handler(CallbackQueryHandler(on_cover_card_as_new_msg, pattern=P.PATTERN_COVER_NEW_PAGE))
-    dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_REPLY_COVER_BY_PAGE), on_cover_by_page))
+    dp.add_handler(
+        CallbackQueryHandler(on_cover_card_as_new_msg, pattern=P.PATTERN_COVER_NEW_PAGE)
+    )
+    dp.add_handler(
+        MessageHandler(Filters.regex(P.PATTERN_REPLY_COVER_BY_PAGE), on_cover_by_page)
+    )
 
     dp.add_handler(CommandHandler(P.COMMAND_AUTHORS_ALL, on_author_page_list))
-    dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_AUTHORS_REPLY_ALL), on_author_page_list))
-    dp.add_handler(CallbackQueryHandler(on_author_page_list, pattern=P.PATTERN_AUTHORS_PAGE))
-    dp.add_handler(CallbackQueryHandler(on_author_list_as_new_msg, pattern=P.PATTERN_AUTHORS_NEW_PAGE))
+    dp.add_handler(
+        MessageHandler(Filters.regex(P.PATTERN_AUTHORS_REPLY_ALL), on_author_page_list)
+    )
+    dp.add_handler(
+        CallbackQueryHandler(on_author_page_list, pattern=P.PATTERN_AUTHORS_PAGE)
+    )
+    dp.add_handler(
+        CallbackQueryHandler(
+            on_author_list_as_new_msg, pattern=P.PATTERN_AUTHORS_NEW_PAGE
+        )
+    )
 
     dp.add_handler(CommandHandler(P.COMMAND_GAME_SERIES_ALL, on_game_series_page_list))
-    dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_GAME_SERIES_REPLY_ALL), on_game_series_page_list))
-    dp.add_handler(CallbackQueryHandler(on_game_series_page_list, pattern=P.PATTERN_GAME_SERIES_PAGE))
-    dp.add_handler(CallbackQueryHandler(on_game_series_list_as_new_msg, pattern=P.PATTERN_GAME_SERIES_NEW_PAGE))
-    dp.add_handler(CallbackQueryHandler(on_game_series_card, pattern=P.PATTERN_GAME_SERIES_NEW_CARD))
+    dp.add_handler(
+        MessageHandler(
+            Filters.regex(P.PATTERN_GAME_SERIES_REPLY_ALL), on_game_series_page_list
+        )
+    )
+    dp.add_handler(
+        CallbackQueryHandler(
+            on_game_series_page_list, pattern=P.PATTERN_GAME_SERIES_PAGE
+        )
+    )
+    dp.add_handler(
+        CallbackQueryHandler(
+            on_game_series_list_as_new_msg, pattern=P.PATTERN_GAME_SERIES_NEW_PAGE
+        )
+    )
+    dp.add_handler(
+        CallbackQueryHandler(
+            on_game_series_card, pattern=P.PATTERN_GAME_SERIES_NEW_CARD
+        )
+    )
 
     dp.add_handler(CommandHandler(P.COMMAND_GAMES_ALL, on_game_page_list))
-    dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_GAMES_REPLY_ALL), on_game_page_list))
-    dp.add_handler(CallbackQueryHandler(on_game_page_list, pattern=P.PATTERN_GAMES_PAGE))
-    dp.add_handler(CallbackQueryHandler(on_game_list_as_new_msg, pattern=P.PATTERN_GAMES_NEW_PAGE))
+    dp.add_handler(
+        MessageHandler(Filters.regex(P.PATTERN_GAMES_REPLY_ALL), on_game_page_list)
+    )
+    dp.add_handler(
+        CallbackQueryHandler(on_game_page_list, pattern=P.PATTERN_GAMES_PAGE)
+    )
+    dp.add_handler(
+        CallbackQueryHandler(on_game_list_as_new_msg, pattern=P.PATTERN_GAMES_NEW_PAGE)
+    )
 
-    dp.add_handler(CallbackQueryHandler(on_callback_delete_message, pattern=P.PATTERN_DELETE_MESSAGE))
+    dp.add_handler(
+        CallbackQueryHandler(
+            on_callback_delete_message, pattern=P.PATTERN_DELETE_MESSAGE
+        )
+    )
 
     dp.add_handler(CommandHandler(P.COMMAND_FIND, on_find))
     dp.add_handler(MessageHandler(Filters.regex(P.PATTERN_REPLY_FIND), on_find))

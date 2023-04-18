@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__author__ = 'ipetrash'
+__author__ = "ipetrash"
 
 
 import functools
@@ -35,17 +35,19 @@ def log_func(log: logging.Logger):
                 try:
                     message = update.effective_message.text
                 except:
-                    message = ''
+                    message = ""
 
                 try:
                     query_data = update.callback_query.data
                 except:
-                    query_data = ''
+                    query_data = ""
 
-                msg = f'[chat_id={chat_id}, user_id={user_id}, ' \
-                      f'first_name={first_name!r}, last_name={last_name!r}, ' \
-                      f'username={username!r}, language_code={language_code}, ' \
-                      f'message={message!r}, query_data={query_data!r}]'
+                msg = (
+                    f"[chat_id={chat_id}, user_id={user_id}, "
+                    f"first_name={first_name!r}, last_name={last_name!r}, "
+                    f"username={username!r}, language_code={language_code}, "
+                    f"message={message!r}, query_data={query_data!r}]"
+                )
                 msg = func.__name__ + msg
 
                 log.debug(msg)
@@ -53,6 +55,7 @@ def log_func(log: logging.Logger):
             return func(update, context)
 
         return wrapper
+
     return actual_decorator
 
 
@@ -66,7 +69,7 @@ def process_request(log: logging.Logger):
             db.start_timer()
 
             if not isinstance(context.bot, ExtBotDebug):
-                raise Exception('Бот должен иметь тип ExtBotDebug!')
+                raise Exception("Бот должен иметь тип ExtBotDebug!")
             bot: ExtBotDebug = context.bot
             bot.start_timer()
 
@@ -88,9 +91,12 @@ def process_request(log: logging.Logger):
             elapsed_db_ms = db.elapsed_time_ns // 1_000_000
             elapsed_bot_ms = bot.elapsed_time_ns // 1_000_000
 
-            log.debug(f'[{func_name}] Elapsed {elapsed_ms} ms (db/bot: {elapsed_db_ms}/{elapsed_bot_ms})')
+            log.debug(
+                f"[{func_name}] Elapsed {elapsed_ms} ms (db/bot: {elapsed_db_ms}/{elapsed_bot_ms})"
+            )
 
             return result
 
         return wrapper
+
     return actual_decorator

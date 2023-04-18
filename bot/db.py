@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__author__ = 'ipetrash'
+__author__ = "ipetrash"
 
 
 import datetime as DT
@@ -12,7 +12,14 @@ from typing import Type, Optional, Iterable, Union
 
 # pip install peewee
 from peewee import (
-    Model, TextField, ForeignKeyField, CharField, DateTimeField, IntegerField, Field, fn
+    Model,
+    TextField,
+    ForeignKeyField,
+    CharField,
+    DateTimeField,
+    IntegerField,
+    Field,
+    fn,
 )
 import telegram
 
@@ -35,9 +42,9 @@ class NotDefinedParameterException(Exception):
 db = SqliteQueueDatabaseDebug(
     DB_FILE_NAME,
     pragmas={
-        'foreign_keys': 1,
-        'journal_mode': 'wal',    # WAL-mode
-        'cache_size': -1024 * 64  # 64MB page-cache
+        "foreign_keys": 1,
+        "journal_mode": "wal",     # WAL-mode
+        "cache_size": -1024 * 64,  # 64MB page-cache
     },
     use_gevent=False,     # Use the standard library "threading" module.
     autostart=True,
@@ -54,25 +61,25 @@ class BaseModel(Model):
     class Meta:
         database = db
 
-    def get_new(self) -> Type['BaseModel']:
+    def get_new(self) -> Type["BaseModel"]:
         return type(self).get(self._pk_expr())
 
     @classmethod
-    def get_first(cls) -> Type['BaseModel']:
+    def get_first(cls) -> Type["BaseModel"]:
         return cls.select().first()
 
     @classmethod
-    def get_last(cls) -> Type['BaseModel']:
+    def get_last(cls) -> Type["BaseModel"]:
         return cls.select().order_by(cls.id.desc()).first()
 
     @classmethod
     def paginating(
-            cls,
-            page: int = 1,
-            items_per_page: int = ITEMS_PER_PAGE,
-            order_by: Field = None,
-            filters: Iterable = None,
-    ) -> list[Type['BaseModel']]:
+        cls,
+        page: int = 1,
+        items_per_page: int = ITEMS_PER_PAGE,
+        order_by: Field = None,
+        filters: Iterable = None,
+    ) -> list[Type["BaseModel"]]:
         query = cls.select()
 
         if filters:
@@ -85,7 +92,7 @@ class BaseModel(Model):
         return list(query)
 
     @classmethod
-    def get_inherited_models(cls) -> list[Type['BaseModel']]:
+    def get_inherited_models(cls) -> list[Type["BaseModel"]]:
         return sorted(cls.__subclasses__(), key=lambda x: x.__name__)
 
     @classmethod
@@ -94,9 +101,9 @@ class BaseModel(Model):
         for sub_cls in cls.get_inherited_models():
             name = sub_cls.__name__
             count = sub_cls.select().count()
-            items.append(f'{name}: {count}')
+            items.append(f"{name}: {count}")
 
-        print(', '.join(items))
+        print(", ".join(items))
 
     @classmethod
     def count(cls, filters: Iterable = None) -> int:
@@ -115,13 +122,13 @@ class BaseModel(Model):
                     v = repr(shorten(v))
 
             elif isinstance(field, ForeignKeyField):
-                k = f'{k}_id'
+                k = f"{k}_id"
                 if v:
                     v = v.id
 
-            fields.append(f'{k}={v}')
+            fields.append(f"{k}={v}")
 
-        return self.__class__.__name__ + '(' + ', '.join(fields) + ')'
+        return self.__class__.__name__ + "(" + ", ".join(fields) + ")"
 
 
 class GameSeries(BaseModel):
@@ -129,23 +136,23 @@ class GameSeries(BaseModel):
     slug = TextField(unique=True)
 
     @classmethod
-    def get_by_slug(cls, slug: str) -> Optional['GameSeries']:
+    def get_by_slug(cls, slug: str) -> Optional["GameSeries"]:
         slug = get_slug(slug)  # Защита от произвольных строк
 
         if not slug or not slug.strip():
-            raise NotDefinedParameterException(parameter_name='slug')
+            raise NotDefinedParameterException(parameter_name="slug")
 
         return cls.get_or_none(slug=slug)
 
     @classmethod
-    def get_by(cls, name: str) -> Optional['GameSeries']:
+    def get_by(cls, name: str) -> Optional["GameSeries"]:
         if not name or not name.strip():
-            raise NotDefinedParameterException(parameter_name='name')
+            raise NotDefinedParameterException(parameter_name="name")
 
         return cls.get_by_slug(slug=get_slug(name))
 
     @classmethod
-    def add(cls, name: str, id: int = None) -> 'GameSeries':
+    def add(cls, name: str, id: int = None) -> "GameSeries":
         obj = cls.get_by(name)
         if not obj:
             obj = cls.create(
@@ -157,14 +164,14 @@ class GameSeries(BaseModel):
         return obj
 
     @classmethod
-    def get_unknown(cls) -> 'GameSeries':
-        return cls.add(name='<Без серии>', id=0)
+    def get_unknown(cls) -> "GameSeries":
+        return cls.add(name="<Без серии>", id=0)
 
     @classmethod
     def get_filters(
-            cls,
-            by_author: Union[int, 'Author'] = None,
-            filters: Iterable = None,
+        cls,
+        by_author: Union[int, "Author"] = None,
+        filters: Iterable = None,
     ) -> list:
         total_filters = []
 
@@ -181,16 +188,20 @@ class GameSeries(BaseModel):
 
         return total_filters
 
-    def get_authors(self) -> list['Author']:
+    def get_authors(self) -> list["Author"]:
         game_ids = Game.select(Game.id).where(Game.series == self)
         cover_ids = Cover.select(Cover.id).where(Cover.game.in_(game_ids))
-        query = Author2Cover.select(Author2Cover.author).distinct().where(Author2Cover.cover.in_(cover_ids))
+        query = (
+            Author2Cover.select(Author2Cover.author)
+            .distinct()
+            .where(Author2Cover.cover.in_(cover_ids))
+        )
         return [a2c.author for a2c in query]
 
     def get_number_of_authors(self) -> int:
         return len(self.get_authors())
 
-    def get_games(self) -> list['Game']:
+    def get_games(self) -> list["Game"]:
         return list(self.games)
 
     def get_number_of_games(self) -> int:
@@ -203,26 +214,26 @@ class GameSeries(BaseModel):
 class Game(BaseModel):
     name = TextField()
     slug = TextField(unique=True)
-    series = ForeignKeyField(GameSeries, backref='games', null=True)
+    series = ForeignKeyField(GameSeries, backref="games", null=True)
 
     @classmethod
-    def get_by_slug(cls, slug: str) -> Optional['Game']:
+    def get_by_slug(cls, slug: str) -> Optional["Game"]:
         slug = get_slug(slug)  # Защита от произвольных строк
 
         if not slug or not slug.strip():
-            raise NotDefinedParameterException(parameter_name='slug')
+            raise NotDefinedParameterException(parameter_name="slug")
 
         return cls.get_or_none(slug=slug)
 
     @classmethod
-    def get_by(cls, name: str) -> Optional['Game']:
+    def get_by(cls, name: str) -> Optional["Game"]:
         if not name or not name.strip():
-            raise NotDefinedParameterException(parameter_name='name')
+            raise NotDefinedParameterException(parameter_name="name")
 
         return cls.get_by_slug(slug=get_slug(name))
 
     @classmethod
-    def add(cls, name: str, series: GameSeries = None) -> 'Game':
+    def add(cls, name: str, series: GameSeries = None) -> "Game":
         obj = cls.get_by(name)
         if not obj:
             obj = cls.create(
@@ -235,10 +246,10 @@ class Game(BaseModel):
 
     @classmethod
     def get_filters(
-            cls,
-            by_author: Union[int, 'Author'] = None,
-            by_game_series: Union[int, 'GameSeries'] = None,
-            filters: Iterable = None,
+        cls,
+        by_author: Union[int, "Author"] = None,
+        by_game_series: Union[int, "GameSeries"] = None,
+        filters: Iterable = None,
     ) -> list:
         total_filters = []
 
@@ -263,9 +274,13 @@ class Game(BaseModel):
     def series_name(self) -> str:
         return self.series.name if self.series else ""
 
-    def get_authors(self) -> list['Author']:
+    def get_authors(self) -> list["Author"]:
         cover_ids = Cover.select(Cover.id).where(Cover.game == self)
-        query = Author2Cover.select(Author2Cover.author).distinct().where(Author2Cover.cover.in_(cover_ids))
+        query = (
+            Author2Cover.select(Author2Cover.author)
+            .distinct()
+            .where(Author2Cover.cover.in_(cover_ids))
+        )
         return [a2c.author for a2c in query]
 
     def get_number_of_authors(self) -> int:
@@ -280,7 +295,7 @@ class Cover(BaseModel):
     file_name = TextField(unique=True)
     url_post = TextField()
     url_post_image = TextField()
-    game = ForeignKeyField(Game, backref='covers')
+    game = ForeignKeyField(Game, backref="covers")
     server_file_id = TextField(null=True)
     date_time = DateTimeField()
 
@@ -290,11 +305,11 @@ class Cover(BaseModel):
 
     @classmethod
     def get_filters(
-            cls,
-            by_author: Union[int, 'Author'] = None,
-            by_game_series: Union[int, 'GameSeries'] = None,
-            by_game: Union[int, 'Game'] = None,
-            filters: Iterable = None,
+        cls,
+        by_author: Union[int, "Author"] = None,
+        by_game_series: Union[int, "GameSeries"] = None,
+        by_game: Union[int, "Game"] = None,
+        filters: Iterable = None,
     ) -> list:
         total_filters = []
 
@@ -302,7 +317,9 @@ class Cover(BaseModel):
             total_filters.append(
                 cls.id.in_(
                     # Из Author2Cover вернем cover_id по заданному автору
-                    Author2Cover.select(Author2Cover.cover).where(Author2Cover.author == by_author)
+                    Author2Cover.select(Author2Cover.cover).where(
+                        Author2Cover.author == by_author
+                    )
                 )
             )
 
@@ -310,7 +327,9 @@ class Cover(BaseModel):
             total_filters.append(
                 cls.game.in_(
                     # Из Game вернем id по заданной серии игр
-                    Game.select(Game.id).distinct().where(Game.series == by_game_series)
+                    Game.select(Game.id)
+                    .distinct()
+                    .where(Game.series == by_game_series)
                 )
             )
 
@@ -326,11 +345,11 @@ class Cover(BaseModel):
 
     @classmethod
     def count_by(
-            cls,
-            by_author: Union[int, 'Author'] = None,
-            by_game_series: Union[int, 'GameSeries'] = None,
-            by_game: Union[int, 'Game'] = None,
-            filters: Iterable = None,
+        cls,
+        by_author: Union[int, "Author"] = None,
+        by_game_series: Union[int, "GameSeries"] = None,
+        by_game: Union[int, "Game"] = None,
+        filters: Iterable = None,
     ) -> int:
         total_filters = cls.get_filters(
             by_author=by_author,
@@ -342,13 +361,13 @@ class Cover(BaseModel):
 
     @classmethod
     def get_by_page(
-            cls,
-            page: int = 1,
-            by_author: Union[int, 'Author'] = None,
-            by_game_series: Union[int, 'GameSeries'] = None,
-            by_game: Union[int, 'Game'] = None,
-            filters: Iterable = None,
-    ) -> Optional['Cover']:
+        cls,
+        page: int = 1,
+        by_author: Union[int, "Author"] = None,
+        by_game_series: Union[int, "GameSeries"] = None,
+        by_game: Union[int, "Game"] = None,
+        filters: Iterable = None,
+    ) -> Optional["Cover"]:
         total_filters = cls.get_filters(
             by_author=by_author,
             by_game_series=by_game_series,
@@ -366,12 +385,12 @@ class Cover(BaseModel):
 
     @classmethod
     def get_page(
-            cls,
-            need_cover_id: int,
-            by_author: Union[int, 'Author'] = None,
-            by_game_series: Union[int, 'GameSeries'] = None,
-            by_game: Union[int, 'Game'] = None,
-            filters: Iterable = None,
+        cls,
+        need_cover_id: int,
+        by_author: Union[int, "Author"] = None,
+        by_game_series: Union[int, "GameSeries"] = None,
+        by_game: Union[int, "Game"] = None,
+        filters: Iterable = None,
     ) -> int:
         total_filters = cls.get_filters(
             by_author=by_author,
@@ -380,7 +399,7 @@ class Cover(BaseModel):
             filters=filters,
         )
         query = cls.select(
-            fn.row_number().over(order_by=[cls.date_time]).alias('page'),
+            fn.row_number().over(order_by=[cls.date_time]).alias("page"),
             cls.id
         )
         if total_filters:
@@ -391,9 +410,11 @@ class Cover(BaseModel):
             if cover_id == need_cover_id:
                 return page
 
-        raise Exception(f'Не удалось определить номер для #{need_cover_id} по {total_filters}')
+        raise Exception(
+            f"Не удалось определить номер для #{need_cover_id} по {total_filters}"
+        )
 
-    def get_authors(self, reverse=False) -> list['Author']:
+    def get_authors(self, reverse=False) -> list["Author"]:
         items = []
         for link in self.links_to_authors:
             author = link.author
@@ -403,7 +424,7 @@ class Cover(BaseModel):
         return items
 
     @classmethod
-    def find(cls, text: str) -> list['Cover']:
+    def find(cls, text: str) -> list["Cover"]:
         items = []
         if not text:
             return items
@@ -414,10 +435,10 @@ class Cover(BaseModel):
         #       не-ASCII, туда же идет и работа функций UPPER и LOWER
         for cover in cls.select():
             full_text = (
-                cover.text +
-                cover.game.name +
-                cover.game.series_name +
-                ''.join(a.name for a in cover.get_authors())
+                cover.text
+                + cover.game.name
+                + cover.game.series_name
+                + "".join(a.name for a in cover.get_authors())
             )
             if text.upper() in full_text.upper():
                 items.append(cover)
@@ -430,9 +451,9 @@ class Author(BaseModel):
     url = TextField(unique=True)
 
     @classmethod
-    def add(cls, id: int, name: str, url: str = None) -> 'Author':
+    def add(cls, id: int, name: str, url: str = None) -> "Author":
         if not url:
-            url = f'https://vk.com/id{id}'
+            url = f"https://vk.com/id{id}"
 
         obj = cls.get_or_none(id=id)
         if not obj:
@@ -446,10 +467,10 @@ class Author(BaseModel):
 
     @classmethod
     def get_filters(
-            cls,
-            by_game_series: Union[int, 'GameSeries'] = None,
-            by_game: Union[int, 'Game'] = None,
-            filters: Iterable = None,
+        cls,
+        by_game_series: Union[int, "GameSeries"] = None,
+        by_game: Union[int, "Game"] = None,
+        filters: Iterable = None,
     ) -> list:
         total_filters = []
 
@@ -463,7 +484,11 @@ class Author(BaseModel):
 
         if by_game is not None:
             cover_ids = Cover.select(Cover.id).where(Cover.game == by_game)
-            author_ids = Author2Cover.select(Author2Cover.author).distinct().where(Author2Cover.cover.in_(cover_ids))
+            author_ids = (
+                Author2Cover.select(Author2Cover.author)
+                .distinct()
+                .where(Author2Cover.cover.in_(cover_ids))
+            )
             total_filters.append(
                 cls.id.in_(author_ids)
             )
@@ -507,12 +532,12 @@ class Author(BaseModel):
 
 
 class Author2Cover(BaseModel):
-    author = ForeignKeyField(Author, backref='links_to_covers')
-    cover = ForeignKeyField(Cover, backref='links_to_authors')
+    author = ForeignKeyField(Author, backref="links_to_covers")
+    cover = ForeignKeyField(Cover, backref="links_to_authors")
 
     class Meta:
         indexes = (
-            (('author', 'cover'), True),
+            (("author", "cover"), True),
         )
 
 
@@ -526,13 +551,13 @@ class TgUser(BaseModel):
 
     @classmethod
     def add(
-            cls,
-            id: int,
-            first_name: str,
-            last_name: str = None,
-            username: str = None,
-            language_code: str = None,
-    ) -> 'TgUser':
+        cls,
+        id: int,
+        first_name: str,
+        last_name: str = None,
+        username: str = None,
+        language_code: str = None,
+    ) -> "TgUser":
         obj = cls.get_or_none(cls.id == id)
         if not obj:
             obj = cls.create(
@@ -546,7 +571,7 @@ class TgUser(BaseModel):
         return obj
 
     @classmethod
-    def get_from(cls, user: Optional[telegram.User]) -> Optional['TgUser']:
+    def get_from(cls, user: Optional[telegram.User]) -> Optional["TgUser"]:
         if not user:
             return
 
@@ -572,7 +597,9 @@ class TgUser(BaseModel):
 
     def inc_number_requests(self):
         cls = type(self)
-        query = self.update(number_requests=cls.number_requests + 1).where(cls.id == self.id)
+        query = self.update(number_requests=cls.number_requests + 1).where(
+            cls.id == self.id
+        )
         query.execute()
 
 
@@ -589,15 +616,15 @@ class TgChat(BaseModel):
 
     @classmethod
     def add(
-            cls,
-            id: int,
-            type: str = None,
-            title: str = None,
-            username: str = None,
-            first_name: str = None,
-            last_name: str = None,
-            description: str = None,
-    ) -> 'TgChat':
+        cls,
+        id: int,
+        type: str = None,
+        title: str = None,
+        username: str = None,
+        first_name: str = None,
+        last_name: str = None,
+        description: str = None,
+    ) -> "TgChat":
         obj = cls.get_or_none(cls.id == id)
         if not obj:
             obj = cls.create(
@@ -613,7 +640,7 @@ class TgChat(BaseModel):
         return obj
 
     @classmethod
-    def get_from(cls, chat: Optional[telegram.Chat]) -> Optional['TgChat']:
+    def get_from(cls, chat: Optional[telegram.Chat]) -> Optional["TgChat"]:
         if not chat:
             return
 
@@ -624,7 +651,7 @@ class TgChat(BaseModel):
             username=chat.username,
             first_name=chat.first_name,
             last_name=chat.last_name,
-            description=chat.description
+            description=chat.description,
         )
 
     def actualize(self, chat: Optional[telegram.Chat], inc_number_requests=True):
@@ -643,7 +670,9 @@ class TgChat(BaseModel):
 
     def inc_number_requests(self):
         cls = type(self)
-        query = self.update(number_requests=cls.number_requests + 1).where(cls.id == self.id)
+        query = self.update(number_requests=cls.number_requests + 1).where(
+            cls.id == self.id
+        )
         query.execute()
 
     def is_first_request(self) -> bool:
@@ -657,7 +686,7 @@ db.create_tables(BaseModel.get_inherited_models())
 # Т.к. в SqliteQueueDatabase запросы на чтение выполняются сразу, а на запись попадают в очередь
 time.sleep(0.050)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     BaseModel.print_count_of_tables()
     # Author: 165, Author2Cover: 607, Cover: 567, Game: 451, GameSeries: 200, TgChat: 16, TgUser: 16
     print()
@@ -673,11 +702,11 @@ if __name__ == '__main__':
 
     try:
         author = Author.get_by_id(57847587)
-        print(f'{author}, covers:')
+        print(f"{author}, covers:")
         for cover in author.get_covers():
             game = cover.game
             print(
-                f'    Cover #{cover.id}, text: {cover.text!r}, game: {game.name!r}, game series: {game.series.name!r}'
+                f"    Cover #{cover.id}, text: {cover.text!r}, game: {game.name!r}, game series: {game.series.name!r}"
             )
     except Exception as e:
         print(e)
@@ -692,7 +721,13 @@ if __name__ == '__main__':
         print(e)
 
     print()
-    print(Cover.count_by(by_author=57847587, by_game_series=GameSeries.get_by('Mafia'), by_game=Game.get_by('Mafia 2')))
+    print(
+        Cover.count_by(
+            by_author=57847587,
+            by_game_series=GameSeries.get_by("Mafia"),
+            by_game=Game.get_by("Mafia 2"),
+        )
+    )
 
     print()
     print(Game.select().where(Game.series.is_null()).count())
