@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__author__ = 'ipetrash'
+__author__ = "ipetrash"
 
 
 import datetime as DT
 import json
 from collections import defaultdict
 
-from config import FILE_NAME_DUMP, DEFAULT_AUTHOR_NAME, DEFAULT_AUTHOR_URL, DEFAULT_AUTHOR_ID
+from config import (
+    FILE_NAME_DUMP,
+    DEFAULT_AUTHOR_NAME,
+    DEFAULT_AUTHOR_URL,
+    DEFAULT_AUTHOR_ID,
+)
 from bot.db import Game, GameSeries, Author, Cover, Author2Cover, BaseModel
 
 
@@ -20,25 +25,27 @@ def append_to_db(dump: dict):
     game = Game.add(name=name, series=game_series)
 
     authors = []
-    for author_dump in dump['authors']:
-        author_id = author_dump['id']
-        author_name = author_dump['name']
+    for author_dump in dump["authors"]:
+        author_id = author_dump["id"]
+        author_name = author_dump["name"]
 
         author = Author.add(id=author_id, name=author_name)
         authors.append(author)
 
     # Пусть у каждой обложки будет автор, по умолчанию, это сама группа
     if not authors:
-        author = Author.add(id=DEFAULT_AUTHOR_ID, name=DEFAULT_AUTHOR_NAME, url=DEFAULT_AUTHOR_URL)
+        author = Author.add(
+            id=DEFAULT_AUTHOR_ID, name=DEFAULT_AUTHOR_NAME, url=DEFAULT_AUTHOR_URL
+        )
         authors.append(author)
 
-    cover_file_name = dump['photo_file_name']
+    cover_file_name = dump["photo_file_name"]
     cover = Cover.get_or_none(file_name=cover_file_name)
     if not cover:
-        cover_post_url = dump['post_url']
-        cover_photo_post_url = dump['photo_post_url']
-        cover_text = dump['cover_text']
-        date_time = dump['date_time']
+        cover_post_url = dump["post_url"]
+        cover_photo_post_url = dump["photo_post_url"]
+        cover_text = dump["cover_text"]
+        date_time = dump["date_time"]
 
         cover = Cover.create(
             text=cover_text,
@@ -71,18 +78,18 @@ def make_identical_authors_unique():
 
         for author in objects:
             name = author.name
-            new_name = f'{name} (id{author.id})'
-            print(f'Renamed: {name!r} -> {new_name!r}')
+            new_name = f"{name} (id{author.id})"
+            print(f"Renamed: {name!r} -> {new_name!r}")
 
             author.name = new_name
             author.save()
 
 
-if __name__ == '__main__':
-    dumps = json.loads(FILE_NAME_DUMP.read_text('utf-8'))
+if __name__ == "__main__":
+    dumps = json.loads(FILE_NAME_DUMP.read_text("utf-8"))
 
     # Сортировка по id посту и номера картинки из имени файла
-    dumps.sort(key=lambda dump: (dump['post_id'], dump['photo_file_name']))
+    dumps.sort(key=lambda dump: (dump["post_id"], dump["photo_file_name"]))
 
     for dump in dumps:
         append_to_db(dump)
